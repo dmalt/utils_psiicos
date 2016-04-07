@@ -13,25 +13,37 @@ path(path, '/home/dmalt/gops/gopsiicos_source/input')
 
 Rnk = 350;
 threshold = 0.97;
-bInducedOnly = true;
+bInducedOnly = false;
+
 CTpart = 'full';
+% CTpart = 'imag';
  % Subjects = {'0003_pran', '0019_shev', '0030_koal',...
  %             '0108_bami', '0062_peek', '0074_kuni',...
  %             '0100_kase', '0106_supo', '0109zvma', '0130_hagr'}
  % Subjects = {'0003_pran', '0019_shev', '0100_kase', '0109zvma'}
- % Subjects = {'0003_pran'}%, '0019_shev', '0100_kase', '0109zvma'}
+ Subjects = {'0003_pran'}%, '0019_shev', '0100_kase', '0109zvma'}
  % Subjects = {'0109zvma'}; %, '0100_kase', '0109zvma'}
- % Subjects = {'0003_pran', '0019_shev', '0100_kase', '0109zvma'};
+ % Subjects = {'0003_pran', '0019_shev', '0100_kase', '0109_zvma'};
+ % Subjects = {'0019_shev', '0100_kase', '0109_zvma'};
+ % Subjects = {'0030_koal', '0108_bami', '0062_peek'};
+ % Subjects = {'0109_zvma', '0030_koal', '0108_bami', '0062_peek'};
  % Subjects = {'0100_kase'}; %, '0109zvma'}
- Subjects = {'0019_shev'}; %, '0109zvma'}
+ % Subjects = {'0019_shev'}; %, '0109zvma'}
 
 nSubjects = length(Subjects);
 SubjBootstr = cell(nSubjects, 1);
-Condition = 2; % 1, 3
+% Condition = 2; 
+Condition = 2;
+
+if bInducedOnly
+	IndStr = '_induced_';
+else
+	IndStr = '_total_';
+end
 
 for iSubj = 1:nSubjects
-	Band = [12,16];
-	for i = 1:14	
+	Band = [2,6];
+	for i = 1:24	
 		[ConData, G] = PrepRealData(Subjects{iSubj}, Band, bInducedOnly);
 		SubjBootstr{iSubj}.G = G;
 		% InducedScale = 0.35;
@@ -44,25 +56,37 @@ for iSubj = 1:nSubjects
 		% Ctx = sim.Ctx;
 		% [BootsIND, maxes] = bootstrap(Trials, sim.GLR, 100);
 		[SubjBootstr{iSubj}.BootsIND, SubjBootstr{iSubj}.maxes] = ...
-		 bootstrap(SubjBootstr{iSubj}.Trials, G, 100, Rnk, threshold, CTpart);
+		 bootstrap(SubjBootstr{iSubj}.Trials, G, 100, Rnk, threshold, CTpart, bInducedOnly);
 
 		% Rnk = 350;
 		% [IND, Cp, Upwr, Cs] = T_PSIICOS(ConData{Condition}.CrossSpecTime, G, 0.9, Rnk, 3);
 		if strcmp(Subjects{iSubj}, '0003_pran')
 			SubjBootstr{iSubj}.anatPath =...
 			 strcat('/home/dmalt/PSIICOS_osadtchii/anat/', Subjects{iSubj},'/tess_cortex_concat_2000V.mat');
+			 SubjBootstr{iSubj}.anatPathHR =...
+			  strcat('/home/dmalt/PSIICOS_osadtchii/anat/', Subjects{iSubj},'/tess_cortex_concat.mat');
+
 		elseif strcmp(Subjects{iSubj},'0108_bami')
 			SubjBootstr{iSubj}.anatPath =...
 			 strcat('/home/dmalt/PSIICOS_osadtchii/anat/', Subjects{iSubj},'/tess_cortex_pial_low_2003V.mat');
+			 SubjBootstr{iSubj}.anatPathHR =...
+			  strcat('/home/dmalt/PSIICOS_osadtchii/anat/', Subjects{iSubj},'/tess_cortex_pial_low.mat');
 		else
 			SubjBootstr{iSubj}.anatPath =...
 			 strcat('/home/dmalt/PSIICOS_osadtchii/anat/', Subjects{iSubj},'/tess_cortex_pial_low_2000V.mat');
+			 SubjBootstr{iSubj}.anatPathHR =...
+			  strcat('/home/dmalt/PSIICOS_osadtchii/anat/', Subjects{iSubj},'/tess_cortex_pial_low.mat');
+
 		end
 		SubjBootstr{iSubj}.Ctx = load(SubjBootstr{iSubj}.anatPath);
+		SubjBootstr{iSubj}.CtxHR = load(SubjBootstr{iSubj}.anatPathHR);
+
 		%---------- SAVE RESULTS --------- %
 		strBand1 = num2str(Band(1));
 		strBand2 = num2str(Band(2));
-		folder_name = ['./', Subjects{iSubj}, '_', CTpart, '_cond_', num2str(Condition)];
+		base_dir = '~/ps/Data/';
+		folder_name = [base_dir, Subjects{iSubj}, '/', Subjects{iSubj}, '_', ...
+					   CTpart, IndStr, 'cond_', num2str(Condition), '_400ms'];
 		if ~exist(folder_name, 'file')
 			mkdir(folder_name);
 		end
