@@ -1,4 +1,4 @@
-function [BootsIND, maxes] = bootstrap(Trials, G, nResamp, Rnk, threshold, CTpart)
+function [BootsIND, maxes] = bootstrap(Trials, G, nResamp, Rnk, threshold, CTpart, bInducedOnly)
 % -------------------------------------------------------
 % bootstrap: make bootstrapped cross-spectra, apply
 % T_PSIICOS for each and then apply pairwise clustering 
@@ -22,7 +22,7 @@ for it=1:nResamp
         BootsTrials(:,:,iTrial) =  Trials(:,:,resample(iTrial));
     end
 
-    CT = CrossSpectralTimeseries(BootsTrials);
+    CT = CrossSpectralTimeseries(BootsTrials, bInducedOnly);
     if strcmp(CTpart, 'real')
         BootsCT = real(CT);
     elseif strcmp(CTpart, 'imag')
