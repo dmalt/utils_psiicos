@@ -19,7 +19,7 @@ function [clusters] = PairwiseClust(BootsIND, R, Dpair, clustSize)
 % ________________________________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
 
-
+    clusters = {};
     DipInd = [];
     for i = 1:size(BootsIND,1)
     	DipInd = [DipInd; BootsIND{i}];
