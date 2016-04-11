@@ -1,7 +1,8 @@
 
 function [G2dU, CrossSpecTime, UP, Trials] = GenerData(PhaseLag, InducedScale, EvokedScale) 
-%% Generates forward model and cross-spectrum on sensors for simulations
-%
+% --------------------------------------------------------------------------
+% Generates forward model and cross-spectrum on sensors for simulations
+% --------------------------------------------------------------------------
 % FORMAT:
 %   [G2dU, CrossSpecTime] = GenerData(PhaseLag, InducedScale, EvokedScale)
 % INPUTS:
@@ -9,10 +10,17 @@ function [G2dU, CrossSpecTime, UP, Trials] = GenerData(PhaseLag, InducedScale, E
 %   InducedScale      - coefficient for induced activity (default = 0.35)
 %   EvokedScale       - coefficient for evoked activity (default = 0)
 % OUTPUTS:
-%   G2dU              - {Nsources x Nsensors} forward model matrix
-%   CrossSpecTime     - {Nsensors ^ 2 x Time} cross-spectrum on sensors
+%   G2dU              - {nSources x nSensors_reduced} forward model matrix 
+%                       with PCA-reduced number of sensors
+%   CrossSpecTime     - {nSensors ^ 2 x nTimes} matrix of cross-spectrum on sensors
+%   UP                - {nSensors_reduced x nSensors} matrix of a linear 
+%                       transformation to PCA-reduced sensor space. To go back
+%                       to full-sensors space type G = UP' * G2dU
+%   Trials            - {nSensors_reduced x nTimes x nTrials} matrix of trials
+%                       timeseries
 % ______________________________________________________________________________
-% Dmitrii Altukhov, dm.altukhov@ya.ru
+% Alex Ossadtchi, ossadtchi@gmail; Dmitrii Altukhov, dm.altukhov@ya.ru
+
 
 if nargin == 2
     EvokedScale = 0.0 / 2.5;
