@@ -1,64 +1,81 @@
-function [ A, key,Coh ] = CrossSpectralTimeseries(X,bInducedOnly)
+function [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly)
+% -------------------------------------------------------------------
+% Compute cross-spectrum timeseries. 
+% If isInducedOnly = true, compute induced activity; otherwise - total
+% --------------------------------------------------------------------
+% FORMAT:
+%   [A, key] = CrossSpectralTimeseries(trials, isInducedOnly) 
+% INPUTS:
+%   trials        - {nChannels x nTimes x nTrials} matrix
+%                   of trials on sensors
+%   isInducedOnly  - boolean flag. If true, substract ERP
+%                   from each trial before going to 
+%                   frequency domain; default = false
+% OUTPUTS:
+%   A             - {nChannels ^ 2 x nTimes} matrix of 
+%                   cross-spectrum timeseries on sensors
+%   key           - 
+% ________________________________________________________________________
+% Alex Ossadtchii ossadtchi@gmail.com, Dmitrii Altukhov dm.altukhov@ya.ru
+  Trials = trials.data;
+  if(nargin == 1)
+      isInducedOnly = false;
+  end;
 
-if(nargin==1)
-    bInducedOnly = false;
-end;
+  [nCh, nSamp, nTrials] = size(Trials);
 
-[Nch, Ns  Ntr] = size(X);
+  % --- compute and substract evoked response --- %
+  if(isInducedOnly)
+      ERP = mean(Trials, 3);
+      Trials = bsxfun(@minus, Trials, ERP);
+  end;
+  % ----------------------------------------------%
 
-if(bInducedOnly)
-    ERP = mean(X,3);
-    X = X-bsxfun(@minus, X,ERP);
-end;
-    
-Xfft = fft(X,[],2);
-h  = zeros(1,Ns); % nx1 for nonempty. 0x0 for empty.
-if Ns > 0 && 2*fix(Ns/2) == Ns
-  % even and nonempty
-  h([1 Ns/2+1]) = 1;
-  h(2:Ns/2) = 2;
-elseif Ns>0
-  % odd and nonempty
-  h(1) = 1;
-  h(2:(Ns+1)/2) = 2;
-end
-HF = repmat(h,[Nch,1,Ntr]);
-XH = ifft(Xfft.*HF,[],2);
-Xph = XH; %./(abs(XH)+0.0001*mean(abs(XH(:))));
-
-clear XH;
-A = zeros(Nch*(Nch-1)/2,Ns);
-Nch_2 = Nch/2;
-
-
-XphConj = conj(Xph);
-Ntr = size(Xph,3);
-range = 1:Nch-1;
-trs = 1:Ntr;
-k = 1;
-KEY = reshape(1:Nch*Nch,Nch,Nch);
-% we will take the diagonal as well
-A = zeros(Nch*(Nch+1)/2,Ns);
-fprintf('Calculating vectorised form of the cross spectral matrix upper triangle ... \n');
-fprintf('Reference sensor (max %d): ',Nch); 
-Coh = 1;
-
-for i=1:Nch
-    mn = (mean( bsxfun(@times,(Xph(1:Nch,:,:)),XphConj(i,:,:)),3));
-    A(k:k+Nch-1,:) = mn;
-    key(k:k+Nch-1) = KEY(1:Nch,i);
-    k = k+Nch;
-    if i>1
-      for j=0:log10(i-1)
-          fprintf('\b'); % delete previous counter display
-      end
-     end
-     fprintf('%d', i);
-end;
-fprintf('\n');
+  % ------------------- hilbert-transform trials ----------------- %
+  Xfft = fft(Trials, [], 2);
+  h  = zeros(1, nSamp); % nx1 for nonempty. 0x0 for empty.
+  if nSamp > 0 && 2 * fix(nSamp / 2) == nSamp
+    % even and nonempty
+    h([1 nSamp / 2 + 1]) = 1;
+    h(2:nSamp / 2) = 2;
+  elseif nSamp > 0
+    % odd and nonempty
+    h(1) = 1;
+    h(2:(nSamp + 1) / 2) = 2;
+  end
+  HF = repmat(h, [nCh, 1, nTrials]);
+  XH = ifft(Xfft .* HF, [], 2);
+  Xph = XH; %./(abs(XH)+0.0001*mean(abs(XH(:))));
+  % -------------------------------------------------------------- %
+  clear XH;
+  data = zeros(nCh * (nCh - 1) / 2, nSamp);
 
 
+  XphConj = conj(Xph);
+  k = 1;
+  KEY = reshape(1:nCh * nCh, nCh, nCh);
+  % we will take the diagonal as well
+  data = zeros(nCh * (nCh + 1) / 2, nSamp);
+  fprintf('Calculating vectorised form of the cross spectral matrix upper triangle ... \n');
+  fprintf('Reference sensor (max %d): ', nCh); 
 
-
-
-
+  for i = 1:nCh
+      mn = (mean( bsxfun(@times, (Xph(1:nCh,:,:)), XphConj(i,:,:)), 3));
+      data(k:k + nCh - 1,:) = mn;
+      key(k:k + nCh - 1) = KEY(1:nCh, i);
+      k = k + nCh;
+      % -------- print counter --------- %
+      if i > 1
+        for j=0:log10(i - 1)
+            fprintf('\b'); 
+        end
+       end
+       fprintf('%d', i);
+      % -------------------------------- %
+  end;
+  CT.data = data;
+  CT.subjID = trials.subjID;
+  CT.sFreq = trials.sFreq;
+  CT.freqBand = trials.freqBand;
+  CT.timeRange = trials.timeRange;
+  fprintf('\n');
