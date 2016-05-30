@@ -1,5 +1,4 @@
-
-function [ConData, G2dLRU] = PrepRealData(Subj, Band, bInducedOnly)
+function [ConData, G2dLRU] = PrepRealData(Subj, Band, bInducedOnly, TimeRange)
  % ----------------------------------------------------------
  % PrepRealData: Calculate band-pass filtered cross-spectrum
  % and reduced forward model matrices for subject Subj
@@ -17,10 +16,12 @@ function [ConData, G2dLRU] = PrepRealData(Subj, Band, bInducedOnly)
 % FolderName = '~/fif_matlab/Brainstorm_db/PSIICOS/data/';
 FolderName = '~/PSIICOS_osadtchii/data/';
 ChUsed = 1:306; ChUsed(3:3:end) = [];
-% TimeRange = [0, 0.700];
-TimeRange = [0.4, 0.700];
+if nargin < 4
+    TimeRange = [0, 0.700];
+end
+% TimeRange = [0.4, 0.700];
 % Subject = '0003_pran/brainstormsubject.mat';
-Subject = strcat(Subj,'/brainstormsubject.mat');
+Subject = strcat(Subj, '/brainstormsubject.mat');
 
 Conditions = {'1','2','4'}; % '2','4'};
 % Band = [15 30];
@@ -28,8 +29,8 @@ Conditions = {'1','2','4'}; % '2','4'};
 % Band = [8 12];
 % Band = [4,8];
 Fsamp = 500;
-[b,a] = butter(5,Band/(Fsamp/2));
-Protocol = bst_get('ProtocolStudies','PSIICOS');
+[b,a] = butter(5, Band / (Fsamp / 2));
+Protocol = bst_get('ProtocolStudies', 'PSIICOS');
 clear ConData;
 fprintf('Loading real data from BST database.. \n');
 %% Load data and compute cross-spectral matrix 
@@ -37,7 +38,7 @@ fprintf('Loading real data from BST database.. \n');
 clear ConData;
 for c = 1:length(Conditions)
     for s = 1:length(Protocol.Study)
-        if(strcmp(Protocol.Study(s).Name,Conditions{c}) && strcmp(Protocol.Study(s).BrainStormSubject,Subject))
+        if(strcmp(Protocol.Study(s).Name,Conditions{c}) && strcmp(Protocol.Study(s).BrainStormSubject, Subject))
             fprintf('Found study condition %s %s\n ', Conditions{c},Protocol.Study(s).BrainStormSubject); 
             for hm = 1:length(Protocol.Study(s).HeadModel)
                 if(strcmp(Protocol.Study(s).HeadModel(hm).Comment,'Overlapping spheres_HR'))
@@ -56,24 +57,24 @@ run('/home/dmalt/fif_matlab/brainstorm3/brainstorm(''stop'')');
 % the forward model is the same for both conditions
 % so pick the first oneCOnData
 GainSVDTh = 0.01;
-NsitesLR = size(ConData{1}.HM_LR.GridLoc,1);
+NsitesLR = size(ConData{1}.HM_LR.GridLoc, 1);
 Nch    = length(ChUsed);
-G2dLR = zeros(Nch,NsitesLR*2);
-G2d0LR = zeros(Nch,NsitesLR*2);
+G2dLR = zeros(Nch,NsitesLR * 2);
+G2d0LR = zeros(Nch,NsitesLR * 2);
 % reduce tangent space
 range = 1:2;
 for i=1:NsitesLR
-    g = [ConData{1}.HM_LR.Gain(ChUsed,1+3*(i-1)) ...
-         ConData{1}.HM_LR.Gain(ChUsed,2+3*(i-1)) ...
-         ConData{1}.HM_LR.Gain(ChUsed,3+3*(i-1))];
-    [u sv v] = svd(g);
-    gt = g*v(:,1:2);
-    G2dLR(:,range) = gt*diag(1./sqrt(sum(gt.^2,1)));
+    g = [ConData{1}.HM_LR.Gain(ChUsed,1 + 3 * (i - 1)) ...
+         ConData{1}.HM_LR.Gain(ChUsed,2 + 3 * (i - 1)) ...
+         ConData{1}.HM_LR.Gain(ChUsed,3 + 3 * (i - 1))];
+    [u,sv,v] = svd(g);
+    gt = g * v(:,1:2);
+    G2dLR(:,range) = gt * diag(1 ./ sqrt(sum(gt .^ 2, 1)));
     G2d0LR(:,range) = gt;
     range = range + 2;
 end;
 %reduce sensor space
-[ug sg vg] = spm_svd(G2dLR*G2dLR',GainSVDTh);
+[ug,sg,vg] = spm_svd(G2dLR*G2dLR',GainSVDTh);
 UP = ug';
 G2dLRU = UP*G2dLR;
 G2d0LRU = UP*G2d0LR;
@@ -81,22 +82,22 @@ G2d0LRU = UP*G2d0LR;
 % do the same for HR
 NsitesHR = size(ConData{1}.HM_HR.GridLoc,1);
 Nch    = length(ChUsed);
-G2dHR = zeros(Nch,NsitesHR*2);
+G2dHR = zeros(Nch,NsitesHR * 2);
 % reduce tangent space
 range = 1:2;
 for i=1:NsitesHR
-    g = [ConData{1}.HM_HR.Gain(ChUsed,1+3*(i-1)) ...
-         ConData{1}.HM_HR.Gain(ChUsed,2+3*(i-1)) ...
-         ConData{1}.HM_HR.Gain(ChUsed,3+3*(i-1))];
-    [u sv v] = svd(g);
-    gt = g*v(:,1:2);
-    G2dHR(:,range) = gt*diag(1./sqrt(sum(gt.^2,1)));
+    g = [ConData{1}.HM_HR.Gain(ChUsed,1 + 3 * (i - 1)) ...
+         ConData{1}.HM_HR.Gain(ChUsed,2 + 3 * (i - 1)) ...
+         ConData{1}.HM_HR.Gain(ChUsed,3 + 3 * (i - 1))];
+    [u,sv,v] = svd(g);
+    gt = g * v(:,1:2);
+    G2dHR(:,range) = gt * diag(1 ./ sqrt(sum(gt .^ 2, 1)));
     range = range + 2;
 end;
 %reduce sensor space
 G2dHRU = UP*G2dHR;
 % now load data
-Nch = size(UP,1);
+Nch = size(UP, 1);
 ConditionsFound = 0;
 for c = 1:length(Conditions)
     for s = 1:length(Protocol.Study)
@@ -126,14 +127,14 @@ for c = 1:length(Conditions)
         end;
     end;
     
-    if(length(ConData)>=c)
-        P = sum(sum(abs(ConData{c}.Trials),1),2);
+    if(length(ConData) >= c)
+        P = sum(sum(abs(ConData{c}.Trials), 1), 2);
         Pm = median(squeeze(P));
-        ind = find(P>2*Pm | P<0.5*Pm);
+        ind = find(P > 2 * Pm | P < 0.5 * Pm);
         REJ{c} = ind;
         ConData{c}.Trials(:,:,ind) = [];
         fprintf('Computing cross-spectral matrix ....' ); 
-        ConData{c}.CrossSpec = CrossSpectralMatrix(ConData{c}.Trials,Band,500);
+        ConData{c}.CrossSpec = CrossSpectralMatrix(ConData{c}.Trials, Band, 500);
         ConData{c}.CrossSpecTime = CrossSpectralTimeseries( ConData{c}.Trials, bInducedOnly);
         %ConData{c}.CrossSpec = reshape(mean(ConData{c}.CrossSpecTime,2),Nch,Nch);
         fprintf('-> Done\n' ); 

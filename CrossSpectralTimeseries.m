@@ -4,7 +4,7 @@ function [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly)
 % If isInducedOnly = true, compute induced activity; otherwise - total
 % --------------------------------------------------------------------
 % FORMAT:
-%   [A, key] = CrossSpectralTimeseries(trials, isInducedOnly) 
+%   [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly) 
 % INPUTS:
 %   trials        - {nChannels x nTimes x nTrials} matrix
 %                   of trials on sensors
@@ -12,18 +12,17 @@ function [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly)
 %                   from each trial before going to 
 %                   frequency domain; default = false
 % OUTPUTS:
-%   A             - {nChannels ^ 2 x nTimes} matrix of 
+%   CT             - {nChannels ^ 2 x nTimes} matrix of 
 %                   cross-spectrum timeseries on sensors
 %   key           - 
 % ________________________________________________________________________
 % Alex Ossadtchii ossadtchi@gmail.com, Dmitrii Altukhov dm.altukhov@ya.ru
-  Trials = trials.data;
+  Trials = trials;
   if(nargin == 1)
       isInducedOnly = false;
   end;
 
   [nCh, nSamp, nTrials] = size(Trials);
-
   % --- compute and substract evoked response --- %
   if(isInducedOnly)
       ERP = mean(Trials, 3);
@@ -48,15 +47,14 @@ function [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly)
   Xph = XH; %./(abs(XH)+0.0001*mean(abs(XH(:))));
   % -------------------------------------------------------------- %
   clear XH;
-  data = zeros(nCh * (nCh - 1) / 2, nSamp);
 
 
   XphConj = conj(Xph);
   k = 1;
   KEY = reshape(1:nCh * nCh, nCh, nCh);
   % we will take the diagonal as well
-  data = zeros(nCh * (nCh + 1) / 2, nSamp);
-  fprintf('Calculating vectorised form of the cross spectral matrix upper triangle ... \n');
+  data = zeros(nCh ^ 2, nSamp);
+  fprintf('Calculating vectorised form of the cross spectral matrix... \n');
   fprintf('Reference sensor (max %d): ', nCh); 
 
   for i = 1:nCh
@@ -73,9 +71,5 @@ function [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly)
        fprintf('%d', i);
       % -------------------------------- %
   end;
-  CT.data = data;
-  CT.subjID = trials.subjID;
-  CT.sFreq = trials.sFreq;
-  CT.freqBand = trials.freqBand;
-  CT.timeRange = trials.timeRange;
+  CT = data;
   fprintf('\n');

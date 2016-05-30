@@ -21,8 +21,8 @@ function [clusters] = PairwiseClust(connections, Dpair, clustSize)
 % Dmitrii Altukhov, dm.altukhov@ya.ru
     import(connections.GetImportStr());
     DipInd = connections.ConInds;
-    % disp(DipInd)
-    R = connections.HeadModel.GridLoc;
+    disp(DipInd)
+    R = connections.GridXYZ;
 
     clusters = {};
 
@@ -31,9 +31,10 @@ function [clusters] = PairwiseClust(connections, Dpair, clustSize)
     adjMat = zeros(Npairs, Npairs);
     for p1 = 1:Npairs
         for p2 = p1:Npairs
-            if (norm(R(DipInd(p1, 1),:) - R(DipInd(p2,1),:)) < Dpair ...
-    && norm(R(DipInd(p1,2),:) - R(DipInd(p2,2),:)) < Dpair) || (norm(R(DipInd(p1, 1),:) - R(DipInd(p2,2),:)) < Dpair ...
-    && norm(R(DipInd(p1,2),:) - R(DipInd(p2,1),:)) < Dpair)
+            if norm(R(DipInd(p1, 1),:) - R(DipInd(p2,1),:)) < Dpair ...
+    && norm(R(DipInd(p1,2),:) - R(DipInd(p2,2),:)) < Dpair || ...
+               norm(R(DipInd(p1, 1),:) - R(DipInd(p2,2),:)) < Dpair ...
+    && norm(R(DipInd(p1,2),:) - R(DipInd(p2,1),:))
                 adjMat(p1,p2) = 1;
                 adjMat(p2,p1) = 1;
             end
@@ -46,12 +47,12 @@ function [clusters] = PairwiseClust(connections, Dpair, clustSize)
     % clusters = cell(1, 20);
     restPairs = DipInd;
     while(~isempty(restPairs))
-        if length(nonzeros(bfs(adjMat,i) >= 0)) >= clustSize;
+        if length(nonzeros(bfs(adjMat,i) > 0)) > clustSize;
             % restPairs(i,:)
             clustNum = clustNum + 1;
             clustInds = restPairs(bfs(adjMat,i) > -1,:);
             % drawset(clust, R, cols(clustNum,:));
-            clust = sCluster(clustInds);
+            clust = sCluster(clustInds, R);
             clusters{clustNum} = clust;
             restPairs = restPairs(bfs(adjMat, i) == -1,:);
             adjMat = adjMat(bfs(adjMat, i) == -1, bfs(adjMat, i) == -1);

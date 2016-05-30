@@ -1,13 +1,13 @@
-function [pathCtx, pathCtxHR] = GetCtxPaths(subjName, BST_path)
+function [pathCtx, pathCtxHR] = GetCtxPaths(subjName, Protocol_path)
 % -------------------------------------------------------
 % Get paths to triangulated cortex surfaces from brainstorm
 % protocol
 % -------------------------------------------------------
 % FORMAT:
-%   [pathCtx, pathCtxHR] = GetCtxPaths(subjName, BST_path) 
+%   [pathCtx, pathCtxHR] = GetCtxPaths(subjName, Protocol_path) 
 % INPUTS:
 %   subjName        - string; name of the subject
-%   BST_path        - string; absolute path to 
+%   Protocol_path        - string; absolute path to 
 %                     brainstorm protocol
 % 
 % OUTPUTS:
@@ -20,7 +20,7 @@ function [pathCtx, pathCtxHR] = GetCtxPaths(subjName, BST_path)
 
 	% Define test arguments
 	if nargin < 2
-		BST_path = '/home/dmalt/PSIICOS_osadtchii';
+		Protocol_path = '/home/dmalt/PSIICOS_osadtchii';
 	end
 	if nargin < 1
 		subjName = '0003_pran';
@@ -29,7 +29,8 @@ function [pathCtx, pathCtxHR] = GetCtxPaths(subjName, BST_path)
 
 	pathCtx  = [];
 	pathCtxHR = [];
-	anatPath = [BST_path, '/anat/', subjName];
+	
+	anatPath = [Protocol_path, '/anat/', subjName];
 	if exist(anatPath)
 		files = dir(anatPath);
 	else
@@ -52,12 +53,12 @@ function [pathCtx, pathCtxHR] = GetCtxPaths(subjName, BST_path)
 		end
 	end
 	if ~isFoundHR
-		fprintf('Failed to find HR cortex for subject %s in %s' , subjName, BST_path)	
+		fprintf('Failed to find HR cortex for subject %s in %s' , subjName, Protocol_path)	
 		fprintf('\n');
 	end
 
 	if ~isFoundLR
-		fprintf('Failed to find HR cortex for subject %s in %s' , subjName, BST_path)
+		fprintf('Failed to find HR cortex for subject %s in %s' , subjName, Protocol_path)
 		fprintf('\n');
 	end
 	return;

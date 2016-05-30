@@ -1,15 +1,18 @@
 classdef Connections < handle
 	properties (Access = private)
-		BST_path % path to brainstorm protocol
-		CtxHR    % high res. cortex surface 
-		Ctx      % low res. cortex surface
+		protocolPath 	 % path to brainstorm protocol
+		CtxHR         	 % high res. cortex surface 
+		Ctx           	 % low res. cortex surface
+		CT               % cross-spectrum timeseries
+		headModel 		 % low res. head model struct from BST
 	end
 	properties
-		headModel 		 
-		subjId
-		conInds
-		% Clusters % Will have con indices and center index
-		conData % Conditions and trials
+		subjId			 % brainstorm subj. name
+		condName		 % 
+		freqBand
+		timeRange
+		conInds			 % 
+		% Clusters 		 % will have con indices and center index
 	end 
 
 	methods
@@ -21,21 +24,24 @@ classdef Connections < handle
 
 		% PairwiseClust(obj, distThresh, clustSizeThresh)
 
-		% --- constructor --- %
-		function obj = Connections(subjId, conInds, BST_path)
-			if nargin < 3
-				obj.BST_path = '/home/dmalt/PSIICOS_osadtchii';
-			elseif nargin >= 3
-				obj.BST_path = BST_path;
+		% ----------------------- constructor ---------------------- %
+		function obj = Connections(subjId, conInds, freqBand,...
+		                           timeRange, CT, protocolPath)
+			if nargin < 6
+				obj.protocolPath = '/home/dmalt/PSIICOS_osadtchii';
+			elseif nargin >= 6
+				obj.protocolPath = protocolPath;
 			end
 			obj.subjId = subjId;
-			[pathCtx, pathCtxHR] = GetCtxPaths(subjId, obj.BST_path);
-			obj.Ctx = load(pathCtx);
-			obj.CtxHR = load(pathCtxHR);
-			obj.conInds = conInds;
-			obj.headModel = GetHeadModel(subjId, obj.BST_path);
-			% obj.Clusters = 
+			[pathCtx, pathCtxHR] = GetCtxPaths(subjId, obj.protocolPath);
+			obj.Ctx       = load(pathCtx);
+			obj.CtxHR     = load(pathCtxHR);
+			obj.conInds   = conInds;
+			obj.freqBand  = freqBand;
+			obj.timeRange = timeRange;
+			obj.headModel = LoadHeadModel(subjId, obj.protocolPath);
+			% obj.CT 		  = CT;
 		end
-		% ------------------- % 
+		% --------------------------------------------------------- % 
 	end
 end

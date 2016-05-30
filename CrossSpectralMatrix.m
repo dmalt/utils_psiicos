@@ -6,18 +6,18 @@ T = Fs/Ns;
 
 f = [0:1:Ns-1]*T;
 
-ind_band = find(f>=band(1) & f<=band(2));
+ind_band = find(f >= band(1) & f <= band(2));
 
 Xfft = fft(X,[],2);
 
 Xfft_band = Xfft(:,ind_band,:);
 
 
-if( 2*fix(Ntr/2) ==Ntr)
+if( 2 * fix(Ntr / 2) == Ntr)
     trs_odd = 1:2:Ntr;
     trs_even = 2:2:Ntr;
 else
-    trs_odd = 1:2:Ntr-1;
+    trs_odd = 1:2:Ntr - 1;
     trs_even = 2:2:Ntr;
 end
 

@@ -37,7 +37,7 @@ function trials = LoadTrials(subjID, condition, freqBand, timeRange, protocolPat
     [b,a] = butter(5, freqBand / (sFreq / 2));    % define filter
 
     fprintf('Loading data from BST database.. \n');
-    G = GetHeadModel(subjID, protocolPath);
+    G = LoadHeadModel(subjID, protocolPath);
     UP = G.UP;
     nCh = size(UP, 1);
 
