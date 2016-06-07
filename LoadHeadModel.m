@@ -1,10 +1,10 @@
-function G = LoadHeadModel(subjID, protocolPath, isLR, GainSVDTh)
+function HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh)
 % -------------------------------------------------------
 % Load brainstorm and get grid locations matrix for 
 % subject subjID 
 % -------------------------------------------------------
 % FORMAT:
-%   G = LoadHeadModel(subjID, protocolPath, isLR, GainSVDTh) 
+%   HM_ps = LoadHeadModel(subjID, protocolPath, isLR, GainSVDTh) 
 % INPUTS:
 %   subjID        - string; BST-imported subject name
 %   protocolPath  - string; absolute path to BST protocol
@@ -13,59 +13,73 @@ function G = LoadHeadModel(subjID, protocolPath, isLR, GainSVDTh)
 %   GainSVDTh     - float; PVU threshold for PCA-driven 
 %                   sensor space reduction (default = 0.01)
 % OUTPUTS:
-%   G             - structure; forward model operator 
+%   HM_ps             - structure; forward model operator 
 %                   for reduced sensor space and additional
 %                   info.
 % -----------
-%   G.data        - {nSenReduced x nSrc * 2} matrix of 
+%   HM_ps.gain        - {nSenReduced x nSrc * 2} matrix of 
 %                   topographies for reduced sensor space
-%   G.UP          - {nSenReduced x nGradiometers} matrix
+%   HM_ps.UP          - {nSenReduced x nGradiometers} matrix
 %                   of transformation between reduced and
 %                   normal sensors
-%   G.subjID      - string; BST-imported subject name
-%   G.path        - string; path to  
-%   G.svdThresh   - float; PVU threshold for PCA-driven 
+%   HM_ps.subjID      - string; BST-imported subject name
+%   HM_ps.path        - string; path to  
+%   HM_ps.svdThresh   - float; PVU threshold for PCA-driven 
 %                   sensor space reduction
 % ________________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
-    if nargin < 4
+    if nargin < 5
         GainSVDTh = 0.01;
     end
-    if nargin < 3 
+    if nargin < 4 
         isLR = true;
     end
-    if nargin < 2
+    if nargin < 3
         protocolPath = '~/PSIICOS_osadtchii';
     end
 
     % -------- load BST head model ------------ %
     hm_path = [protocolPath, '/data/', subjID];  % path to subject folder in protocol
-    hmFolderName = dir([hm_path , '/@raw*/']);   % wildcard
-    hm_path = [hm_path, '/', hmFolderName.name]; % path to HM folder
 
-    hmFiles = dir([hm_path, '/headmodel*.mat']); % available HM files
+    if strcmp(condName, 'raw')
+        hmFolderName = dir([hm_path , '/@raw*/']);   % wildcard
+        hm_path = [hm_path, '/', hmFolderName.name]; % path to HM_ps folder
+    elseif ischar(condName)
+        hm_path = [hm_path , '/', condName, '/'];
+    end 
+    
 
-    if isLR
-        [~, key] = min([hmFiles.bytes]); % find HM with smallest size to get LR
-    else
-        [~, key] = max([hmFiles.bytes]); % find HM with biggest size to get HR
+    hmFiles = dir([hm_path, '/headmodel*.mat']); % available HM_ps files
+
+    if isempty(hmFiles)
+        ME = MException('LoadError:noFile', ...
+        'No head model files');
+        throw(ME);
     end
 
-    hm_path = [hm_path, '/', hmFiles(key).name]; % final path to HM
-    HM = load(hm_path);
+    if isLR
+        [~, key] = min([hmFiles.bytes]); % find HM_ps with smallest size to get LR
+    else
+        [~, key] = max([hmFiles.bytes]); % find HM_ps with biggest size to get HR
+    end
+
+    hm_path = [hm_path, '/', hmFiles(key).name]; % final path to HM_ps
+    
+    HM_bst = load(hm_path);
+
     % ----------------------------------------- %    
 
     chUsed = 1:306; chUsed(3:3:end) = []; % use only gradiometers
-    nSites = size(HM.GridLoc, 1);
+    nSites = size(HM_bst.GridLoc, 1);
     nCh    = length(chUsed);
     G2dLR  = zeros(nCh, nSites * 2);
 
     % ------------ reduce tangent space ------------- %
     range = 1:2;
     for i = 1:nSites
-        gainOneSrc = [HM.Gain(chUsed, 1 + 3 * (i - 1)) ...
-             HM.Gain(chUsed, 2 + 3 * (i - 1)) ...
-             HM.Gain(chUsed, 3 + 3 * (i - 1))];
+        gainOneSrc = [HM_bst.Gain(chUsed, 1 + 3 * (i - 1)) ...
+             HM_bst.Gain(chUsed, 2 + 3 * (i - 1)) ...
+             HM_bst.Gain(chUsed, 3 + 3 * (i - 1))];
         [u, ~, ~] = svd(gainOneSrc);
         gt = u(:, 1:2);
         G2dLR(:, range) = gt;
@@ -80,9 +94,10 @@ function G = LoadHeadModel(subjID, protocolPath, isLR, GainSVDTh)
     % ---------------------------------------------------- %
 
     % -------- produce output ------------ %
-    G.subjID = subjID;
-    G.data = G2dLRU;
-    G.path = hm_path;
-    G.svdThresh = GainSVDTh;
-    G.UP = UP;
+    HM_ps.subjID = subjID;
+    HM_ps.gain = G2dLRU;
+    HM_ps.path = hm_path;
+    HM_ps.svdThresh = GainSVDTh;
+    HM_ps.UP = UP;
+    HM_ps.GridLoc = HM_bst.GridLoc;
     % ------------------------------------ %
