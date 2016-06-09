@@ -1,18 +1,33 @@
-protocolName = 'PSIICOS';
-condition = '2';
-subjID = '0003_pran';
-freqBand = [19,23];
-timeRange = [0.4, 0.7];
-protocolPath = '~/PSIICOS_osadtchii';
-protocolName = 'PSIICOS';
+classdef test_LoadTrials < matlab.unittest.TestCase
+	% properties
+	% 	protocolName = 'PSIICOS';
+	% 	condition = '2';
+	% 	subjID = '0003_pran';
+	% 	freqBand = [19,23];
+	% 	timeRange = [0.4, 0.7];
+	% 	protocolPath = '~/PSIICOS_osadtchii';
+	% 	protocolName = 'PSIICOS';
+	% end
+	methods(Test)
+		function test_LoadTrials_fails_if_condition_not_string(testCase)
+			% NEED TO LEARN HOW TO TEST FOR FAILURE
+			% condition = 1;
+			% subjID = '0003_pran';
+			% freqBand = [19,23];
+			% timeRange = [0.4, 0.7];
+			% protocolPath = '~/PSIICOS_osadtchii';
+			% testCase.assertFail(LoadTrials(subjID, condition, freqBand, timeRange, protocolPath))
+		end
 
-tic
-trials = LoadTrials(subjID, condition, freqBand, timeRange, protocolPath);
-toc
-tic
-[CT, key] = CrossSpectralTimeseries(trials, true);
-toc
-
-tic
-G = LoadHeadModel(subjID);
-toc
+		function test_it_runs(testCase)
+			protocolName = 'PSIICOS';
+			condition = '2';
+			subjID = '0003_pran';
+			freqBand = [19,23];
+			timeRange = [0.4, 0.7];
+			protocolPath = '~/PSIICOS_osadtchii';
+			protocolName = 'PSIICOS';
+			LoadTrials(subjID, condition, freqBand, timeRange, protocolPath)
+		end
+	end
+end
