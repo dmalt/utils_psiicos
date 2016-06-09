@@ -33,11 +33,17 @@ function trials = LoadTrials(subjID, condition, freqBand, timeRange, protocolPat
     
     % ---------------------------------- %
 
+    if ~ischar(condition)
+        ME = MException('CallError:wrongType', ...
+        'Arg "condition" should have type "string"');
+        throw(ME);
+    end
+
     sFreq = 500;                                  % can I figure this out from the data?
     [b,a] = butter(5, freqBand / (sFreq / 2));    % define filter
 
     fprintf('Loading data from BST database.. \n');
-    G = LoadHeadModel(subjID, protocolPath);
+    G = LoadHeadModel(subjID, condition, protocolPath);
     UP = G.UP;
     nCh = size(UP, 1);
 
@@ -74,4 +80,5 @@ function trials = LoadTrials(subjID, condition, freqBand, timeRange, protocolPat
     trials.subjID = subjID;
     trials.freqBand = freqBand;
     trials.timeRange = timeRange;           
+    
     % ------------------------------------------------------------------------------ %

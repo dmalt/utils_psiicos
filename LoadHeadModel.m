@@ -41,6 +41,10 @@ function HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh)
     % -------- load BST head model ------------ %
     hm_path = [protocolPath, '/data/', subjID];  % path to subject folder in protocol
 
+    if ~exist(hm_path, 'dir')
+        error('LoadError:noSubj', 'Subject not found');
+    end
+
     if strcmp(condName, 'raw')
         hmFolderName = dir([hm_path , '/@raw*/']);   % wildcard
         hm_path = [hm_path, '/', hmFolderName.name]; % path to HM_ps folder
@@ -52,9 +56,11 @@ function HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh)
     hmFiles = dir([hm_path, '/headmodel*.mat']); % available HM_ps files
 
     if isempty(hmFiles)
-        ME = MException('LoadError:noFile', ...
+        % ME = MException('LoadError:noFile', ...
+        % 'No head model files');
+        % throw(ME);
+        error('LoadError:noFile', ...
         'No head model files');
-        throw(ME);
     end
 
     if isLR
@@ -100,4 +106,5 @@ function HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh)
     HM_ps.svdThresh = GainSVDTh;
     HM_ps.UP = UP;
     HM_ps.GridLoc = HM_bst.GridLoc;
+    HM_ps.condName = condName;
     % ------------------------------------ %
