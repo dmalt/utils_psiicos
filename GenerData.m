@@ -1,7 +1,7 @@
 
 function [G2dU, CrossSpecTime, UP, Trials] = GenerData(PhaseLag, InducedScale, EvokedScale) 
 % --------------------------------------------------------------------------
-% Generates forward model and cross-spectrum on sensors for simulations
+% Generate forward model and cross-spectrum on sensors for simulations
 % --------------------------------------------------------------------------
 % FORMAT:
 %   [G2dU, CrossSpecTime] = GenerData(PhaseLag, InducedScale, EvokedScale)

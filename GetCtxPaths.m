@@ -25,13 +25,13 @@ function [pathCtx, pathCtxHR] = GetCtxPaths(subjName, Protocol_path)
 	if nargin < 1
 		subjName = '0003_pran';
 	end
-	%--------%
+	%----------------------%
 
 	pathCtx  = [];
 	pathCtxHR = [];
 	
 	anatPath = [Protocol_path, '/anat/', subjName];
-	if exist(anatPath)
+	if exist(anatPath, 'dir')
 		files = dir(anatPath);
 	else
 		fprintf('ERROR: %s: "%s" doesn''t exist!', 'GetCtxPaths.m', anatPath);
