@@ -26,20 +26,15 @@ classdef Connections < handle
 
 		% ----------------------- constructor ---------------------- %
 		function obj = Connections(subjId, conInds, freqBand,...
-		                           timeRange, CT, protocolPath)
-			if nargin < 6
-				obj.protocolPath = '/home/dmalt/PSIICOS_osadtchii';
-			elseif nargin >= 6
-				obj.protocolPath = protocolPath;
-			end
-			obj.subjId = subjId;
-			[pathCtx, pathCtxHR] = GetCtxPaths(subjId, obj.protocolPath);
-			obj.Ctx       = load(pathCtx);
-			obj.CtxHR     = load(pathCtxHR);
+		                           timeRange, CT, condName, HM, CtxHR)
+		
+			obj.subjId    = subjId;
+			obj.CtxHR     = CtxHR;
 			obj.conInds   = conInds;
 			obj.freqBand  = freqBand;
 			obj.timeRange = timeRange;
-			obj.headModel = LoadHeadModel(subjId, obj.protocolPath);
+			obj.condName  = condName;
+			obj.headModel = HM;
 			% obj.CT 		  = CT;
 		end
 		% --------------------------------------------------------- % 

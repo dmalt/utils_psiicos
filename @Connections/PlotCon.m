@@ -34,7 +34,7 @@ function PlotCon(obj, iCol)
 	camlight left; lighting phong;
 	camlight right; 
 	hold on;
-	drawset(obj.conInds, obj.HeadModel.GridLoc, colors{iCol});
+	drawset(obj.conInds, obj.headModel.GridLoc, colors{iCol});
 	
 
 function drawset(conInds, R, col)
