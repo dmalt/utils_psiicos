@@ -28,6 +28,7 @@ function HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh)
 %                   sensor space reduction
 % ________________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
+    % ------------- set up defaults ----------- %
     if nargin < 5
         GainSVDTh = 0.01;
     end
@@ -37,61 +38,34 @@ function HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh)
     if nargin < 3
         protocolPath = '~/PSIICOS_osadtchii';
     end
+    %-------------------------------------------%
 
-    % -------- load BST head model ------------ %
+    % ---------- load BST head model ------------ %
     hm_path = [protocolPath, '/data/', subjID];  % path to subject folder in protocol
 
     if ~exist(hm_path, 'dir')
         error('LoadError:noSubj', 'Subject not found');
     end
-
     if strcmp(condName, 'raw')
         hmFolderName = dir([hm_path , '/@raw*/']);   % wildcard
         hm_path = [hm_path, '/', hmFolderName.name]; % path to HM_ps folder
     elseif ischar(condName)
         hm_path = [hm_path , '/', condName, '/'];
     end 
-    
-
     hmFiles = dir([hm_path, '/headmodel*.mat']); % available HM_ps files
-
     if isempty(hmFiles)
-        % ME = MException('LoadError:noFile', ...
-        % 'No head model files');
-        % throw(ME);
-        error('LoadError:noFile', ...
-        'No head model files');
+        error('LoadError:noFile', 'No head model files');
     end
-
     if isLR
         [~, key] = min([hmFiles.bytes]); % find HM_ps with smallest size to get LR
     else
         [~, key] = max([hmFiles.bytes]); % find HM_ps with biggest size to get HR
     end
-
     hm_path = [hm_path, '/', hmFiles(key).name]; % final path to HM_ps
-    
     HM_bst = load(hm_path);
+    % ------------------------------------------- %    
 
-    % ----------------------------------------- %    
-
-    chUsed = 1:306; chUsed(3:3:end) = []; % use only gradiometers
-    nSites = size(HM_bst.GridLoc, 1);
-    nCh    = length(chUsed);
-    G2dLR  = zeros(nCh, nSites * 2);
-
-    % ------------ reduce tangent space ------------- %
-    range = 1:2;
-    for i = 1:nSites
-        gainOneSrc = [HM_bst.Gain(chUsed, 1 + 3 * (i - 1)) ...
-             HM_bst.Gain(chUsed, 2 + 3 * (i - 1)) ...
-             HM_bst.Gain(chUsed, 3 + 3 * (i - 1))];
-        [u, ~, ~] = svd(gainOneSrc);
-        gt = u(:, 1:2);
-        G2dLR(:, range) = gt;
-        range = range + 2;
-    end;
-    % ---------------------------------------------- %
+    G2dLR = ReduceToTangentSpace(HM_bst.Gain, 'grad');
 
     % --------------- reduce sensor space ---------------- %
     [ug,~,~] = spm_svd(G2dLR * G2dLR', GainSVDTh);
@@ -108,3 +82,4 @@ function HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh)
     HM_ps.GridLoc = HM_bst.GridLoc;
     HM_ps.condName = condName;
     % ------------------------------------ %
+end
