@@ -18,14 +18,14 @@ function HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh)
 %                   info.
 % -----------
 %   HM_ps.gain        - {nSenReduced x nSrc * 2} matrix of 
-%                   topographies for reduced sensor space
+%                       topographies for reduced sensor space
 %   HM_ps.UP          - {nSenReduced x nGradiometers} matrix
 %                   of transformation between reduced and
 %                   normal sensors
 %   HM_ps.subjID      - string; BST-imported subject name
 %   HM_ps.path        - string; path to  
 %   HM_ps.svdThresh   - float; PVU threshold for PCA-driven 
-%                   sensor space reduction
+%                       sensor space reduction
 % ________________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
     % ------------- set up defaults ----------- %
