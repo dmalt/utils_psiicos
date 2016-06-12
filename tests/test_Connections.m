@@ -11,13 +11,13 @@ classdef test_Connections < matlab.unittest.TestCase
 			CT = rand(43 ^ 2, 151);
 			condName = '2';
 			[~, CtxHR] = GetCtx(subjID);
-			HM = LoadHeadModel(subjID, '2')
+			HM = LoadHeadModel(subjID, '2');
 			obj.ConnInst = Connections('test', IND, CurBand, TimeRange, CT, condName, HM, CtxHR);
 		end
 	end
 	methods(Test)
-		function test_connections_PlotCon_works(obj)
-			obj.ConnInst.PlotCon();
-		end
+		% function test_connections_PlotCon_works(obj)
+		% 	obj.ConnInst.PlotCon();
+		% end
 	end
 end

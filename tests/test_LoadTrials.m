@@ -9,7 +9,7 @@ classdef test_LoadTrials < matlab.unittest.TestCase
 	% 	protocolName = 'PSIICOS';
 	% end
 	methods(Test)
-		function test_LoadTrials_fails_if_condition_not_string(testCase)
+		% function test_LoadTrials_fails_if_condition_not_string(testCase)
 			% NEED TO LEARN HOW TO TEST FOR FAILURE
 			% condition = 1;
 			% subjID = '0003_pran';
@@ -17,7 +17,7 @@ classdef test_LoadTrials < matlab.unittest.TestCase
 			% timeRange = [0.4, 0.7];
 			% protocolPath = '~/PSIICOS_osadtchii';
 			% testCase.assertFail(LoadTrials(subjID, condition, freqBand, timeRange, protocolPath))
-		end
+		% end
 
 		function test_it_runs(testCase)
 			protocolName = 'PSIICOS';
