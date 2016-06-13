@@ -1,5 +1,5 @@
 
-function [HM, CrossSpecTime, Trials] = GenerData(PhaseLag, nTr, GainSVDTh, InducedScale, EvokedScale) 
+function [HM, CrossSpecTime, Trials, Ctx] = GenerData(PhaseLag, nTr, GainSVDTh, InducedScale, EvokedScale, isUseCache) 
 % --------------------------------------------------------------------------
 % Generate forward model and cross-spectrum on sensors for simulations
 % --------------------------------------------------------------------------
@@ -31,16 +31,17 @@ function [HM, CrossSpecTime, Trials] = GenerData(PhaseLag, nTr, GainSVDTh, Induc
 % Alex Ossadtchi, ossadtchi@gmail; Dmitrii Altukhov, dm.altukhov@ya.ru
 
     % --------- set up defaults --------- %
-    nArgMax = 5;
-    
-    if nargin < nArgMax
+    if nargin < 6    
+        isUseCache = true;
+    end
+    if nargin < 5
         EvokedScale = 0.;
     end   
-    if nargin < nArgMax - 1;
+    if nargin < 5 - 1;
            InducedScale = 0.35;
            EvokedScale = 0;
     end
-    if nargin < nArgMax -2
+    if nargin < 5 -2
     % 0.05 results into 47 eigensensors and makes it run faster 
     % but produces less contrasting subcorr scans
     % for a more reliable preformance use 0.01
@@ -48,7 +49,7 @@ function [HM, CrossSpecTime, Trials] = GenerData(PhaseLag, nTr, GainSVDTh, Induc
         GainSVDTh = 0.001 ;
     end
 
-    if nargin < nArgMax - 3
+    if nargin < 5 - 3
         nTr = 100;
     end
     % ----------------------------------- %
@@ -73,7 +74,7 @@ function [HM, CrossSpecTime, Trials] = GenerData(PhaseLag, nTr, GainSVDTh, Induc
     % --------------------------------------- %
 
 
-    if exist(cache_fname, 'file')
+    if exist(cache_fname, 'file') && isUseCache
         load(cache_fname);
     else
         phi = PhaseLag;
@@ -89,7 +90,7 @@ function [HM, CrossSpecTime, Trials] = GenerData(PhaseLag, nTr, GainSVDTh, Induc
         % set to use gradiometers only
         ChUsed = PickChannels('grad');
         % calculate tangential plane dipoles
-        [~, nSites] = size(GLowRes.Gain(ChUsed,1:3:end));
+        [~, nSites] = size(GLowRes.Gain(ChUsed, 1:3:end));
 
         % ---------------------------------------------------- %
         Dmax = 0.02;
@@ -107,17 +108,18 @@ function [HM, CrossSpecTime, Trials] = GenerData(PhaseLag, nTr, GainSVDTh, Induc
 
         G2d = ReduceToTangentSpace(GLowRes.Gain, 'grad');
         % -------------- reduce the sensor space -------------- %
-        [ug, ~, ~] = spm_svd(G2d * G2d',GainSVDTh);
+        [ug, ~, ~] = spm_svd(G2d * G2d', GainSVDTh);
         UP = ug';
         G2dU = UP * G2d;
         % ----------------------------------------------------- %
 
-        % ---- produce output for head model ------------------ %
+        % ---- produce output for head model ------- %
         HM.gain = G2dU;
         HM.path = HM_path;
         HM.UP = UP;
         HM.svdThresh = GainSVDTh;
-        % ----------------------------------------------------- %
+        HM.GridLoc = GLowRes.GridLoc;
+        % ------------------------------------------ %
 
         % G2dU = G2dU_full([100000 : 250000, 680000:1130000]);
         % PHI = [pi / 20 pi / 2];
@@ -128,11 +130,11 @@ function [HM, CrossSpecTime, Trials] = GenerData(PhaseLag, nTr, GainSVDTh, Induc
             if(it == 1)
                 % we will use the same phase shifts in the second and subsequent
                 % iterations. We will store the random phases in PhaseShifts 
-                [Evoked, Induced, BrainNoise] = ...
+                [Evoked, Induced, BrainNoise, Ctx] = ...
                 SimulateDataPhase(nTr, NetworkPairIndex{2}, phi, true,  [],          XYZGen);
             else
                 % and use PhaseShits from the first iteration
-                [Evoked, Induced, BrainNoise] = ...
+                [Evoked, Induced, BrainNoise, Ctx] = ...
                 SimulateDataPhase(nTr, NetworkPairIndex{2}, phi, false, PhaseShifts, XYZGen);
             end;        
             % mix noise and data 
@@ -176,7 +178,7 @@ function [HM, CrossSpecTime, Trials] = GenerData(PhaseLag, nTr, GainSVDTh, Induc
             % Data_clear_p = ProjOut(CrossSpecClData, G2dU);
             % it = it + 1;
         % end;
-        save(cache_fname, 'HM', 'CrossSpecTime', 'Trials', '-v7.3');
+        save(cache_fname, 'HM', 'CrossSpecTime', 'Trials', 'Ctx', '-v7.3');
     end
 
 end
@@ -250,7 +252,7 @@ function [ans_idx, nw1, nw2, nw3] = FindEffSources(Dmax, R, XYZGen, NPI)
 end
 
 
-function [Evoked, Induced, BrainNoise, SensorNoise, G2d, R, Fs, XYZGenOut, Ggen, PhaseShiftsOut] = SimulateDataPhase(nTr, NetworkPairIndex, dPhi, bNewBrainNoise, PhaseShiftsIn, XYZGen, alpha_in)
+function [Evoked, Induced, BrainNoise, Ctx, SensorNoise, G2d, R, Fs, XYZGenOut, Ggen, PhaseShiftsOut] = SimulateDataPhase(nTr, NetworkPairIndex, dPhi, bNewBrainNoise, PhaseShiftsIn, XYZGen, alpha_in)
 % -------------------------------------------------------
 % description
 % -------------------------------------------------------
@@ -273,6 +275,7 @@ function [Evoked, Induced, BrainNoise, SensorNoise, G2d, R, Fs, XYZGenOut, Ggen,
 
     ISD = load('InputData4Simulations.mat');
     ISD.Channels = load('channel_vectorview306.mat');
+    Ctx = ISD.Ctx;
 
     SSPVE = 0.98;
     RAP = 1;% number of RAP-MUSIC iterations
