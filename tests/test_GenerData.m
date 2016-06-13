@@ -8,12 +8,14 @@ classdef test_GenerData < matlab.unittest.TestCase
 		inducedScale = 0.35;
 		evokedScale = 0;
 		nTr = 2;
+		Ctx;
+		isUseCache = false;
 	end
 
 	methods(TestMethodSetup)
 		function run_GenerData(obj)
-			[obj.HM, obj.Cp, obj.trials] = ...
-			 GenerData(obj.phaseLag, obj.nTr, obj.GainSVDTh);
+			[obj.HM, obj.Cp, obj.trials, obj.Ctx] = ...
+			 GenerData(obj.phaseLag, obj.nTr, obj.GainSVDTh, obj.inducedScale, obj.evokedScale, obj.isUseCache);
 		end
 	end
 
@@ -22,6 +24,7 @@ classdef test_GenerData < matlab.unittest.TestCase
 			obj.assertNotEmpty(obj.HM)
 			obj.assertNotEmpty(obj.Cp)
 			obj.assertNotEmpty(obj.trials)
+			obj.assertNotEmpty(obj.Ctx)
 		end
 
 		% function test_accepts_GainSVDTh_as_arg(obj)
@@ -47,5 +50,6 @@ classdef test_GenerData < matlab.unittest.TestCase
             					   ['No cache_file ', cache_fname]);
 		end
 
-	end
+
+	end	
 end

@@ -1,11 +1,12 @@
 Dpair = 0.01;
-clustSize = 20;
+clustSize = 2;
 
-DipInd = [];
-    for i = 1:size(DipInd,1)
-      DipInd = [DipInd; DipInd{i}];
-    end
-[clusters] = PairwiseClust(DipInd, R, Dpair, clustSize);
+% DipInd = [];
+%     for i = 1:size(DipInd,1)
+%       DipInd = [DipInd; DipInd{i}];
+%     end
+% [clusters] = PairwiseClust(DipInd, R, Dpair, clustSize);
+[clusters] = PairwiseClust(BootsIND, R, Dpair, clustSize);
 % --------------------------- Drawing ----------------------------------------- %
 
 % ------ Colors definition --------------------------------------------- %
