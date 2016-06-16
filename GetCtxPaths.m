@@ -7,7 +7,7 @@ function [pathCtx, pathCtxHR] = GetCtxPaths(subjName, Protocol_path)
 %   [pathCtx, pathCtxHR] = GetCtxPaths(subjName, Protocol_path) 
 % INPUTS:
 %   subjName        - string; name of the subject
-%   Protocol_path        - string; absolute path to 
+%   Protocol_path   - string; absolute path to 
 %                     brainstorm protocol
 % 
 % OUTPUTS:

@@ -26,6 +26,8 @@ function HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh)
 %   HM_ps.path        - string; path to  
 %   HM_ps.svdThresh   - float; PVU threshold for PCA-driven 
 %                       sensor space reduction
+%   HM_ps.GridLoc     - {nSrc x 3} matrix of source location
+%                       coordinates
 % ________________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
     % ------------- set up defaults ----------- %

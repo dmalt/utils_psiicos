@@ -1,4 +1,4 @@
-classdef Connections < handle
+classdef Connections 
 	properties (Access = private)
 		protocolPath 	 % path to brainstorm protocol
 		CtxHR         	 % high res. cortex surface 
@@ -16,26 +16,31 @@ classdef Connections < handle
 	end 
 
 	methods
-		PlotCon(obj, iCol)      % plot connections on HR brain
-		PlotClust(obj, inds)    % plot clusters in dif. colors
-		PlotCent(obj, inds)     % plot clust. centers  
-		PlotPhase(obj, inds)    % plot phases for selected centers
-		Clusterize(obj)			% clusterize connections
-
+		PlotCon(obj, iCol)                   % plot connections on HR brain
+		% PlotClust(obj, inds)                 % plot clusters in dif. colors
+		% PlotCent(obj, inds)                  % plot clust. centers  
+		% PlotPhase(obj, inds)                 % plot phases for selected centers
+		obj = Clusterize(obj, clustSize, dPair)	 % clusterize connections
+		obj = Average(obj)						 % average connections.
+		obj = Merge(obj)
+		plotPhase(obj, src, event)
 		% PairwiseClust(obj, distThresh, clustSizeThresh)
 
 		% ----------------------- constructor ---------------------- %
 		function obj = Connections(subjId, conInds, freqBand,...
 		                           timeRange, CT, condName, HM, CtxHR)
-		
+			if iscell(conInds)
+				obj.conInds = conInds;
+			else
+				obj.conInds{1} = conInds;
+			end
 			obj.subjId    = subjId;
 			obj.CtxHR     = CtxHR;
-			obj.conInds   = conInds;
 			obj.freqBand  = freqBand;
 			obj.timeRange = timeRange;
 			obj.condName  = condName;
 			obj.headModel = HM;
-			% obj.CT 		  = CT;
+			obj.CT 		  = CT;
 		end
 		% --------------------------------------------------------- % 
 	end
