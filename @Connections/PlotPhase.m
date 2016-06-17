@@ -1,4 +1,17 @@
-function plotPhase(obj,src,event)
+function PlotPhase(obj, src, event)
+% -------------------------------------------------------
+% Plot amplitude and phase spectrum in a popup window 
+% for a clicked connection 
+% -------------------------------------------------------
+% FORMAT:
+%   PlotPhase(obj, src, event)
+% INPUTS:
+%   obj        - Connections instance;
+%   src		   - handle to clicked line
+%   event      - 
+% ________________________________________
+% Dmitrii Altukhov, dm.altukhov@ya.ru
+
 	xyz_i = [src.XData(1), src.YData(1), src.ZData(1)];
 	xyz_j = [src.XData(2), src.YData(2), src.ZData(2)];
 
@@ -28,17 +41,10 @@ function plotPhase(obj,src,event)
 		g = kron(g_i_or, g_j_or);
 		tseries(i) = g' * obj.CT(:,i);
 	end
-	% C = reshape(obj.CT(:,300), nSensors, nSensors);
 
-	% [u, v, f] = FindOr(C, g_i, g_j); % find dipole orientation
-	% g_i_or = g_i * u;
-	% g_j_or = g_j * v;
-	% g = kron(g_i_or, g_j_or);
-	% tseries = g' * obj.CT;
 	figure;
 	subplot(4, 1, 1)
 	plot(1:nTimes, abs(tseries), 'Color', src.Color, 'linewidth', 2);
-	% figure;
 	subplot(4, 1, 2)
 	plot(1:nTimes, unwrap(angle(tseries(:,:)), pi/2), 'Color', src.Color, 'linewidth', 2);
 	subplot(4, 1, 3)

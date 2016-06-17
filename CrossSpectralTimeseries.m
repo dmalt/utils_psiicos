@@ -6,15 +6,15 @@ function [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly)
 % FORMAT:
 %   [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly) 
 % INPUTS:
-%   trials        - {nChannels x nTimes x nTrials} matrix
-%                   of trials on sensors
+%   trials         - {nChannels x nTimes x nTrials} matrix
+%                    of trials on sensors
 %   isInducedOnly  - boolean flag. If true, substract ERP
-%                   from each trial before going to 
-%                   frequency domain; default = false
+%                    from each trial before going to 
+%                    frequency domain; default = false
 % OUTPUTS:
 %   CT             - {nChannels ^ 2 x nTimes} matrix of 
-%                   cross-spectrum timeseries on sensors
-%   key           - 
+%                    cross-spectrum timeseries on sensors
+%   key            -  
 % ________________________________________________________________________
 % Alex Ossadtchii ossadtchi@gmail.com, Dmitrii Altukhov dm.altukhov@ya.ru
   Trials = trials;

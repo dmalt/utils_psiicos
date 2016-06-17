@@ -4,7 +4,7 @@ classdef test_Connections < matlab.unittest.TestCase
 		subjID = '0019_shev';
 		CurBand = [19,23];
 		TimeRange = [0,0.7];
-		CT = rand(43 ^ 2, 151) + j * rand(43 ^ 2, 151);
+		CT = rand(43 ^ 2, 151) + 1i * rand(43 ^ 2, 151);
 		condName = '2';
 		CtxHR;
 		HM;
@@ -16,14 +16,14 @@ classdef test_Connections < matlab.unittest.TestCase
 		end
 	end
 
-	methods(TestMethodTeardown)
-		function CloseFigs(obj)
-			% close all;
+	methods(TestMethodTeardown, Static)
+		function CloseFigs()
+			close all;
 		end
 	end
 	methods(Test)
-		% function test_connections_PlotCon_works(obj)
-		% 	obj.ConnInst.PlotCon();
+		% function test_connections_Plot_works(obj)
+		% 	obj.ConnInst.Plot();
 		% end
 		function test_init_with_cell_array(obj)
 		% Test initialization with cell array 
@@ -31,7 +31,7 @@ classdef test_Connections < matlab.unittest.TestCase
 			IND{1} = [1,2];
 			IND{2}  = [3, 4; 5, 6];
 			obj.ConnInst = Connections('test', IND, obj.CurBand, obj.TimeRange, obj.CT, obj.condName, obj.HM, obj.CtxHR);
-			obj.ConnInst.PlotCon()
+			obj.ConnInst.Plot()
 		end
 
 		function test_init_with_set_of_pairs(obj)
@@ -39,17 +39,19 @@ classdef test_Connections < matlab.unittest.TestCase
 		% of connection indices. 
 			IND = [1,2; 3, 4; 5, 6];
 			obj.ConnInst = Connections('test', IND, obj.CurBand, obj.TimeRange, obj.CT, obj.condName, obj.HM, obj.CtxHR);
-			obj.ConnInst.PlotCon()
+			obj.ConnInst.Plot()
 		end
 
-		function test_PlotCon_works_for_big_number_of_clusters(obj)
+		function test_Plot_works_for_big_number_of_clusters(obj)
 			nSrc = size(obj.HM.GridLoc, 1);
+			IND = cell(20,1);
+
 			for i = 1:20;
 				IND{i} = randi(nSrc, 3, 2);
 			end
 
 			obj.ConnInst = Connections('test', IND, obj.CurBand, obj.TimeRange, obj.CT, obj.condName, obj.HM, obj.CtxHR);
-			obj.ConnInst.PlotCon()
+			obj.ConnInst.Plot()
 		end
 
 		function test_PairwiseClustering_and_Average(obj)
@@ -60,24 +62,25 @@ classdef test_Connections < matlab.unittest.TestCase
 			clustSize = 10;			
 			obj.ConnInst = Connections('test', IND, obj.CurBand, obj.TimeRange, obj.CT, obj.condName, obj.HM, obj.CtxHR);
 			obj.ConnInst = obj.ConnInst.Clusterize(clustSize, dPair);
-			obj.ConnInst.PlotCon()
+			obj.ConnInst.Plot()
 			obj.assertGreaterThan(length(obj.ConnInst.conInds), 1) 
 
-			obj.ConnInst = obj.ConnInst.Average()
+			obj.ConnInst = obj.ConnInst.Average();
 			for iSet = 1:length(obj.ConnInst.conInds)
 				obj.assertSize(obj.ConnInst.conInds{iSet}, [1,2])
 			end
-			obj.ConnInst.PlotCon(0.2);
+			obj.ConnInst.Plot(0.2);
 		end
-
 
 		function test_merging(obj)
 			nSrc = size(obj.HM.GridLoc, 1);
+			IND = cell(20,1);
+
 			for i = 1:20;
 				IND{i} = randi(nSrc, 3, 2);
 			end
 			obj.ConnInst = Connections('test', IND, obj.CurBand, obj.TimeRange, obj.CT, obj.condName, obj.HM, obj.CtxHR);
-			obj.ConnInst = obj.ConnInst.Merge()
+			obj.ConnInst = obj.ConnInst.Merge();
 			obj.assertEqual(length(obj.ConnInst.conInds), 1) 
 		end
 

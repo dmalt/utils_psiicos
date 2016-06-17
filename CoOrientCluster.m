@@ -8,7 +8,7 @@ function clustInds = CoOrientCluster(clustInds, GridLoc)
 % INPUTS:
 %   clustInds        - {nConnections x 2} matrix 
 %                      of indices of connected sources
-%   GridLoc          - {nSources x 3} matrix of xyz
+%   GridLoc          - {nSources x 3} matrix of
 %                      sources coordinates
 % OUTPUTS:
 %   clustInds        - {nConnections x 2} matrix 

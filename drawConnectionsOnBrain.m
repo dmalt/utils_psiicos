@@ -16,7 +16,7 @@ function drawConnectionsOnBrain(ConInds, GridXYZ, iCol, Ctx)
 %                    usually generated in brainstorm
 % OUTPUTS:
 %   None
-% ________________________________________
+% _______________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
 
 	orange = [255 141 0] / 256;
@@ -34,4 +34,4 @@ function drawConnectionsOnBrain(ConInds, GridXYZ, iCol, Ctx)
 	camlight right; 
 	hold on;
 	drawset(ConInds, GridXYZ, colors{iCol});
-	
+end

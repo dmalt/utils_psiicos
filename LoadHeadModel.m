@@ -7,27 +7,31 @@ function HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh)
 %   HM_ps = LoadHeadModel(subjID, protocolPath, isLR, GainSVDTh) 
 % INPUTS:
 %   subjID        - string; BST-imported subject name
+%   condName      - string; name of condition in BST protocol
 %   protocolPath  - string; absolute path to BST protocol
 %   isLR          - boolean; if true, take low resolution
 %                   cortex (default = true)
 %   GainSVDTh     - float; PVU threshold for PCA-driven 
 %                   sensor space reduction (default = 0.01)
 % OUTPUTS:
-%   HM_ps             - structure; forward model operator 
-%                   for reduced sensor space and additional
-%                   info.
+%   HM_ps             - structure; PSIICOS head model;
+%                       forward model operator for reduced
+%                       sensor space and additional info.
 % -----------
 %   HM_ps.gain        - {nSenReduced x nSrc * 2} matrix of 
 %                       topographies for reduced sensor space
 %   HM_ps.UP          - {nSenReduced x nGradiometers} matrix
-%                   of transformation between reduced and
-%                   normal sensors
+%                       of transformation between reduced and
+%                       normal sensors
 %   HM_ps.subjID      - string; BST-imported subject name
-%   HM_ps.path        - string; path to  
+%   HM_ps.path        - string; path to BST head model
+%                       (file we load from)
 %   HM_ps.svdThresh   - float; PVU threshold for PCA-driven 
 %                       sensor space reduction
 %   HM_ps.GridLoc     - {nSrc x 3} matrix of source location
 %                       coordinates
+%   HM_ps.condName    - string; name of condtion in BST 
+%                       protocol
 % ________________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
     % ------------- set up defaults ----------- %

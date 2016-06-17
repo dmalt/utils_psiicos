@@ -7,24 +7,19 @@ classdef Connections
 		headModel 		 % low res. head model struct from BST
 	end
 	properties
-		subjId			 % brainstorm subj. name
-		condName		 % 
-		freqBand
-		timeRange
-		conInds			 % 
-		% Clusters 		 % will have con indices and center index
+		subjId			 % BST subj name
+		condName		 % BST condition name
+		freqBand		 % {1 x 2} array; frequency band
+		timeRange		 % {1 x 2} array;
+		conInds			 % {nConnections x 2}; 
 	end 
 
 	methods
-		PlotCon(obj, iCol)                   % plot connections on HR brain
-		% PlotClust(obj, inds)                 % plot clusters in dif. colors
-		% PlotCent(obj, inds)                  % plot clust. centers  
-		% PlotPhase(obj, inds)                 % plot phases for selected centers
+		Plot(obj, iCol)                          % plot connections on HR brain
+		PlotPhase(obj, src, event)				 % plot amplitude and phase for connecion
 		obj = Clusterize(obj, clustSize, dPair)	 % clusterize connections
 		obj = Average(obj)						 % average connections.
-		obj = Merge(obj)
-		plotPhase(obj, src, event)
-		% PairwiseClust(obj, distThresh, clustSizeThresh)
+		obj = Merge(obj)						 % merge connection indeces
 
 		% ----------------------- constructor ---------------------- %
 		function obj = Connections(subjId, conInds, freqBand,...

@@ -12,9 +12,9 @@ function [pathCtx, pathCtxHR] = GetCtxPaths(subjName, Protocol_path)
 % 
 % OUTPUTS:
 %   pathCtx         - string; absolute path to low resolution
-%                     surface
+%                     surface in BST protocol folder
 %   pathCtxHR       - string; absolute path to high resolution
-%                     surface;
+%                     surface in BST protocol folder
 % ________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
 
@@ -61,4 +61,4 @@ function [pathCtx, pathCtxHR] = GetCtxPaths(subjName, Protocol_path)
 		fprintf('Failed to find HR cortex for subject %s in %s' , subjName, Protocol_path)
 		fprintf('\n');
 	end
-	return;
+end	
