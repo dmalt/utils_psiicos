@@ -16,9 +16,9 @@ classdef test_Connections < matlab.unittest.TestCase
 		end
 	end
 
-	methods(TestMethodTeardown, Static)
-		function CloseFigs()
-			close all;
+	methods(TestMethodTeardown)
+		function CloseFigs(obj)
+			% close all;
 		end
 	end
 	methods(Test)
