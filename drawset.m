@@ -1,4 +1,4 @@
-function lineHandles = drawset(conInds, Loc, col)
+function lineHandles = drawset(conInds, Loc, col, linewidth, Markersize)
 % -------------------------------------------------------
 % Draw set of indices ConIndS using grid locations Loc 
 % and color col
@@ -16,9 +16,13 @@ function lineHandles = drawset(conInds, Loc, col)
 %                  to lines representing connections.
 % ___________________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
+	if nargin < 5
+	    Markersize = 40;
+	end
 
-    linewidth = 2;
-    Markersize = 40;
+	if nargin < 4
+	    linewidth = 2;
+	end
     lineHandles = {};
     for i = 1:size(conInds, 1)
             lineHandles{i} = line( Loc(conInds(i,:), 1), Loc(conInds(i,:),2), Loc(conInds(i,:),3));
