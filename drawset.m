@@ -22,8 +22,8 @@ function lineHandles = drawset(conInds, Loc, col)
     lineHandles = {};
     for i = 1:size(conInds, 1)
             lineHandles{i} = line( Loc(conInds(i,:), 1), Loc(conInds(i,:),2), Loc(conInds(i,:),3));
-            plot3( Loc(conInds(i,1), 1), Loc(conInds(i,1),2), Loc(conInds(i,1),3),'.', 'Color', col, 'Markersize', Markersize );
-            plot3( Loc(conInds(i,2), 1), Loc(conInds(i,2),2), Loc(conInds(i,2),3),'.', 'Color', col, 'Markersize', Markersize );
+            plot3( Loc(conInds(i, 1), 1), Loc(conInds(i, 1), 2), Loc(conInds(i, 1), 3),'.', 'Color', col, 'Markersize', Markersize );
+            plot3( Loc(conInds(i, 2), 1), Loc(conInds(i, 2), 2), Loc(conInds(i, 2), 3),'.', 'Color', col, 'Markersize', Markersize );
             set(lineHandles{i}, 'Color', col, 'linewidth', linewidth);
     end
 end

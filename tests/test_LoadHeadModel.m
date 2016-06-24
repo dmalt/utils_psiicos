@@ -22,6 +22,7 @@ classdef test_LoadHeadModel < matlab.unittest.TestCase
 		function test_returns_GridLoc(obj)
 			obj.assertTrue(isfield(obj.HM, 'GridLoc'))
 		end
+		
 		function test_returns_condName(obj)
 			obj.assertTrue(isfield(obj.HM, 'condName'))
 		end
