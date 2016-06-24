@@ -1,6 +1,6 @@
 function chUsed = PickChannels(chName)
 % -------------------------------------------------------
-% Pick channel indices for electa recordings
+% Pick MEG channel indices for electa neuromag recordings
 % -------------------------------------------------------
 % FORMAT:
 %   format 
@@ -13,6 +13,10 @@ function chUsed = PickChannels(chName)
 	chUsed = 1:306;
 	if strcmp(chName, 'grad')
 		chUsed(3:3:end) = [];
+	elseif strcmp(chName, 'grad1')
+		chUsed = 1:3:306;
+	elseif strcmp(chName, 'grad2')
+		chUsed = 2:3:306
 	elseif strcmp(chName, 'mag')
 		chUsed = 3:3:306;
 	elseif strcmp(chName, 'meg')
