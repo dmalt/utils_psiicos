@@ -4,7 +4,7 @@ function [HM, CrossSpecTime, Trials, Ctx] = GenerData(PhaseLag, nTr, GainSVDTh, 
 % Generate forward model and cross-spectrum on sensors for simulations
 % --------------------------------------------------------------------------
 % FORMAT:
-%   [G2dU, CrossSpecTime, UP, Trials] = GenerData(PhaseLag, InducedScale, EvokedScale)
+%   [HM, CrossSpecTime, Trials, Ctx] = GenerData(PhaseLag, InducedScale, EvokedScale)
 % INPUTS:
 %   PhaseLag          - phase lag for simulations
 %   InducedScale      - coefficient for induced activity (default = 0.35)
@@ -107,11 +107,16 @@ function [HM, CrossSpecTime, Trials, Ctx] = GenerData(PhaseLag, nTr, GainSVDTh, 
         % ----------------------------------------------------- %
 
         G2d = ReduceToTangentSpace(GLowRes.Gain, 'grad');
-        % -------------- reduce the sensor space -------------- %
-        [ug, ~, ~] = spm_svd(G2d * G2d', GainSVDTh);
-        UP = ug';
-        G2dU = UP * G2d;
-        % ----------------------------------------------------- %
+        % -------------- reduce sensor space -------------- %
+        if GainSVDTh
+            [ug, ~, ~] = spm_svd(G2d * G2d', GainSVDTh);
+            UP = ug';
+            G2dU = UP * G2d;
+        else 
+            G2dU = G2d;
+            UP = eye(204);
+        end
+        % ------------------------------------------------- %
 
         % ---- produce output for head model ------- %
         HM.gain = G2dU;

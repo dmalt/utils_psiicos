@@ -74,9 +74,14 @@ function HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh)
     G2dLR = ReduceToTangentSpace(HM_bst.Gain, 'grad');
 
     % --------------- reduce sensor space ---------------- %
-    [ug,~,~] = spm_svd(G2dLR * G2dLR', GainSVDTh);
-    UP = ug';
-    G2dLRU = UP * G2dLR;
+    if GainSVDTh
+        [ug,~,~] = spm_svd(G2dLR * G2dLR', GainSVDTh);
+        UP = ug';
+        G2dLRU = UP * G2dLR;
+    else
+        G2dLRU = G2dLR;
+        UP = eye(size(G2dLR,1));
+    end
     % ---------------------------------------------------- %
 
     % -------- produce output ------------ %

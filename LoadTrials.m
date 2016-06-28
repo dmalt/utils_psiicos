@@ -1,17 +1,21 @@
-function trials = LoadTrials(subjID, condition, freqBand, timeRange, protocolPath)
+function trials = LoadTrials(subjID, condition, freqBand, timeRange, GainSVDTh, protocolPath)
 % ---------------------------------------------------------------------------------------
 % Load trials data from brainstorm protocol, reduce dimensions, bandpass filter and crop 
 % ---------------------------------------------------------------------------------------
 % FORMAT:
-%   trials = LoadTrials(subjID, condition, freqBand, timeRange, protocolPath)
+%   trials = LoadTrials(subjID, condition, freqBand, timeRange, GainSVDTh, protocolPath)
 % INPUTS:
 %   subjID        - string; subject name in BST protocol
 %   condition     - string; condition name in BST protocol
 %   freqBand      - {2 x 1} array; bandpass filtering frequency range
-%   timeRange     - {2 x 1} array; cropping timerange
+%   timeRange     - {2 x 1} array; cropping timerange; 
 %   protocolPath  - string; absolute path to BST protocol
+%   GainSVDTh     - scalar; parameter for spm_svd for dim reduction. Higher values
+%                   correspond to less channels. If GainSVDTh = 0, no dim. reduction
+%                   is made. default = 0.01
 % OUTPUTS:
 %   trials:
+%----------------
 %   trials.subjID       - string; subject name in BST protocol
 %   trials.data         - {nSenReduced x nTimes x nTrials} matrix of trials data
 %   trials.nTrials      - scalar; number of trials
@@ -24,8 +28,11 @@ function trials = LoadTrials(subjID, condition, freqBand, timeRange, protocolPat
     ChUsed = 1:306; ChUsed(3:3:end) = []; % use only gradiometers
 
     % -------- init defaults ------------ %
-    if nargin < 5
+    if nargin < 6
         protocolPath = '~/PSIICOS_osadtchii';
+    end
+    if nargin < 5
+        GainSVDTh = 0.01
     end
     if nargin < 4
         timeRange = [0, 0.700];
@@ -43,8 +50,8 @@ function trials = LoadTrials(subjID, condition, freqBand, timeRange, protocolPat
     [b,a] = butter(5, freqBand / (sFreq / 2));    % define filter
 
     fprintf('Loading data from BST database.. \n');
-    G = LoadHeadModel(subjID, condition, protocolPath);
-    UP = G.UP;
+    G = LoadHeadModel(subjID, condition, protocolPath, true, GainSVDTh);
+    UP = G.UP; % need it for dimensiion reduction
     nCh = size(UP, 1);
 
     condPath = [protocolPath, '/data/', subjID, '/', condition];

@@ -27,7 +27,8 @@ classdef test_LoadTrials < matlab.unittest.TestCase
 			timeRange = [0.4, 0.7];
 			protocolPath = '~/PSIICOS_osadtchii';
 			protocolName = 'PSIICOS';
-			LoadTrials(subjID, condition, freqBand, timeRange, protocolPath)
+			GainSVDTh = 0.01;
+			LoadTrials(subjID, condition, freqBand, timeRange, GainSVDTh, protocolPath)
 		end
 	end
 end
