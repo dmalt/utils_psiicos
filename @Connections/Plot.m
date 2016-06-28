@@ -22,8 +22,8 @@ function Plot(obj, opacity)
 	
 	colorScheme = GetColors();
 	bg_color = colorScheme(1).RGB;
-
 	colors = {colorScheme(2:end).RGB};
+	
 	% ------------ Draw brain ------------------- %
 	figure;
 	h_br = trisurf(obj.CtxHR.Faces, ...

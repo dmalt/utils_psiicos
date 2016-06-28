@@ -3,7 +3,7 @@ function [h_ax, h_fig]  = DrawConnectionsOnSensors(conInds, channels_path, isFun
 % Draw sensor-level connections.
 % -------------------------------------------------------
 % FORMAT:
-%   format 
+%   [h_ax, h_fig]  = DrawConnectionsOnSensors(conInds, channels_path, isFun) 
 % INPUTS:
 %   inputs        -
 % OUTPUTS:
@@ -11,17 +11,18 @@ function [h_ax, h_fig]  = DrawConnectionsOnSensors(conInds, channels_path, isFun
 % ________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
 	if nargin < 3
-		isFun = false
+		isFun = false;
 	end
 	if nargin < 2
 		channels_path = 'channel_vectorview306.mat';
 	end
 	ChUsed = PickChannels('grad');
 	ChLoc = ReadChannelLocations(channels_path, ChUsed);
+	% size(ChLoc)
 	x = ChLoc(1,:)';
 	y = ChLoc(2,:)';
 	z = ChLoc(3,:)';
-	colors = GetColors()
+	colors = GetColors();
 	bg_color = colors(1).RGB;
 	fg_color = colors(2).RGB;
 	if isFun

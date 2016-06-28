@@ -1,6 +1,6 @@
 function ind = FindXYZonGrid(xyz, GridLoc)
 % -------------------------------------------------------
-% Given a point in 3-d spacd find the closest node on grid.
+% Given a point in 3-d space find the closest node on grid.
 % -------------------------------------------------------
 % FORMAT:
 %   ind = FindXYZonGrid(xyz, GridLoc) 

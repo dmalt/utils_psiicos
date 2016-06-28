@@ -4,7 +4,7 @@ classdef test_DrawConnectionsOnSensors < matlab.unittest.TestCase
 	end
 	methods(TestMethodTeardown)
 		function CloseFigs(obj)
-			close all;
+			% close all;
 		end
 	end
 	methods(Test)
