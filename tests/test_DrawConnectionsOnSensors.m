@@ -11,7 +11,8 @@ classdef test_DrawConnectionsOnSensors < matlab.unittest.TestCase
 		function test_returns_valid_handles(obj)
 			% class(obj.channels_path)
 			conInds = randi(204, 10, 2);
-			[axes_handle, fig_handle] = DrawConnectionsOnSensors(conInds, obj.channels_path);
+			fig_handle = figure;
+			axes_handle = DrawConnectionsOnSensors(conInds, obj.channels_path, true);
 			obj.assertTrue(strcmp(class(fig_handle), 'matlab.ui.Figure'))
 			obj.assertTrue(strcmp(class(axes_handle), 'matlab.graphics.axis.Axes'))
 			set(fig_handle,'name','TestFigure','numbertitle','off')

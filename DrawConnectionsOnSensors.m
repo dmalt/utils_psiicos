@@ -1,4 +1,4 @@
-function [h_ax, h_fig]  = DrawConnectionsOnSensors(conInds, channels_path, isFun)
+function h_ax = DrawConnectionsOnSensors(conInds, channels_path, isFun)
 % -------------------------------------------------------
 % Draw sensor-level connections.
 % -------------------------------------------------------
@@ -32,7 +32,8 @@ function [h_ax, h_fig]  = DrawConnectionsOnSensors(conInds, channels_path, isFun
 		style = '.';
 		msize = 18;
 	end
-	h_fig = figure; plot3(x, y, z, style, 'Color', bg_color, 'MarkerFaceColor', bg_color,'Markersize', msize);
+
+	plot3(x, y, z, style, 'Color', bg_color, 'MarkerFaceColor', bg_color,'Markersize', msize);
 	hold on;
 	h_ax = gca;
 	% channels = []
