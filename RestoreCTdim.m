@@ -1,10 +1,10 @@
-function CT_restored = RestoreSensorDimension(CT, UP)
+function CT_restored = RestoreCTdim(CT, UP)
 % -------------------------------------------------------
-% RestoreSensorDimension: transform cross-spectrum CT
+% RestoreCTdim: transform cross-spectrum CT
 % back to real sensors from artificial ones.
 % -------------------------------------------------------
 % FORMAT:
-%   CT_restored = RestoreSensorDimension(CT, UP) 
+%   CT_restored = RestoreCTdim(CT, UP) 
 % INPUTS:
 %   CT        - {N_sensors_reduced ^ 2 x Ntimes}
 %               cross-spectrum matrix on artificial sensors
