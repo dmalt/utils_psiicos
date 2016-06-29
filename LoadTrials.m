@@ -32,7 +32,7 @@ function trials = LoadTrials(subjID, condition, freqBand, timeRange, GainSVDTh, 
         protocolPath = '~/PSIICOS_osadtchii';
     end
     if nargin < 5
-        GainSVDTh = 0.01
+        GainSVDTh = 0.01;
     end
     if nargin < 4
         timeRange = [0, 0.700];

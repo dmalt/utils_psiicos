@@ -114,7 +114,7 @@ function [HM, CrossSpecTime, Trials, Ctx] = GenerData(PhaseLag, nTr, GainSVDTh, 
             G2dU = UP * G2d;
         else 
             G2dU = G2d;
-            UP = eye(204);
+            UP = eye(size(G2d,1));
         end
         % ------------------------------------------------- %
 

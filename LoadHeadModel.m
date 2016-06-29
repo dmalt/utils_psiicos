@@ -4,7 +4,7 @@ function HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh)
 % subject subjID 
 % -------------------------------------------------------
 % FORMAT:
-%   HM_ps = LoadHeadModel(subjID, protocolPath, isLR, GainSVDTh) 
+%   HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh) 
 % INPUTS:
 %   subjID        - string; BST-imported subject name
 %   condName      - string; name of condition in BST protocol

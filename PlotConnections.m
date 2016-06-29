@@ -7,7 +7,7 @@ function Pairs = PlotConnections(C, ChLoc, CT_metrics_type)
 	for s = 1:N_subjects
 	    %%%%%%%%%%%%%%%%% DRAWING PART %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	    % -------------------- Get back to real sensors from artificial ones ---------------------------- %
-	    D21{s} = RestoreSensorDimension(C{s}.CT, C{s}.UP);
+	    D21{s} = RestoreCTdim(C{s}.CT, C{s}.UP);
 	    % ------------------------------------------------------------------------------------------------- %
 	    if CT_metrics_type == 'real'
 		    M = abs(real(D21{s}));

@@ -33,7 +33,7 @@ function CT_restored = DrawCrossSpectrum(CTimeseries, UP, ChLoc, ifSort)
 	Ntimes = size(CTimeseries, 2);
 	CTimeseriesRestored = zeros(Nsensors ^ 2, Ntimes); 
 	for t = 1:size(CTimeseries, 2)
-		CT_restored = RestoreSensorDimension(CTimeseries(:,t), UP);
+		CT_restored = RestoreCTdim(CTimeseries(:,t), UP);
 		CTimeseriesRestored(:,t) = CT_restored(:);
 	end
 
