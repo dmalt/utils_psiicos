@@ -1,4 +1,16 @@
 function conInds = SensorConnectivity(CT, threshold)
+% -------------------------------------------------------
+% description
+% -------------------------------------------------------
+% FORMAT:
+%   conInds = SensorConnectivity(CT, threshold) 
+% INPUTS:
+%   inputs        -
+% OUTPUTS:
+%   outputs
+% ________________________________________
+% Dmitrii Altukhov, dm.altukhov@ya.ru
+
 	% conInds = rand(3,2);
 	[nSen_sq, ~] = size(CT);
 	nSen = sqrt(nSen_sq);
@@ -9,9 +21,13 @@ function conInds = SensorConnectivity(CT, threshold)
 	av_abs_CT = av_abs_CT - diag(diag(av_abs_CT));
 	av_abs_CT = av_abs_CT(:);
 	% -------------------------------------------- %
-
-	val_range = max(av_abs_CT) - min(av_abs_CT);
-	lin_inds = find(av_abs_CT > threshold * val_range + min(av_abs_CT));
+	if threshold < 1
+		val_range = max(av_abs_CT) - min(av_abs_CT);
+		lin_inds = find(av_abs_CT > threshold * val_range + min(av_abs_CT));
+	elseif threshold >= 1 && floor(threshold) == threshold
+		[~,sort_inds] = sort(av_abs_CT, 'descend');
+		lin_inds = 	sort_inds(1:threshold);
+	end
 	nCon = length(lin_inds);
 	conInds = zeros(nCon, 2);
 
