@@ -1,4 +1,16 @@
 function [PLI] = PLIMatrix(X,band,Fs, bInducedOnly)
+% -------------------------------------------------------
+% description
+% -------------------------------------------------------
+% FORMAT:
+%   [PLI] = PLIMatrix(X,band,Fs, bInducedOnly) 
+% INPUTS:
+%   inputs        -
+% OUTPUTS:
+%   outputs
+% ________________________________________
+% Dmitrii Altukhov, dm.altukhov@ya.ru
+
 if(nargin<4)
     bInducedOnly = false;
 end;

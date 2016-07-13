@@ -42,4 +42,4 @@ function [AttRe, AttIm] = MeasureAttenuationReIm(Upwr, G, N, SourcePairs)
 
     Aimp  = Aim-Upwr*(Upwr'*Aim);
     AttIm = norm(Aimp(:))/norm(Aim(:));
-
+end

@@ -12,7 +12,9 @@ function ind = FindXYZonGrid(xyz, GridLoc)
 %                the closest to specified point.
 % ________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
-
+	if size(GridLoc, 2) ~= 3
+	    error('SizeError:GridLoc', ['size(GridLoc) = ', num2str(size(GridLoc))]);
+	end
 	temp_Loc = sum( ( GridLoc - repmat(xyz, [size(GridLoc, 1), 1]) ) .^ 2, 2  );
 	[~, inds_sort] = sort(temp_Loc);
 	ind = inds_sort(1);
