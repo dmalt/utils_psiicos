@@ -47,12 +47,12 @@ function [C1, C2, C4] = PrepCondCT(ConData, N_subjects)
                 C4{s}.G = ConData{s}.G2dLRU;
                 C4{s}.Upwr = ConData{s}.Upwr;
                 % -- Cross-spectra projected away from other conditions --- % 
-                C1{s}.CTfrom2 = ProjAwayFromCond(C1{s}.CT_Ind, C2{s}.CT_Ind);
-                C1{s}.CTfrom4 = ProjAwayFromCond(C1{s}.CT_Ind, C4{s}.CT_Ind);
+                C1{s}.CTfrom2 = ProjFromCond(C1{s}.CT_Ind, C2{s}.CT_Ind);
+                C1{s}.CTfrom4 = ProjFromCond(C1{s}.CT_Ind, C4{s}.CT_Ind);
 
-                C2{s}.CTfrom1 = ProjAwayFromCond(C2{s}.CT_Ind, C1{s}.CT_Ind);
-                C2{s}.CTfrom4 = ProjAwayFromCond(C2{s}.CT_Ind, C4{s}.CT_Ind);
+                C2{s}.CTfrom1 = ProjFromCond(C2{s}.CT_Ind, C1{s}.CT_Ind);
+                C2{s}.CTfrom4 = ProjFromCond(C2{s}.CT_Ind, C4{s}.CT_Ind);
 
-                C4{s}.CTfrom1 = ProjAwayFromCond(C4{s}.CT_Ind, C1{s}.CT_Ind);
-                C4{s}.CTfrom2 = ProjAwayFromCond(C4{s}.CT_Ind, C2{s}.CT_Ind);
+                C4{s}.CTfrom1 = ProjFromCond(C4{s}.CT_Ind, C1{s}.CT_Ind);
+                C4{s}.CTfrom2 = ProjFromCond(C4{s}.CT_Ind, C2{s}.CT_Ind);
         end
