@@ -47,7 +47,7 @@ function trials = LoadTrials(subjID, condition, freqBand, timeRange, GainSVDTh, 
     end
 
     sFreq = 500;                                  % can I figure this out from the data?
-    [b,a] = butter(5, freqBand / (sFreq / 2));    % define filter
+    [b,a] = fir1(128, freqBand / (sFreq / 2));    % define filter
 
     fprintf('Loading data from BST database.. \n');
     G = LoadHeadModel(subjID, condition, protocolPath, true, GainSVDTh);
