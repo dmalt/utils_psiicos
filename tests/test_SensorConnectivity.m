@@ -6,12 +6,12 @@ classdef test_SensorConnectivity < matlab.unittest.TestCase
 		conInds
 		nOutputRows
 		nOutputCols
-		threshold = 0.9;
+		threshold = 2;
 	end
 
 	methods(TestMethodSetup)
 		function setup(obj)
-			obj.CT = fakeCT(obj.nSen, obj.nTimes);
+			obj.CT = GetFakeCT(obj.nSen, obj.nTimes);
 			obj.conInds = SensorConnectivity(obj.CT, obj.threshold);
 			[obj.nOutputRows, obj.nOutputCols] = size(obj.conInds);
 		end
@@ -40,7 +40,7 @@ classdef test_SensorConnectivity < matlab.unittest.TestCase
 		end
 
 		function test_max_of_abs_CT_in_output(obj)
-			abs_av_CT = mean(abs(obj.CT), 2);
+			abs_av_CT = abs(sum(obj.CT, 2));
 			abs_av_CT = reshape(abs_av_CT, obj.nSen, obj.nSen);
 			abs_av_CT = abs_av_CT - diag(diag(abs_av_CT));
 			abs_av_CT = abs_av_CT(:);
@@ -51,11 +51,11 @@ classdef test_SensorConnectivity < matlab.unittest.TestCase
 			isMaxInConInds = ismember(con1, obj.conInds, 'rows') || ...
 							 ismember(con2, obj.conInds, 'rows');
 
-			obj.assertTrue(isMaxInConInds, num2str(m_ij))
+			obj.assertTrue(isMaxInConInds, [num2str(m_ij), num2str(obj.conInds(1,:))])
 		end
 
 		function test_returns_nondiag_inds(obj)
-			nCon = length(obj.conInds);
+			nCon = size(obj.conInds,1);
 			for iCon = 1:nCon
 				obj.assertNotEqual(obj.conInds(iCon,1), obj.conInds(iCon,2))
 			end

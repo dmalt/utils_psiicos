@@ -1,7 +1,7 @@
 classdef test_GetColors < matlab.unittest.TestCase
 	methods(Test)
 		function test_returns_valid_struct(obj)
-			colors = GetColors()
+			colors = GetColors();
 			obj.assertTrue(isstruct(colors))
 			obj.assertTrue(isfield(colors, 'RGB'), 'No "RGB" field')
 			obj.assertTrue(isfield(colors, 'name'), 'No "name" field')
