@@ -1,4 +1,4 @@
-function CT = fakeCT(nSen, nTimes)
+function CT = GetFakeCT(nSen, nTimes)
 % ----------------------------------------
 % Generate random complex matrix with 
 % cross-spectrum-timeseries-like structure
@@ -8,13 +8,14 @@ function CT = fakeCT(nSen, nTimes)
 % normal distribution.
 % ----------------------------------------
 % FORMAT:
-%   CT = fakeCT(nSen, nTimes) 
+%   CT = GetFakeCT(nSen, nTimes) 
 % INPUTS:
 %   nSen        - scalar; number of sensors
 %   nTimes      - scalar; number of time steps
 % OUTPUTS:
-%   CT    - {nSen ^ 2 x nTimes} complex 
-%           symmetric matrix with real diagonal
+%   CT    - {nSen ^ 2 x nTimes} matrix; 
+%           timeseries of vectorizations of complex
+%           symmetric matrices with real diagonal
 % ________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
 
