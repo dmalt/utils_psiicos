@@ -1,4 +1,4 @@
-classdef test_SensorConnectivity < matlab.unittest.TestCase
+classdef test_GetSensorConnectivity < matlab.unittest.TestCase
 	properties
 		nSen = 204;
 		nTimes = 10;
@@ -12,7 +12,7 @@ classdef test_SensorConnectivity < matlab.unittest.TestCase
 	methods(TestMethodSetup)
 		function setup(obj)
 			obj.CT = GetFakeCT(obj.nSen, obj.nTimes);
-			obj.conInds = SensorConnectivity(obj.CT, obj.threshold);
+			obj.conInds = GetSensorConnectivity(obj.CT, obj.threshold);
 			[obj.nOutputRows, obj.nOutputCols] = size(obj.conInds);
 		end
 	end

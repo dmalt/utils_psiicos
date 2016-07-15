@@ -1,9 +1,9 @@
-function conInds = SensorConnectivity(CT, threshold)
+function conInds = GetSensorConnectivity(CT, threshold)
 % -------------------------------------------------------
 % description
 % -------------------------------------------------------
 % FORMAT:
-%   conInds = SensorConnectivity(CT, threshold) 
+%   conInds = GetSensorConnectivity(CT, threshold) 
 % INPUTS:
 %   inputs        -
 % OUTPUTS:
