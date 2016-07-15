@@ -13,8 +13,8 @@ function [sim_mean, sim_std, CS] = ConnSimMetrics(conInds, ChLoc)
 % Dmitrii Altukhov, dm.altukhov@ya.ru
 	nSubj = length(conInds);
 	count = 1;
-	for s1 = 1:10
-	   for s2 = s1+1:10
+	for s1 = 1:nSubj
+	   for s2 = s1+1:nSubj
 	       if(s1~=s2)
 	           CS(count) = ConnectivitySimilarity(conInds{s1}, conInds{s2}, ChLoc);
 	           count = count + 1;
@@ -24,3 +24,4 @@ function [sim_mean, sim_std, CS] = ConnSimMetrics(conInds, ChLoc)
 
 	sim_mean = mean(CS);
 	sim_std = std(CS) / sqrt(length(CS));
+end
