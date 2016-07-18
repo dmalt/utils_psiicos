@@ -1,25 +1,31 @@
-function CS = ConnectivitySimilarity(Pairs1, Pairs2, ChLoc, NOrder, MaxDist)
+function CS = ConnectivitySimilarity(Pairs1, Pairs2, ChLoc, NOrder, MaxDist, meas)
 % -------------------------------------------------------
 % Compute distance between two sets of connections.
 % Intuitively - the degree of overlapping between sets.
 % -------------------------------------------------------
 % FORMAT:
-%   CS = ConnectivitySimilarity(Pairs1, Pairs2, ChLoc, NOrder, MaxDist) 
+%   CS = ConnectivitySimilarity(Pairs1, Pairs2, ChLoc, NOrder, MaxDist, meas) 
 % INPUTS:
 %   Pairs1        -
 %   Pairs2
 %   ChLoc
 %   NOrder
 %   MaxDist
+%   meas
 % OUTPUTS:
 %   CS
 % ________________________________________________________________________
 % Alex Ossadtchii ossadtchi@gmail.com, Dmitrii Altukhov, dm.altukhov@ya.ru
+    if nargin < 6
+        meas = 'J';
+    end
 
-    if(nargin == 3)
-        NOrder = 4;
+    if(nargin < 5)
         MaxDist = 0.05;
     end;
+    if(nargin < 4)
+        NOrder = 4;
+    end
 
     % ----- Create a list of neighbours for each location ----- %
     for i=1:size(ChLoc,2)
@@ -35,8 +41,12 @@ function CS = ConnectivitySimilarity(Pairs1, Pairs2, ChLoc, NOrder, MaxDist)
     M1 = AugmentConnMatr(Pairs1, ElNeighbs);
     M2 = AugmentConnMatr(Pairs2, ElNeighbs);
 
-    
-    CS = sum(sum(M1 .* M2)) / ( sum(M1(:)) + sum(M2(:)) - sum(sum(M1 .* M2)) );
+    switch meas
+        case 'J' % Jaccard coefficient
+            CS = sum(sum(M1 .* M2)) / ( sum(M1(:)) + sum(M2(:)) - sum(sum(M1 .* M2)) );
+        case 'O' % Ochiai coefficient
+            CS = sum(sum(M1.*M2)) / sqrt( sum(M1(:)) * sum(M2(:)) );
+    end
 end
 
 
