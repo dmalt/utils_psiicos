@@ -38,7 +38,11 @@ function Plot(obj, opacity)
 	% - clicks on connections won't work  - %
 	set(h_br, 'PickableParts', 'none') 
 
-	camlight left; lighting phong;
+	lighting phong;
+	axis equal;
+	view(-90,90);
+	axis off;
+	grid off
 	camlight right; 
 	hold on;
 	% ------------------------------------------- %
