@@ -135,7 +135,7 @@ function [rp ci ai ncol]=sparse_to_csr(A,varargin)
 % 2009-05-01: Added ncol output
 % 2009-05-15: Fixed triplet input
 
-    error(nargchk(1, 5, nargin, 'struct'))
+    narginchk(1, 5)
     retc = nargout>1; reta = nargout>2;
 
     if nargin>1
