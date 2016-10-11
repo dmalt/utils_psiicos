@@ -54,7 +54,7 @@ function [HM, CrossSpecTime, Trials, Ctx] = GenerData(PhaseLag, nTr, GainSVDTh, 
     end
     % ----------------------------------- %
     % ---- check if cache folder is there --- %
-    % ----------if no create one ------------ %
+    % ----------if no - create one ---------- %
     fname = mfilename('fullpath');
     mpath = fileparts(fname);
     cache_fold =  [mpath, '/Simulations_cache'];

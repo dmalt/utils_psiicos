@@ -43,6 +43,6 @@ function [Gain_reduced_n, Gain_reduced] = ReduceToTangentSpace(Gain, chSelect)
              Gain(chUsed, 3 + 3 * (i - 1))];
         [u, s, ~] = svd(g);
         Gain_reduced_n(:,range)   = u(:,1:2);                                                                                                                                                                                                                              
-        Gain_reduced(:,range) = u(:,1:2) * s(1:2,1:2);                                                                                                                                                                                                                              
+        Gain_reduced(:,range)     = u(:,1:2) * s(1:2,1:2);                                                                                                                                                                                                                              
         range = range + 2;
     end;

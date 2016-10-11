@@ -19,7 +19,7 @@ function CT = GetCTS(subjID, condition, freqBand, timeRange, GainSVDTh, protocol
 		isInducedOnly = false;
 	end
 	if nargin < 6 
-		protocolPath = '/home/dmalt/PSIICOS_osadtchii'
+		protocolPath = '/home/dmalt/PSIICOS_osadtchii';
 	end
 	if nargin < 5
 		GainSVDTh = 0.01;

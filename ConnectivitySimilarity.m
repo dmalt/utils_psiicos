@@ -45,7 +45,10 @@ function CS = ConnectivitySimilarity(Pairs1, Pairs2, ChLoc, NOrder, MaxDist, mea
         case 'J' % Jaccard coefficient
             CS = sum(sum(M1 .* M2)) / ( sum(M1(:)) + sum(M2(:)) - sum(sum(M1 .* M2)) );
         case 'O' % Ochiai coefficient
-            CS = sum(sum(M1.*M2)) / sqrt( sum(M1(:)) * sum(M2(:)) );
+            % CS = sum(sum(M1 .* M2)) / sqrt( sum(M1(:)) * sum(M2(:)) );
+            CS = sum(sum(M1.*M2))/sqrt( sum(M1(:).*M1(:))*sum(M2(:).*M2(:)));
+        case 'A'
+            CS = sum(sum(M1 .* M2)) / (0.5 * ( length(Pairs1) + length(Pairs2) ) );
     end
 end
 
