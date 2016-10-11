@@ -5,7 +5,7 @@ function drawConnectionsOnBrain(ConInds, GridXYZ, iCol, Ctx)
 % brain
 % -------------------------------------------------------
 % FORMAT:
-%   drawConnectionsOnBrain(A, R, iCol, Ctx) 
+%   drawConnectionsOnBrain(ConInds, GridXYZ, iCol, Ctx) 
 % INPUTS:
 %   ConInds        - {nConnections x 2} matrix of indices
 %                    of connected grid nodes
@@ -25,13 +25,21 @@ function drawConnectionsOnBrain(ConInds, GridXYZ, iCol, Ctx)
 	violet = [174 12 232] / 256;
 	yellow = [255 248 13] / 256;
 	red = [232 12 143] / 256;
-	grey = [112,127,127] / 256;
+	% grey = [112,127,127] / 256;
+	grey = [212,227,227] / 256;
 	colors = {orange; green; blue; violet; yellow};
 	figure;
 	hctx  = trisurf(Ctx.Faces,Ctx.Vertices(:,1),Ctx.Vertices(:,2),Ctx.Vertices(:,3),...
-					'FaceColor', grey, 'EdgeColor','none','FaceAlpha', 0.6); 
-	camlight left; lighting phong;
-	camlight right; 
+					'FaceColor', grey, 'EdgeColor','none','FaceAlpha', 0.4); 
+	lighting phong;
+	camlight right;
+
+	set(gcf,'color','k');
+	axis equal;
+	view(-90,90);
+	axis off;
+	grid off;
+
 	hold on;
 	drawset(ConInds, GridXYZ, colors{iCol});
 end

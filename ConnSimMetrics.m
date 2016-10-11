@@ -16,7 +16,7 @@ function [sim_mean, sim_std, CS] = ConnSimMetrics(conInds, ChLoc)
 	for s1 = 1:nSubj
 	   for s2 = s1+1:nSubj
 	       if(s1~=s2)
-	           CS(count) = ConnectivitySimilarity(conInds{s1}, conInds{s2}, ChLoc);
+	           CS(count) = ConnectivitySimilarity(conInds{s1}, conInds{s2}, ChLoc, 4, 0.05, 'O');
 	           count = count + 1;
 	       end
 	   end;
