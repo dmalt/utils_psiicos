@@ -75,9 +75,7 @@ function HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh)
 
     % --------------- reduce sensor space ---------------- %
     if GainSVDTh
-        [ug,~,~] = spm_svd(G2dLR * G2dLR', GainSVDTh);
-        UP = ug';
-        G2dLRU = UP * G2dLR;
+        [G2dLRU, UP] = ReduceSensorSpace(G2dLR, GainSVDTh);
     else
         G2dLRU = G2dLR;
         UP = eye(size(G2dLR,1));
