@@ -34,6 +34,7 @@ function HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh)
 %                       protocol
 % ________________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
+
     % ------------- set up defaults ----------- %
     if nargin < 5
         GainSVDTh = 0.01;

@@ -1,7 +1,7 @@
 function [u,v,f] = FindOr(C, g1, g2)
 % ---------------------------------------------------------------
-% FindOr: given cross-spectrum matrix C and two pairs of 
-% tangential dipoles (loose orientation is presumed) for two 
+% Given cross-spectrum matrix C and two pairs of 
+% tangential dipoles (free orientation is presumed) for two 
 % different locations on sources find real fixed orientations
 % of dipoles in these locations maximizing coherence between
 % these two locations. 
@@ -21,6 +21,7 @@ function [u,v,f] = FindOr(C, g1, g2)
 %              delevered by the optiamal oirentations
 % ________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
+
 	A = g1' * C * g2;
 	OPTIONS.TolX = 1e-4;
 	OPTIONS.TolFun = 1e-4;
