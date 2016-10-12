@@ -1,6 +1,6 @@
 function f = OrientFunctional(phi, A)
 % -------------------------------------------------------
-% OrientFunctional: compute coherence between two sources
+% Compute coherence between two sources
 % for a given orientation of topography vectors.
 % Orientations are given by u = [cos(phi(1)); sin(phi(1))],
 % v = [cos(phi(2)); sin(phi(2))]

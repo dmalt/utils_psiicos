@@ -16,6 +16,7 @@ function CS = ConnectivitySimilarity(Pairs1, Pairs2, ChLoc, NOrder, MaxDist, mea
 %   CS
 % ________________________________________________________________________
 % Alex Ossadtchii ossadtchi@gmail.com, Dmitrii Altukhov, dm.altukhov@ya.ru
+
     if nargin < 6
         meas = 'J';
     end

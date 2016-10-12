@@ -3,12 +3,18 @@ function chUsed = PickChannels(chName)
 % Pick MEG channel indices for electa neuromag recordings
 % -------------------------------------------------------
 % FORMAT:
-%   format 
+%   chUsed = PickChannels(chName)
 % INPUTS:
-%   inputs        -
+%   chName   - string; following options are available:
+%              'grad'  - pick only gradiometers 
+%              'grad1' - pick first gradiometers 
+%              'grad2' - pick second gradiometers 
+%              'mag'   - pick magnetometers 
+%              'meg'   - pick all MEG channels 
 % OUTPUTS:
-%   outputs
-% ________________________________________
+%   chUsed   - {n_channels_used} vector of indices of 
+%              picked channels 
+% _____________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
 	chUsed = 1:306;
 	if strcmp(chName, 'grad')

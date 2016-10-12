@@ -4,13 +4,17 @@ function [sim_mean, sim_std, CS] = ConnSimMetrics(conInds, ChLoc)
 % a group of subjects
 % -------------------------------------------------------
 % FORMAT:
-%   format 
+%   [sim_mean, sim_std, CS] = ConnSimMetrics(conInds, ChLoc)
 % INPUTS:
-%   inputs        -
+%   conInds        -
+%   ChLoc
 % OUTPUTS:
-%   outputs
+%   sim_mean
+%   sim_std
+%   CS
 % ________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
+
 	nSubj = length(conInds);
 	count = 1;
 	for s1 = 1:nSubj
