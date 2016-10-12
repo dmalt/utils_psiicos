@@ -72,7 +72,8 @@ function HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh)
     HM_bst = load(hm_path);
     % ------------------------------------------- %    
 
-    G2dLR = ReduceToTangentSpace(HM_bst.Gain, 'grad');
+    ChUsed = PickChannels('grad');
+    G2dLR = ReduceToTangentSpace(HM_bst.Gain(ChUsed,:));
 
     % --------------- reduce sensor space ---------------- %
     if GainSVDTh
