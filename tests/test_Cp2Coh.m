@@ -7,8 +7,8 @@ classdef test_Cp2Coh < matlab.unittest.TestCase
 
 	methods(TestMethodSetup)
 		function run_method(obj)
-			CT = GetFakeCT(obj.nSen, obj.nTimes);
-			obj.CohTS = Cp2Coh(CT);
+			CT = ups.GetFakeCT(obj.nSen, obj.nTimes);
+			obj.CohTS = ups.Cp2Coh(CT);
 		end
 	end
 

@@ -16,6 +16,10 @@ function Plot(obj, opacity)
 %                           should be between 0 and 1;
 % __________________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
+
+	import ups.GetColors
+	import ups.drawset
+
 	if nargin < 2
 		opacity = 0.6;
 	end

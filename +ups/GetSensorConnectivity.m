@@ -11,6 +11,8 @@ function conInds = GetSensorConnectivity(CT, threshold)
 % ________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
 
+	import ups.indVec2mat
+
 	% conInds = rand(3,2);
 	[nSen_sq, ~] = size(CT);
 	nSen = sqrt(nSen_sq);

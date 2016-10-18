@@ -1,4 +1,3 @@
-
 function [HM, CrossSpecTime, Trials, Ctx] = GenerData(PhaseLag, nTr, GainSVDTh, InducedScale, EvokedScale, isUseCache) 
 % --------------------------------------------------------------------------
 % Generate forward model and cross-spectrum on sensors for simulations
@@ -30,6 +29,10 @@ function [HM, CrossSpecTime, Trials, Ctx] = GenerData(PhaseLag, nTr, GainSVDTh, 
 % ______________________________________________________________________________
 % Alex Ossadtchi, ossadtchi@gmail; Dmitrii Altukhov, dm.altukhov@ya.ru
 
+    import ups.PickChannels
+    import ups.ReduceToTangentSpace
+    import ups.CrossSpectralTimeseries
+
     % --------- set up defaults --------- %
     if nargin < 6    
         isUseCache = true;
@@ -57,7 +60,7 @@ function [HM, CrossSpecTime, Trials, Ctx] = GenerData(PhaseLag, nTr, GainSVDTh, 
     % ----------if no - create one ---------- %
     fname = mfilename('fullpath');
     mpath = fileparts(fname);
-    cache_fold =  [mpath, '/Simulations_cache'];
+    cache_fold =  [mpath, '/../Simulations_cache'];
     if ~exist(cache_fold, 'dir')
         mkdir(cache_fold);
     end
@@ -269,6 +272,9 @@ function [Evoked, Induced, BrainNoise, Ctx, SensorNoise, G2d, R, Fs, XYZGenOut, 
 %   outputs
 % ________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
+    
+    import ups.PickChannels
+    import ups.ReduceToTangentSpace
 
     bUsePhases = ~isempty(PhaseShiftsIn);
 

@@ -6,7 +6,7 @@ classdef test_GetCtx < matlab.unittest.TestCase
 	methods(TestMethodSetup)
 		function run_GetCtx(obj)
 			subjID = '0019_shev';
-			[obj.Ctx, obj.CtxHR] = GetCtx(subjID);
+			[obj.Ctx, obj.CtxHR] = ups.GetCtx(subjID);
 		end
 	end
 	methods(Test)

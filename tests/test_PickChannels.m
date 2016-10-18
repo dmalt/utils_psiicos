@@ -1,6 +1,8 @@
 classdef test_PickChannels < matlab.unittest.TestCase
 	methods(Test)
 		function test_output_size(obj)
+			import ups.PickChannels
+			
 			gradiometers = PickChannels('grad');
 			magnetometers = PickChannels('mag');
 			meg_channels = PickChannels('meg');

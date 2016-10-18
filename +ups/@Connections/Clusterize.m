@@ -1,4 +1,7 @@
 function obj = Clusterize(obj, clustSize, dPair)
+	import ups.PairwiseClust
+	import ups.CoOrientCluster
+		
 	% dPair = 0.02;
 	% clustSize = 2;
 	obj = obj.Merge();

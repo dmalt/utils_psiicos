@@ -1,4 +1,4 @@
-classdef testCrossSpectralTimeseries < matlab.unittest.TestCase
+classdef test_CrossSpectralTimeseries < matlab.unittest.TestCase
 	properties
 		testTrials
 		isInducedOnly
@@ -17,7 +17,7 @@ classdef testCrossSpectralTimeseries < matlab.unittest.TestCase
 			trials= rand(testCase.nChannels, testCase.nTimes, testCase.nTrials);
 			testCase.testTrials = trials;
 			testCase.isInducedOnly = false;
-			[testCase.CT, testCase.key] = CrossSpectralTimeseries(testCase.testTrials, testCase.isInducedOnly);
+			[testCase.CT, testCase.key] = ups.CrossSpectralTimeseries(testCase.testTrials, testCase.isInducedOnly);
 		end
 	end
 
@@ -41,7 +41,7 @@ classdef testCrossSpectralTimeseries < matlab.unittest.TestCase
 
 		function test_CT_induced_and_CT_total_differ(testCase)
 			isInduced = true;
-			CT_induced = CrossSpectralTimeseries(testCase.testTrials, isInduced);
+			CT_induced = ups.CrossSpectralTimeseries(testCase.testTrials, isInduced);
 			testCase.assertNotEqual(testCase.CT, CT_induced)
 		end
 	end

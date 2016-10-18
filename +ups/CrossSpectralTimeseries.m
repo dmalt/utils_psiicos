@@ -17,6 +17,7 @@ function [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly)
 %   key            -  
 % ________________________________________________________________________
 % Alex Ossadtchii ossadtchi@gmail.com, Dmitrii Altukhov dm.altukhov@ya.ru
+
   Trials = trials;
   if(nargin == 1)
       isInducedOnly = false;
@@ -73,3 +74,4 @@ function [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly)
   end;
   CT = data;
   fprintf('\n');
+end

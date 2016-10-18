@@ -15,7 +15,7 @@ classdef test_GenerData < matlab.unittest.TestCase
 	methods(TestMethodSetup)
 		function run_GenerData(obj)
 			[obj.HM, obj.Cp, obj.trials, obj.Ctx] = ...
-			 GenerData(obj.phaseLag, obj.nTr, obj.GainSVDTh, obj.inducedScale, obj.evokedScale, obj.isUseCache);
+			 ups.GenerData(obj.phaseLag, obj.nTr, obj.GainSVDTh, obj.inducedScale, obj.evokedScale, obj.isUseCache);
 		end
 	end
 

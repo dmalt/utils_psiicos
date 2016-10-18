@@ -14,6 +14,8 @@ function [Ctx, CtxHR] = GetCtx(subjID, protocolPath)
 % _______________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
 
+	import ups.GetCtxPaths
+
 	if nargin < 2
 		protocolPath = '/home/dmalt/PSIICOS_osadtchii';
 	end

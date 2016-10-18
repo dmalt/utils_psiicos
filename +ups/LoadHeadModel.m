@@ -35,6 +35,9 @@ function HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh)
 % ________________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
 
+    import ups.ReduceToTangentSpace
+    import ups.ReduceSensorSpace
+
     % ------------- set up defaults ----------- %
     if nargin < 5
         GainSVDTh = 0.01;

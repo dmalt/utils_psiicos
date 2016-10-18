@@ -11,8 +11,8 @@ classdef test_GetSensorConnectivity < matlab.unittest.TestCase
 
 	methods(TestMethodSetup)
 		function setup(obj)
-			obj.CT = GetFakeCT(obj.nSen, obj.nTimes);
-			obj.conInds = GetSensorConnectivity(obj.CT, obj.threshold);
+			obj.CT = ups.GetFakeCT(obj.nSen, obj.nTimes);
+			obj.conInds = ups.GetSensorConnectivity(obj.CT, obj.threshold);
 			[obj.nOutputRows, obj.nOutputCols] = size(obj.conInds);
 		end
 	end
@@ -45,7 +45,7 @@ classdef test_GetSensorConnectivity < matlab.unittest.TestCase
 			abs_av_CT = abs_av_CT - diag(diag(abs_av_CT));
 			abs_av_CT = abs_av_CT(:);
 			[~, m_ind] = max(abs_av_CT);
-			m_ij = indVec2mat(m_ind, obj.nSen);
+			m_ij = ups.indVec2mat(m_ind, obj.nSen);
 			con1 = m_ij;
 			con2 = [m_ij(2), m_ij(1)];
 			isMaxInConInds = ismember(con1, obj.conInds, 'rows') || ...

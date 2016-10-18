@@ -11,6 +11,9 @@ function [sim_mean, sim_std, CS] = ConnSimMetrics(conInds, ChLoc)
 %   outputs
 % ________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
+	
+	import ups.ConnectivitySimilarity
+
 	nSubj = length(conInds);
 	count = 1;
 	for s1 = 1:nSubj

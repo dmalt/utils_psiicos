@@ -11,6 +11,9 @@ function CT = GetCTS(subjID, condition, freqBand, timeRange, GainSVDTh, protocol
 % ________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
 
+	import ups.CrossSpectralTimeseries
+	import ups.LoadTrials
+
 	if nargin < 8
 		isUseCache = true;
 	end
@@ -27,7 +30,7 @@ function CT = GetCTS(subjID, condition, freqBand, timeRange, GainSVDTh, protocol
 
 	fname = mfilename('fullpath');
 	mpath = fileparts(fname);
-	cache_fold =  [mpath, '/CT_cache'];
+	cache_fold =  [mpath, '/../CT_cache'];
 	if ~exist(cache_fold, 'dir')
 	    mkdir(cache_fold);
 	end

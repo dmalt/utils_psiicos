@@ -10,6 +10,12 @@ function h_ax = DrawConnectionsOnSensors(conInds, channels_path, isFun)
 %   outputs
 % ________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
+
+	import ups.PickChannels
+	import ups.ReadChannelLocations
+	import ups.GetColors
+	import ups.drawset
+
 	if nargin < 3
 		isFun = false;
 	end

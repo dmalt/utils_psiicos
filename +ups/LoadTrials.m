@@ -25,6 +25,8 @@ function trials = LoadTrials(subjID, condition, freqBand, timeRange, GainSVDTh, 
 % ________________________________________________________________________
 % Alex Ossadtchii ossadtchi@gmail.com, Dmitrii Altukhov dm.altukhov@ya.ru
 
+    import ups.LoadHeadModel
+    
     ChUsed = 1:306; ChUsed(3:3:end) = []; % use only gradiometers
 
     % -------- init defaults ------------ %

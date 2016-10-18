@@ -20,6 +20,9 @@ function [Gain_reduced_n, Gain_reduced] = ReduceToTangentSpace(Gain, chSelect)
 %                     source location confined to a tangent plane
 % ________________________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
+
+    import ups.PickChannels
+
     switch nargin
         case 1
             chSelect = 'grad';

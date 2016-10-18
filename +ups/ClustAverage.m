@@ -16,6 +16,8 @@ function  ClustCenters = ClustAverage(clusters, GridLoc)
 % _____________________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
 
+	import ups.FindXYZonGrid	
+
 	nClust = length(clusters);
 	ClustCenters = zeros(nClust, 2);
 
