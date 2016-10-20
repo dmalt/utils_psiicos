@@ -1,4 +1,4 @@
-function Plot(obj, opacity)
+function Plot(obj, opacity, linewidth, m_radius)
 % ---------------------------------------------------------------
 % Given indices of connected grid locations, grid nodes
 % coordinates and cortex surface, draw connections on brain
@@ -23,13 +23,21 @@ function Plot(obj, opacity)
 	if nargin < 2
 		opacity = 0.6;
 	end
+
+	if nargin < 3
+		linewidth = 2;
+	end
+
+	if nargin < 4 
+		m_radius = 0.002;
+	end
 	
 	colorScheme = GetColors();
 	bg_color = colorScheme(1).RGB;
 	colors = {colorScheme(2:end).RGB};
 	
 	% ------------ Draw brain ------------------- %
-	figure;
+	% figure;
 	h_br = trisurf(obj.CtxHR.Faces, ...
 				   obj.CtxHR.Vertices(:,1), ...
 				   obj.CtxHR.Vertices(:,2), ...
@@ -57,14 +65,11 @@ function Plot(obj, opacity)
 		if iCol == 0
 			iCol = length(colors);
 		end
-		lineHandles = drawset(obj.conInds{iSet}, obj.headModel.GridLoc, colors{iCol});
+		lineHandles = drawset(obj.conInds{iSet}, obj.headModel.GridLoc, colors{iCol}, linewidth, m_radius);
+		
 		for i = 1:length(lineHandles)
 	     	set(lineHandles{i},  'ButtonDownFcn', @obj.PlotPhase); % make connections clickable
 		end
 	end
 	% ----------------------------------------------------------- %
 end
-
-
-
-

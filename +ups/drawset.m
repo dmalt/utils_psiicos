@@ -1,4 +1,4 @@
-function lineHandles = drawset(conInds, Loc, col, linewidth, Markersize)
+function lineHandles = drawset(conInds, Loc, col, linewidth, m_radius)
 % -------------------------------------------------------
 % Draw set of indices ConIndS using grid locations Loc 
 % and color col
@@ -17,18 +17,31 @@ function lineHandles = drawset(conInds, Loc, col, linewidth, Markersize)
 % ___________________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
 	if nargin < 5
-	    Markersize = 40;
+	    m_radius = 0.02;
 	end
 
 	if nargin < 4
 	    linewidth = 2;
 	end
+    linecol = col;
     lineHandles = {};
     for i = 1:size(conInds, 1)
             lineHandles{i} = line( Loc(conInds(i,:), 1), Loc(conInds(i,:),2), Loc(conInds(i,:),3));
-            plot3( Loc(conInds(i, 1), 1), Loc(conInds(i, 1), 2), Loc(conInds(i, 1), 3),'.', 'Color', col, 'Markersize', Markersize );
-            plot3( Loc(conInds(i, 2), 1), Loc(conInds(i, 2), 2), Loc(conInds(i, 2), 3),'.', 'Color', col, 'Markersize', Markersize );
-            set(lineHandles{i}, 'Color', col, 'linewidth', linewidth);
+
+            sphere_marker(Loc(conInds(i,1),1), Loc(conInds(i,1),2), Loc(conInds(i,1),3), m_radius, col)
+            sphere_marker(Loc(conInds(i,2),1), Loc(conInds(i,2),2), Loc(conInds(i,2),3), m_radius, col)
+
+            set(lineHandles{i}, 'Color', linecol, 'linewidth', linewidth);
     end
 end
- 
+
+
+function sphere_marker(x0, y0, z0, r, col) 
+
+    [x,y,z] = sphere;
+    % r = 0.002;
+    x = r * x; y = r * y; z = r * z;
+    x = x + x0; y = y + y0; z = z + z0;
+    h = surf(x,y,z);
+    set(h,'Facecolor', col, 'EdgeColor', 'none');
+end

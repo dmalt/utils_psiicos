@@ -1,4 +1,31 @@
 classdef Connections 
+% -------------------------------------------------------
+% Class to store and visualize source-level connections
+% -------------------------------------------------------
+% FORMAT:
+% function obj = Connections(subjId, conInds, freqBand,...
+%                       timeRange, CT, condName, HM, CtxHR)
+%    
+% INPUTS:
+%   subjId        - string; subject name
+%   conInds       - {n_connections x 2} array of indices
+%                   of connected sources
+%   freqBand      - {2 x 1} array of bandpass filter 
+%                   frequencies
+%   timeRange     - {2 x 1} array of time
+%   CT            - {n_sensors ^ 2 x n_times} matrix of
+%                   cross-spectrum timeseries
+%   condName      - string; name of condition
+%   HM            - structure; contains forward operator
+%   CtxHR         - structure; triangulated brain surface
+% 
+% OUTPUTS:
+%   obj           - Connections instance
+% 
+% USAGE:
+% ________________________________________
+% Dmitrii Altukhov, dm.altukhov@ya.ru
+
 	properties (Access = private)
 		protocolPath 	 % path to brainstorm protocol
 		CtxHR         	 % high res. cortex surface 
@@ -15,7 +42,7 @@ classdef Connections
 	end 
 
 	methods
-		Plot(obj, iCol)                          % plot connections on HR brain
+		Plot(obj, iCol, lidth, msize)            % plot connections on HR brain
 		PlotPhase(obj, src, event)				 % plot amplitude and phase for connecion
 		obj = Clusterize(obj, clustSize, dPair)	 % clusterize connections
 		obj = Average(obj)						 % average connections.
@@ -30,12 +57,12 @@ classdef Connections
 				obj.conInds{1} = conInds;
 			end
 			obj.subjId    = subjId;
-			obj.CtxHR     = CtxHR;
 			obj.freqBand  = freqBand;
 			obj.timeRange = timeRange;
+			obj.CT 		  = CT;
 			obj.condName  = condName;
 			obj.headModel = HM;
-			obj.CT 		  = CT;
+			obj.CtxHR     = CtxHR;
 		end
 		% --------------------------------------------------------- % 
 	end

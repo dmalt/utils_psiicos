@@ -3,7 +3,7 @@ function CT = GetCTS(subjID, condition, freqBand, timeRange, GainSVDTh, protocol
 % Get cross-spectrum timeseries using caching function.
 % -------------------------------------------------------
 % FORMAT:
-%   CT = GetCTS(subjID, condition, freqBand, timeRange, GainSVDTh, protocolPath, isInducedOnly) 
+%   CT = GetCTS(subjID, condition, freqBand, timeRange, GainSVDTh, protocolPath, isInducedOnly)
 % INPUTS:
 %   inputs        -
 % OUTPUTS:

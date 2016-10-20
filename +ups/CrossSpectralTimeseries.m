@@ -49,7 +49,6 @@ function [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly)
   % -------------------------------------------------------------- %
   clear XH;
 
-
   XphConj = conj(Xph);
   k = 1;
   KEY = reshape(1:nCh * nCh, nCh, nCh);

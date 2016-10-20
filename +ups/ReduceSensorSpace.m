@@ -16,6 +16,6 @@ function [G_reduced, UP] = ReduceSensorSpace(G, GainSVDTh)
 %                reduced and complete sensors
 % ________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
-    [ug,~,~] = spm_svd(G * G', GainSVDTh);
+    [ug,~,~] = ups.spm_svd(G * G', GainSVDTh);
     UP = ug';
     G_reduced = UP * G;
