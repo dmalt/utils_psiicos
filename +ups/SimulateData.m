@@ -1,13 +1,16 @@
-function [HM, CrossSpecTime, Trials, Ctx] = GenerData(PhaseLag, nTr, GainSVDTh, InducedScale, EvokedScale, isUseCache) 
+function [HM, CrossSpecTime, Trials, Ctx] = SimulateData(PhaseLag, nTr, GainSVDTh, InducedScale, EvokedScale, isUseCache) 
 % --------------------------------------------------------------------------
 % Generate forward model and cross-spectrum on sensors for simulations
 % --------------------------------------------------------------------------
 % FORMAT:
-%   [HM, CrossSpecTime, Trials, Ctx] = GenerData(PhaseLag, InducedScale, EvokedScale)
+%   [HM, CrossSpecTime, Trials, Ctx] = SimulateData(PhaseLag, InducedScale, EvokedScale)
 % INPUTS:
 %   PhaseLag          - phase lag for simulations
+%   nTr
+%   GainSVDTh
 %   InducedScale      - coefficient for induced activity (default = 0.35)
 %   EvokedScale       - coefficient for evoked activity (default = 0)
+%   isUseCache
 % OUTPUTS:
 %   HM_ps             - structure; forward model operator 
 %                       for reduced sensor space and additional
@@ -18,7 +21,7 @@ function [HM, CrossSpecTime, Trials, Ctx] = GenerData(PhaseLag, nTr, GainSVDTh, 
 %   HM_ps.UP          - {nSenReduced x nGradiometers} matrix
 %                       of transformation between reduced and
 %                       normal sensors
-%   HM_ps.subjID      - string; BST-imported subject name
+%   HM_ps.subjID      - string; subject name
 %   HM_ps.path        - string; path to  
 %   HM_ps.svdThresh   - float; PVU threshold for PCA-driven 
 %                       sensor space reduction
@@ -32,6 +35,7 @@ function [HM, CrossSpecTime, Trials, Ctx] = GenerData(PhaseLag, nTr, GainSVDTh, 
     import ups.PickChannels
     import ups.ReduceToTangentSpace
     import ups.CrossSpectralTimeseries
+    import ups.spm_svd
 
     % --------- set up defaults --------- %
     if nargin < 6    
