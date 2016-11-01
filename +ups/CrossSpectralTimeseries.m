@@ -1,4 +1,4 @@
-function [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly)
+function [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly, progress_bar)
 % -------------------------------------------------------------------
 % Compute cross-spectrum timeseries. 
 % If isInducedOnly = true, compute induced activity; otherwise - total
@@ -17,6 +17,10 @@ function [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly)
 %   key            -  
 % ________________________________________________________________________
 % Alex Ossadtchii ossadtchi@gmail.com, Dmitrii Altukhov dm.altukhov@ya.ru
+
+  if nargin < 3
+    progress_bar = false;
+  end
 
   Trials = trials;
   if(nargin == 1)
@@ -54,8 +58,10 @@ function [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly)
   KEY = reshape(1:nCh * nCh, nCh, nCh);
   % we will take the diagonal as well
   data = zeros(nCh ^ 2, nSamp);
-  fprintf('Calculating vectorised form of the cross spectral matrix... \n');
-  fprintf('Reference sensor (max %d): ', nCh); 
+  if progress_bar
+    fprintf('Calculating vectorised form of the cross spectral matrix... \n');
+    fprintf('Reference sensor (max %d): ', nCh); 
+  end
 
   for i = 1:nCh
       mn = (mean( bsxfun(@times, (Xph(1:nCh,:,:)), XphConj(i,:,:)), 3));
