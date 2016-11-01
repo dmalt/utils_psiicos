@@ -1,4 +1,4 @@
-function [pathCtx, pathCtxHR] = GetCtxPaths(subjName, Protocol_path)
+function [pathCtx, pathCtxHR, pathCtxHHR] = GetCtxPaths(subjName, Protocol_path)
 % -------------------------------------------------------
 % Get paths to triangulated cortex surfaces from brainstorm
 % protocol
@@ -40,9 +40,11 @@ function [pathCtx, pathCtxHR] = GetCtxPaths(subjName, Protocol_path)
 	end
 	isFoundHR = false;
 	isFoundLR = false;
+	isFoundHHR = false;
 	for iFile = 1:length(files)
 		match_HR = regexp(files(iFile).name, 'tess_cortex_?(concat|pial_low)\.mat');
 		match_LR = regexp(files(iFile).name, 'tess_cortex_?(concat|pial_low)_\d+V\.mat');
+		match_HHR = regexp(files(iFile).name, 'tess_cortex_?(concat|pial_high)\.mat');
 
 		if ~isempty(match_HR)
 			isFoundHR = true;
@@ -50,6 +52,9 @@ function [pathCtx, pathCtxHR] = GetCtxPaths(subjName, Protocol_path)
 		elseif ~isempty(match_LR)
 			isFoundLR = true;
 			pathCtx = [anatPath, '/', files(iFile).name];
+		elseif ~isempty(match_HHR)
+			isFoundHHR = true;
+			pathCtxHHR = [anatPath, '/', files(iFile).name]; 
 		end
 	end
 	if ~isFoundHR
@@ -59,6 +64,11 @@ function [pathCtx, pathCtxHR] = GetCtxPaths(subjName, Protocol_path)
 
 	if ~isFoundLR
 		fprintf('Failed to find HR cortex for subject %s in %s' , subjName, Protocol_path)
+		fprintf('\n');
+	end
+
+	if ~isFoundHHR
+		fprintf('Failed to find HHR cortex for subject %s in %s' , subjName, Protocol_path)
 		fprintf('\n');
 	end
 end	
