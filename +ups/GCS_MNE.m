@@ -16,6 +16,7 @@ function [Cs, Ps, IND] = GCS_MNE(C, G, Ce, Cmu)
 % ______________________________________________________________________
 % Alex Ossadtchii ossadtchi@gmail.com, Dmitrii Altukhov, dm.altukhov@ya.ru
 
+    import ups.GCS_ScanFast
     Nch = size(C,1);
 
     kappa = trace(inv(Ce) * G * G') / (trace(inv(Ce) * Cmu) - Nch);
@@ -37,6 +38,3 @@ function [Cs, Ps, IND] = GCS_MNE(C, G, Ce, Cmu)
     IND = zeros(Ns * (Ns - 1) / 2, 2);
 
     [Cs,IND] = GCS_ScanFast(C,G,A);
-
-
-

@@ -39,36 +39,6 @@ function [Cs, Ps, IND] = GCS_DICS(C,G)
     p = 1;
     Cs  = zeros(Ns * (Ns - 1) / 2, 1);
     IND = zeros(Ns * (Ns - 1) / 2, 2);
-    fprintf('iDICS searching the grid... \n');
-    fprintf('Reference index (Max %d) : ', Ns); 
 
-    % for i = 1:Ns
-    %     range_i = i * 2 - 1 : i * 2;
-    %     ai = A(range_i,:);
-    %     gi = G(:,range_i);
-    %     P = eye(Nch)- gi(:,1) * ai(1,:) / (ai(1,:) * gi(:,1)) - gi(:,2) * ai(2,:) / (ai(2,:) * gi(:,2))  ;
-    %     temp = ai * C;
-    %     %temp = ai * C;
-    %     for j = i + 1:Ns
-    %          range_j = j * 2 - 1 : j * 2;
-    %          aj = A(range_j,:) * P;
-    %          cs = temp * aj';
-    %          %[~, s ,~] = svd(imag(cs));
-    %          [~, s ,~] = svd((cs));
-
-    %          Cs(p) = max(diag(s));%/(Ps(i)*Ps(j));
-    %          IND(p,:) = [i,j];
-    %          p = p + 1;
-    %     end;
-
-    %     if i > 1
-    %        for j=0:log10(i - 1)
-    %             fprintf('\b'); % delete previous counter display
-    %        end
-    %     end
-    %     fprintf('%d', i);
-    % end;
-    % C = ps.ProjectAwayFromPowerComplete(C(:),G,500);
-    % C = reshape(C, Nch, Nch) ;
     [Cs,IND] = GCS_ScanFast(C,G,A);
-    fprintf('\n Done\n');
+end
