@@ -42,7 +42,8 @@ classdef Connections
 	end 
 
 	methods
-		Plot(obj, iCol, lidth, msize)            % plot connections on HR brain
+		light_handle = Plot(obj, opacity, linewidth, m_radius)  % plot connections on HR brain
+		PlotViews(obj, opacity, linewidth, m_radius)
 		PlotPhase(obj, src, event)				 % plot amplitude and phase for connecion
 		obj = Clusterize(obj, clustSize, dPair)	 % clusterize connections
 		obj = Average(obj)						 % average connections.

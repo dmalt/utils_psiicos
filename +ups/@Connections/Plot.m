@@ -1,4 +1,4 @@
-function Plot(obj, opacity, linewidth, m_radius)
+function light_handle = Plot(obj, opacity, linewidth, m_radius)
 % ---------------------------------------------------------------
 % Given indices of connected grid locations, grid nodes
 % coordinates and cortex surface, draw connections on brain
@@ -32,10 +32,9 @@ function Plot(obj, opacity, linewidth, m_radius)
 		m_radius = 0.002;
 	end
 	
-	colorScheme = GetColors();
+	colorScheme = GetColors(3);
 	bg_color = colorScheme(1).RGB;
 	colors = {colorScheme(2:end).RGB};
-	
 	% ------------ Draw brain ------------------- %
 	% figure;
 	h_br = trisurf(obj.CtxHR.Faces, ...
@@ -46,6 +45,7 @@ function Plot(obj, opacity, linewidth, m_radius)
 				   'EdgeColor','none', ...
 				   'FaceAlpha', opacity); 
 
+	% whitebg;
 	% - make brain unclicable; without it - %
 	% - clicks on connections won't work  - %
 	set(h_br, 'PickableParts', 'none') 
@@ -55,7 +55,7 @@ function Plot(obj, opacity, linewidth, m_radius)
 	view(-90,90);
 	axis off;
 	grid off
-	camlight right; 
+	light_handle = camlight('right'); 
 	hold on;
 	% ------------------------------------------- %
 
