@@ -54,7 +54,7 @@ function HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh)
     hm_path = [protocolPath, '/data/', subjID];  % path to subject folder in protocol
 
     if ~exist(hm_path, 'dir')
-        error('LoadError:noSubj', 'Subject not found');
+        error('LoadError:noSubj', ['Subject not found at ', hm_path] );
     end
     if strcmp(condName, 'raw')
         hmFolderName = dir([hm_path , '/@raw*/']);   % wildcard
