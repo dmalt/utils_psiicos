@@ -17,7 +17,7 @@ function lineHandles = drawset(conInds, Loc, col, linewidth, m_radius)
 % ___________________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
 	if nargin < 5
-	    m_radius = 0.02;
+	    m_radius = 0.002;
 	end
 
 	if nargin < 4
@@ -38,7 +38,7 @@ end
 
 function sphere_marker(x0, y0, z0, r, col) 
 
-    [x,y,z] = sphere;
+    [x, y, z] = sphere;
     % r = 0.002;
     x = r * x; y = r * y; z = r * z;
     x = x + x0; y = y + y0; z = z + z0;

@@ -43,5 +43,5 @@ function h_ax = DrawConnectionsOnSensors(conInds, channels_path, isFun)
 	hold on;
 	h_ax = gca;
 	% channels = []
-	drawset(conInds, ChLoc', fg_color, 1, 10);
+	drawset(conInds, ChLoc', fg_color, 1, 0.002);
 end
