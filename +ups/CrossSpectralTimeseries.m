@@ -1,20 +1,20 @@
 function [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly, progress_bar)
 % -------------------------------------------------------------------
-% Compute cross-spectrum timeseries. 
+% Compute cross-spectrum timeseries.
 % If isInducedOnly = true, compute induced activity; otherwise - total
 % --------------------------------------------------------------------
 % FORMAT:
-%   [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly) 
+%   [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly)
 % INPUTS:
 %   trials         - {nChannels x nTimes x nTrials} matrix
 %                    of trials on sensors
 %   isInducedOnly  - boolean flag. If true, substract ERP
-%                    from each trial before going to 
+%                    from each trial before going to
 %                    frequency domain; default = false
 % OUTPUTS:
-%   CT             - {nChannels ^ 2 x nTimes} matrix of 
+%   CT             - {nChannels ^ 2 x nTimes} matrix of
 %                    cross-spectrum timeseries on sensors
-%   key            -  
+%   key            -
 % ________________________________________________________________________
 % Alex Ossadtchii ossadtchi@gmail.com, Dmitrii Altukhov dm.altukhov@ya.ru
 
@@ -60,7 +60,7 @@ function [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly, progress_bar
   data = zeros(nCh ^ 2, nSamp);
   if progress_bar
     fprintf('Calculating vectorised form of the cross spectral matrix... \n');
-    fprintf('Reference sensor (max %d): ', nCh); 
+    fprintf('Reference sensor (max %d): ', nCh);
   end
 
   for i = 1:nCh
@@ -71,7 +71,7 @@ function [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly, progress_bar
       % -------- print counter --------- %
       if i > 1
         for j=0:log10(i - 1)
-            fprintf('\b'); 
+            fprintf('\b');
         end
        end
        fprintf('%d', i);
@@ -80,3 +80,4 @@ function [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly, progress_bar
   CT = data;
   fprintf('\n');
 end
+

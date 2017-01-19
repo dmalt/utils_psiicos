@@ -17,7 +17,7 @@ function colors = GetColors(mode)
 	switch mode
 		case 1
 			color_scheme = {
-			    [112,127,127] / 256,   % black
+			    [112,127,127] / 256, % black
 				[255 141 0]   / 256, % orange
 				[12 232 126]  / 256, % green
 				[0 35 255]    / 256, % blue

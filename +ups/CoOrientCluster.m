@@ -18,7 +18,7 @@ function clustInds = CoOrientCluster(clustInds, GridLoc)
 
     nConnections = size(clustInds, 1);
     v1 = GridLoc(clustInds(1,2),:) - GridLoc(clustInds(1,1),:);
-    for iConn = 2:nConnections
+    for iConn = 2 : nConnections
         v_cur = GridLoc(clustInds(iConn, 2),:) - GridLoc(clustInds(iConn,1),:);
         if v1 * v_cur' < 0
             clustInds(iConn,:) = clustInds(iConn, 2:-1:1);

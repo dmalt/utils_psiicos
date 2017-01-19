@@ -14,12 +14,12 @@ function [Ctx, CtxHR, CtxHHR] = GetCtx(subjID, protocolPath)
 % _______________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
 
-	import ups.GetCtxPaths
+    import ups.GetCtxPaths
 
-	if nargin < 2
-		protocolPath = '/home/dmalt/PSIICOS_osadtchii';
-	end
-	[pathCtx, pathCtxHR, pathCtxHHR] = GetCtxPaths(subjID, protocolPath);
-	Ctx   = load(pathCtx);
-	CtxHR = load(pathCtxHR);
-	CtxHHR = load(pathCtxHHR);
+    if nargin < 2
+        protocolPath = '/home/dmalt/PSIICOS_osadtchii';
+    end
+    [pathCtx, pathCtxHR, pathCtxHHR] = GetCtxPaths(subjID, protocolPath);
+    Ctx   = load(pathCtx);
+    CtxHR = load(pathCtxHR);
+    CtxHHR = load(pathCtxHHR);
