@@ -1,14 +1,15 @@
-function trials = LoadTrials(subjID, condition, freqBand, timeRange, GainSVDTh, protocolPath)
+function trials = LoadTrials(subjID, condition, freqBand, timeRange, sFreq, GainSVDTh, protocolPath)
 % ---------------------------------------------------------------------------------------
 % Load trials data from brainstorm protocol, reduce dimensions, bandpass filter and crop 
 % ---------------------------------------------------------------------------------------
 % FORMAT:
-%   trials = LoadTrials(subjID, condition, freqBand, timeRange, GainSVDTh, protocolPath)
+%   trials = LoadTrials(subjID, condition, freqBand, timeRange, sFreq, GainSVDTh, protocolPath)
 % INPUTS:
 %   subjID        - string; subject name in BST protocol
 %   condition     - string; condition name in BST protocol
 %   freqBand      - {2 x 1} array; bandpass filtering frequency range
 %   timeRange     - {2 x 1} array; cropping timerange; 
+%   sFreq         - scalar; sampling frequency
 %   protocolPath  - string; absolute path to BST protocol
 %   GainSVDTh     - scalar; parameter for spm_svd for dim reduction. Higher values
 %                   correspond to less channels. If GainSVDTh = 0, no dim. reduction
@@ -26,20 +27,18 @@ function trials = LoadTrials(subjID, condition, freqBand, timeRange, GainSVDTh, 
 % Alex Ossadtchii ossadtchi@gmail.com, Dmitrii Altukhov dm.altukhov@ya.ru
 
     import ups.LoadHeadModel
-    
+
     ChUsed = 1:306; ChUsed(3:3:end) = []; % use only gradiometers
 
     % -------- init defaults ------------ %
-    if nargin < 6
+    if nargin < 7
         protocolPath = '~/PSIICOS_osadtchii';
+        fprintf('Setting protocol path to %s \n', protocolPath)
     end
-    if nargin < 5
+
+    if nargin < 6
         GainSVDTh = 0.01;
     end
-    if nargin < 4
-        timeRange = [0, 0.700];
-    end
-    
     % ---------------------------------- %
 
     if ~ischar(condition)
@@ -48,7 +47,7 @@ function trials = LoadTrials(subjID, condition, freqBand, timeRange, GainSVDTh, 
         throw(ME);
     end
 
-    sFreq = 500;                                  % can I figure this out from the data?
+    sFreq = 1000;                                  % can I figure this out from the data?
     [b,a] = fir1(128, freqBand / (sFreq / 2), 'bandpass');    % define filter
 
     fprintf('Loading data from BST database.. \n');
