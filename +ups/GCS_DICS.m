@@ -1,4 +1,4 @@
-function [Cs, IND] = GCS_DICS(C,G)
+function [Cs, IND] = GCS_DICS(C,G,lambda)
 % -------------------------------------------------------
 % Apply geometric correction scheme + DICS beamformer
 % -------------------------------------------------------
@@ -7,6 +7,7 @@ function [Cs, IND] = GCS_DICS(C,G)
 % INPUTS:
 %   C
 %   G
+%   lambda
 % OUTPUTS:
 %   Cs
 %   Ps
@@ -18,7 +19,7 @@ function [Cs, IND] = GCS_DICS(C,G)
 
     Ns = fix(0.5 * size(G,2)); % assume tangent space dimension of 2 
 
-    A = DICS(C,G,10);
+    A = DICS(C,G,lambda);
 
     Cs  = zeros(Ns * (Ns - 1) / 2, 1);
     IND = zeros(Ns * (Ns - 1) / 2, 2);
