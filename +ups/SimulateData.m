@@ -115,8 +115,8 @@ function [HM, CrossSpecTime, Trials, Ctx] = SimulateData(PhaseLag, nTr, GainSVDT
                          0.05, -0.04, 0.05;
                         -0.05,  0.04, 0.05;
                         -0.05, -0.04, 0.05;
-                         0.03,  0.05, 0.01;
-                        -0.03, -0.05, 0.06];
+                         0.00,  0.05, 0.06;
+                         0.00, -0.05, 0.06];
 
         [allnw, nw1, nw2, nw3] = FindEffSources(Dmax, Rloc, XYZGen, NPI);
         effSites = unique([allnw(:,1); allnw(:,2)]);
@@ -148,9 +148,9 @@ function [HM, CrossSpecTime, Trials, Ctx] = SimulateData(PhaseLag, nTr, GainSVDT
         Fs = 500;
         ISD = load('InputData4Simulations.mat');
         G_HR = ReduceToTangentSpace(ISD.G.Gain, 'grad');
-        [BrainNoise, SensorNoise] = GenerateNoise(G_HR, T, 500, 1000, Fs, 100, false);
+        [BrainNoise, SensorNoise] = GenerateNoise(G_HR, T, 500, 1000, Fs, 100, true);
 
-        [Evoked, Induced] =  SimulateDataPhase(nTr, NetworkPairIndex{2}, phi, [], 1, Ggen, Fs);
+        [Evoked, Induced] =  SimulateDataPhase(nTr, NetworkPairIndex{2}, phi, 1, Ggen, Fs);
         % mix noise and data 
         % in order to control SNR we first normalize norm(BrainNoise(:)) = 1 and 
         % norm(Induced(:)) = 1 and then mix the two with the coefficient
@@ -188,6 +188,9 @@ function [HM, CrossSpecTime, Trials, Ctx] = SimulateData(PhaseLag, nTr, GainSVDT
 end
 
 
+
+
+
 function [BrainNoise, SensorNoise] = GenerateNoise(G, T, Tw, N, Fs, nTr, bNewBrainNoise)
 %-------------------------------------------------------
 % Generate brain and sensor noise
@@ -205,7 +208,7 @@ function [BrainNoise, SensorNoise] = GenerateNoise(G, T, Tw, N, Fs, nTr, bNewBra
 
     for i_tr = 1:nTr
         if(bNewBrainNoise)
-            brainnoise = GenerateBrainNoise(G2d, T, 500, 1000, Fs);
+            brainnoise = GenerateBrainNoise1Tr(G, T, 500, 1000, Fs);
         else
             brainnoise = BN.BrainNoise(:, range);
         end;
@@ -335,9 +338,11 @@ function [Ggen, XYZGenAct] = GenForward(XYZGen)
 end
 
 
-function [Evoked, Induced, Fs, PhaseShiftsOut] = SimulateDataPhase(nTr, NetworkPairIndex, dPhi, PhaseShiftsIn, alpha_in, Ggen, Fs)
+function [evo, ind, PhaseShiftsOut] = SimulateDataPhase(nTr, NetworkPairIndex,...
+                                                        dPhi, alpha_in, Ggen, Fs)
 % -------------------------------------------------------
-% description
+% Generate evoked and induced activity and project it on
+% sensors with forward operator Ggen
 % -------------------------------------------------------
 % FORMAT:
 %   format 
@@ -348,19 +353,13 @@ function [Evoked, Induced, Fs, PhaseShiftsOut] = SimulateDataPhase(nTr, NetworkP
 %   outputs
 % ________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
-    
 
-    bUsePhases = ~isempty(PhaseShiftsIn);
-
-    if(nargin < 7)
+    if(nargin < 4)
         alpha = 1.;
     else
         alpha = alpha_in;
     end;
 
-    if(nargin == 0)
-        bNewBrainNoise = true; % whether or not to generate new brain noise
-    end;
 
     % specify pairing nodes for each network
     nwp{1} = [1,2];
@@ -384,16 +383,14 @@ function [Evoked, Induced, Fs, PhaseShiftsOut] = SimulateDataPhase(nTr, NetworkP
     sp(4,:) = 0.5 * (sin(10 * t / 500) + 1);
 
     range = 1:T;
-    clear Data;
 
     nCh = size(Ggen, 1);
 
-    Induced = zeros(nCh, nTr * T);
-    Evoked  = zeros(nCh, nTr * T);
+    ind = zeros(nCh, nTr * T);
+    evo  = zeros(nCh, nTr * T);
 
     F1 = 10; % Hz;
     t = linspace(0, 1, Fs);
-    clear s;
 
     fprintf('Simulating trial data ...\n');
     fprintf('Current trial number (Max %d):', nTr);
@@ -466,17 +463,17 @@ function [Evoked, Induced, Fs, PhaseShiftsOut] = SimulateDataPhase(nTr, NetworkP
         end;
 
         induced = induced / sqrt(sum((induced(:) .^ 2)));
-        Induced(:, range) = induced;
+        ind(:, range) = induced;
 
         evoked = zeros(nCh, T);
         evoked = Ggen(:, [2,4]) * e;
         evoked = evoked / sqrt(sum(evoked(:) .^ 2));
-        Evoked(:, range) = evoked;
+        evo(:, range) = evoked;
 
         range = range + T;
 
         if tr > 1
-          for j = 0:log10(tr - 1)
+          for j = 0 : log10(tr - 1)
               fprintf('\b'); % delete previous counter display
           end
          end
