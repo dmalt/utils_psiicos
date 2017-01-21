@@ -32,10 +32,6 @@ function [HM, CrossSpecTime, Trials, Ctx] = SimulateData(PhaseLag, nTr, GainSVDT
 % ______________________________________________________________________________
 % Alex Ossadtchi, ossadtchi@gmail; Dmitrii Altukhov, dm.altukhov@ya.ru
 
-    import ups.PickChannels
-    import ups.ReduceToTangentSpace
-    import ups.CrossSpectralTimeseries
-    import ups.spm_svd
 
     % --------- set up defaults --------- %
     if nargin < 6    
@@ -53,7 +49,7 @@ function [HM, CrossSpecTime, Trials, Ctx] = SimulateData(PhaseLag, nTr, GainSVDT
     % but produces less contrasting subcorr scans
     % for a more reliable preformance use 0.01
     % to get all the sensor on board but be ready to wait;
-        GainSVDTh = 0.001 ;
+       GainSVDTh = 0.001 ;
     end
 
     if nargin < 5 - 3
@@ -88,106 +84,116 @@ function [HM, CrossSpecTime, Trials, Ctx] = SimulateData(PhaseLag, nTr, GainSVDT
     if exist(cache_fname, 'file') && isUseCache
         load(cache_fname);
     else
-        phi = PhaseLag;
-        % GainSVDTh = 0.001; /
-        NetworkPairIndex{1} = [1, 2];
-        NetworkPairIndex{2} = [1, 2, 3];
-        % Load forward model and reduce it  
-        % load reduced forward model (GLowRes)
-
-% !!!!!!!!!!!!!!!!!!!!!!! CHANGE THIS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! %
-        HM_path = which('GLowRes.mat');
-        load(HM_path); 
-% !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! %
-
-        % get grid node locations
-        Rloc = GLowRes.GridLoc;
-        % set to use gradiometers only
-        ChUsed = PickChannels('grad');
-        % calculate tangential plane dipoles
-        [~, nSites] = size(GLowRes.Gain(ChUsed, 1:3:end));
-
-        % ---------------------------------------------------- %
-        Dmax = 0.02;
-        NPI = NetworkPairIndex{2};
-
-        XYZGen = 1.3 * [ 0.05,  0.04, 0.05;
-                         0.05, -0.04, 0.05;
-                        -0.05,  0.04, 0.05;
-                        -0.05, -0.04, 0.05;
-                         0.00,  0.05, 0.06;
-                         0.00, -0.05, 0.06];
-
-        [allnw, nw1, nw2, nw3] = FindEffSources(Dmax, Rloc, XYZGen, NPI);
-        effSites = unique([allnw(:,1); allnw(:,2)]);
-        effSites(effSites == 0) = nSites;
-        % ----------------------------------------------------- %
-
-        G2d = ReduceToTangentSpace(GLowRes.Gain, 'grad');
-        % -------------- reduce sensor space -------------- %
-        if GainSVDTh
-            [ug, ~, ~] = spm_svd(G2d * G2d', GainSVDTh);
-            UP = ug';
-            G2dU = UP * G2d;
-        else 
-            G2dU = G2d;
-            UP = eye(size(G2d, 1));
-        end
-        % ------------------------------------------------- %
-
-        % ---- produce output for head model ------- %
-        HM.gain = G2dU;
-        HM.path = HM_path;
-        HM.UP = UP;
-        HM.svdThresh = GainSVDTh;
-        HM.GridLoc = GLowRes.GridLoc;
-        % ------------------------------------------ %
-        [Ggen, XYZGenAct] = GenForward(XYZGen);
-
-        T = 500;
-        Fs = 500;
-        ISD = load('InputData4Simulations.mat');
-        G_HR = ReduceToTangentSpace(ISD.G.Gain, 'grad');
-        [BrainNoise, SensorNoise] = GenerateNoise(G_HR, T, 500, 1000, Fs, 100, true);
-
-        [Evoked, Induced] =  SimulateDataPhase(nTr, NetworkPairIndex{2}, phi, 1, Ggen, Fs);
-        % mix noise and data 
-        % in order to control SNR we first normalize norm(BrainNoise(:)) = 1 and 
-        % norm(Induced(:)) = 1 and then mix the two with the coefficient
-        Data0 = InducedScale * Induced + EvokedScale * Evoked + BrainNoise ;
-        clear Induced;
-        clear Evoked;
-
-        [bf, af] = butter(5, [2, 20] / (0.5 * 500));
-        % Filter in the band of interest
-        Data = filtfilt(bf, af, Data0')';
-        clear Data0;
-        % Noise = filtfilt(bf, af, BrainNoise')';
-        % Data_clear = filtfilt(bf, af, InducedScale * Induced')';
-        %% Reshape the data in a 3D structure(Space x Time x Epochs)
-        [~, Tcnt] = size(Data);
-        T = fix(Tcnt / nTr);
-        nCh = size(UP, 1);
-        %reshape Data and store in a 3D array X
-        X1 = zeros(nCh, T, nTr);
-        % N1 = zeros(nCh, T, nTr);
-        % N2 = zeros(nCh, T, nTr);
-        range = 1:T;
-        for i=1:nTr
-            X1(:,:,i) = UP * Data(:,range);
-            range = range + T;
-        end;
-        Trials = X1;
-        %% Calculate band cross-spectral matrix 
-        CrossSpecTime = CrossSpectralTimeseries(X1);
-
-        Ctx = ISD.Ctx;
+        [HM, CrossSpecTime, Trials, Ctx] = GenerElecta(PhaseLag, nTr,...
+                                                       GainSVDTh, InducedScale,...
+                                                       EvokedScale, isUseCache);
 
         save(cache_fname, 'HM', 'CrossSpecTime', 'Trials', 'Ctx', '-v7.3');
     end
 end
 
 
+function [HM, CrossSpecTime, Trials, Ctx] = GenerElecta(PhaseLag, nTr, GainSVDTh, InducedScale, EvokedScale)
+
+    import ups.PickChannels
+    import ups.ReduceToTangentSpace
+    import ups.CrossSpectralTimeseries
+    import ups.spm_svd
+    phi = PhaseLag;
+    % GainSVDTh = 0.001; /
+    NetworkPairIndex{1} = [1, 2];
+    NetworkPairIndex{2} = [1, 2, 3];
+    % Load forward model and reduce it  
+    % load reduced forward model (GLowRes)
+
+% !!!!!!!!!!!!!!!!!!!!!!! CHANGE THIS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! %
+    HM_path = which('GLowRes.mat');
+    load(HM_path); 
+% !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! %
+
+    % get grid node locations
+    Rloc = GLowRes.GridLoc;
+    % set to use gradiometers only
+    ChUsed = PickChannels('grad');
+    % calculate tangential plane dipoles
+    [~, nSites] = size(GLowRes.Gain(ChUsed, 1:3:end));
+
+    % ---------------------------------------------------- %
+    Dmax = 0.02;
+    NPI = NetworkPairIndex{2};
+
+    XYZGen = 1.3 * [ 0.05,  0.04, 0.05;
+                     0.05, -0.04, 0.05;
+                    -0.05,  0.04, 0.05;
+                    -0.05, -0.04, 0.05;
+                     0.00,  0.05, 0.06;
+                     0.00, -0.05, 0.06];
+
+    [allnw, nw1, nw2, nw3] = FindEffSources(Dmax, Rloc, XYZGen, NPI);
+    effSites = unique([allnw(:,1); allnw(:,2)]);
+    effSites(effSites == 0) = nSites;
+    % ----------------------------------------------------- %
+
+    G2d = ReduceToTangentSpace(GLowRes.Gain, 'grad');
+    % -------------- reduce sensor space -------------- %
+    if GainSVDTh
+        [ug, ~, ~] = spm_svd(G2d * G2d', GainSVDTh);
+        UP = ug';
+        G2dU = UP * G2d;
+    else 
+        G2dU = G2d;
+        UP = eye(size(G2d, 1));
+    end
+    % ------------------------------------------------- %
+
+    % ---- produce output for head model ------- %
+    HM.gain = G2dU;
+    HM.path = HM_path;
+    HM.UP = UP;
+    HM.svdThresh = GainSVDTh;
+    HM.GridLoc = GLowRes.GridLoc;
+    % ------------------------------------------ %
+    [Ggen, XYZGenAct] = GenForward(XYZGen);
+
+    T = 500;
+    Fs = 500;
+    ISD = load('InputData4Simulations.mat');
+    G_HR = ReduceToTangentSpace(ISD.G.Gain, 'grad');
+    [BrainNoise, SensorNoise] = GenerateNoise(G_HR, T, 500, 1000, Fs, 100, true);
+
+    [Evoked, Induced] =  SimulateDataPhase(nTr, NetworkPairIndex{2}, phi, 1, Ggen, Fs);
+    % mix noise and data 
+    % in order to control SNR we first normalize norm(BrainNoise(:)) = 1 and 
+    % norm(Induced(:)) = 1 and then mix the two with the coefficient
+    Data0 = InducedScale * Induced + EvokedScale * Evoked + BrainNoise;
+    clear Induced;
+    clear Evoked;
+
+    [bf, af] = butter(5, [2, 20] / (0.5 * 500));
+    % Filter in the band of interest
+    Data = filtfilt(bf, af, Data0')';
+    clear Data0;
+    % Noise = filtfilt(bf, af, BrainNoise')';
+    % Data_clear = filtfilt(bf, af, InducedScale * Induced')';
+    %% Reshape the data in a 3D structure(Space x Time x Epochs)
+    [~, Tcnt] = size(Data);
+    T = fix(Tcnt / nTr);
+    nCh = size(UP, 1);
+    %reshape Data and store in a 3D array X
+    X1 = zeros(nCh, T, nTr);
+    % N1 = zeros(nCh, T, nTr);
+    % N2 = zeros(nCh, T, nTr);
+    range = 1:T;
+    for i=1:nTr
+        X1(:,:,i) = UP * Data(:,range);
+        range = range + T;
+    end;
+    Trials = X1;
+    %% Calculate band cross-spectral matrix 
+    CrossSpecTime = CrossSpectralTimeseries(X1);
+
+    Ctx = ISD.Ctx;
+end
 
 
 
