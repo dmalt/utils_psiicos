@@ -10,10 +10,11 @@ function [Gain_reduced_n, Gain_reduced] = ReduceToTangentSpace(Gain, chSelect)
 %   nSrc        - number of source locations on cortex
 %   Gain          - {Nchannels x 3 * Nsources} forward operator 
 %                   gain matrix
-%   chSelect        - {1 x NumOfChannelsUsed} array of indeces of
-%                   channels that are left for analysis; 
-%                   to use gradiometers only go for
-%                   chSelect = 1:306; chSelect(3:3:end) = []; 
+%   chSelect        - {1 x NumOfChannelsUsed} or 'all'
+%                     array of indeces of
+%                     channels that are left for analysis; 
+%                     to use gradiometers only go for
+%                     chSelect = 1:306; chSelect(3:3:end) = []; 
 % OUTPUTS:
 %   Gain_reduced_n  - {Nchannels x 2 * Nsources} reduced forward 
 %                     operator matrix with only two dipols per
