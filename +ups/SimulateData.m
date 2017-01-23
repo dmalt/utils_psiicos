@@ -1,4 +1,4 @@
-function [HM, CrossSpecTime, Trials, Ctx] = SimulateData(PhaseLag, nTr, GainSVDTh, InducedScale, EvokedScale, isUseCache) 
+function [CrossSpecTime, Trials, XYZGenOut] = SimulateData(PhaseLag, nTr, InducedScale, EvokedScale, isUseCache, G_HR, R_HR, UP) 
 % --------------------------------------------------------------------------
 % Generate forward model and cross-spectrum on sensors for simulations
 % --------------------------------------------------------------------------
@@ -34,27 +34,27 @@ function [HM, CrossSpecTime, Trials, Ctx] = SimulateData(PhaseLag, nTr, GainSVDT
 
 
     % --------- set up defaults --------- %
-    if nargin < 6    
-        isUseCache = true;
-    end
-    if nargin < 5
-        EvokedScale = 0.;
-    end   
-    if nargin < 5 - 1;
-           InducedScale = 0.35;
-           EvokedScale = 0;
-    end
-    if nargin < 5 -2
-    % 0.05 results into 47 eigensensors and makes it run faster 
-    % but produces less contrasting subcorr scans
-    % for a more reliable preformance use 0.01
-    % to get all the sensor on board but be ready to wait;
-       GainSVDTh = 0.001 ;
-    end
+    % if nargin < 6    
+    %     isUseCache = true;
+    % end
+    % if nargin < 5
+    %     EvokedScale = 0.;
+    % end   
+    % if nargin < 5 - 1;
+    %        InducedScale = 0.35;
+    %        EvokedScale = 0;
+    % end
+    % if nargin < 5 -2
+    % % 0.05 results into 47 eigensensors and makes it run faster 
+    % % but produces less contrasting subcorr scans
+    % % for a more reliable preformance use 0.01
+    % % to get all the sensor on board but be ready to wait;
+    %    GainSVDTh = 0.001 ;
+    % end
 
-    if nargin < 5 - 3
-        nTr = 100;
-    end
+    % if nargin < 5 - 3
+    %     nTr = 100;
+    % end
 
     % --------------------------------------- %
     % ---- check if cache folder is there --- %
@@ -63,37 +63,39 @@ function [HM, CrossSpecTime, Trials, Ctx] = SimulateData(PhaseLag, nTr, GainSVDT
     fname = mfilename('fullpath');
     mpath = fileparts(fname);
 
-    cache_fold =  [mpath, '/../Simulations_cache'];
-    if ~exist(cache_fold, 'dir')
-        mkdir(cache_fold);
-    end
+    % cache_fold =  [mpath, '/../Simulations_cache'];
+    % if ~exist(cache_fold, 'dir')
+    %     mkdir(cache_fold);
+    % end
 
-    cache_fname = ...
-    [
-       'pl_',      num2str(PhaseLag),     ...
-       '_ntr_',    num2str(nTr),          ...
-       '_gsvdth_', num2str(GainSVDTh),    ...
-       '_is_',     num2str(InducedScale), ...
-       '_es_',     num2str(EvokedScale)
-   ];
-   cache_fname = [cache_fold, '/', cache_fname, '.mat'];
+    % cache_fname = ...
+    % [
+    %    'pl_',      num2str(PhaseLag),     ...
+    %    '_ntr_',    num2str(nTr),          ...
+    %    % '_gsvdth_', num2str(GainSVDTh),    ...
+    %    '_is_',     num2str(InducedScale), ...
+    %    '_es_',     num2str(EvokedScale)
+   % ];
+   % cache_fname = [cache_fold, '/', cache_fname, '.mat'];
 
     % --------------------------------------- %
 
 
-    if exist(cache_fname, 'file') && isUseCache
-        load(cache_fname);
-    else
-        [HM, CrossSpecTime, Trials, Ctx] = GenerElecta(PhaseLag, nTr,...
-                                                       GainSVDTh, InducedScale,...
-                                                       EvokedScale, isUseCache);
+    % if exist(cache_fname, 'file') && isUseCache
+        % load(cache_fname);
+    % else
+        [CrossSpecTime, Trials, XYZGenOut] = GenerElecta(PhaseLag, nTr,...
+                                                       InducedScale,...
+                                                       EvokedScale, G_HR, R_HR, UP);
 
-        save(cache_fname, 'HM', 'CrossSpecTime', 'Trials', 'Ctx', '-v7.3');
-    end
+        % save(cache_fname, 'HM', 'CrossSpecTime', 'Trials', '-v7.3');
+    % end
 end
 
 
-function [HM, CrossSpecTime, Trials, Ctx] = GenerElecta(PhaseLag, nTr, GainSVDTh, InducedScale, EvokedScale)
+function [CrossSpecTime, Trials, XYZGenAct] = GenerElecta(PhaseLag, nTr,...
+                                                        InducedScale,...
+                                                        EvokedScale, G_HR, R_HR, UP)
 
     import ups.PickChannels
     import ups.ReduceToTangentSpace
@@ -106,17 +108,13 @@ function [HM, CrossSpecTime, Trials, Ctx] = GenerElecta(PhaseLag, nTr, GainSVDTh
     % Load forward model and reduce it  
     % load reduced forward model (GLowRes)
 
-% !!!!!!!!!!!!!!!!!!!!!!! CHANGE THIS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! %
-    HM_path = which('GLowRes.mat');
-    load(HM_path); 
-% !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! %
 
     % get grid node locations
-    Rloc = GLowRes.GridLoc;
+    % Rloc = GLowRes.GridLoc;
     % set to use gradiometers only
-    ChUsed = PickChannels('grad');
+    % ChUsed = PickChannels('grad');
     % calculate tangential plane dipoles
-    [~, nSites] = size(GLowRes.Gain(ChUsed, 1:3:end));
+    % [~, nSites] = size(GLowRes.Gain(ChUsed, 1:3:end));
 
     % ---------------------------------------------------- %
     Dmax = 0.02;
@@ -129,36 +127,18 @@ function [HM, CrossSpecTime, Trials, Ctx] = GenerElecta(PhaseLag, nTr, GainSVDTh
                      0.00,  0.05, 0.06;
                      0.00, -0.05, 0.06];
 
-    [allnw, nw1, nw2, nw3] = FindEffSources(Dmax, Rloc, XYZGen, NPI);
-    effSites = unique([allnw(:,1); allnw(:,2)]);
-    effSites(effSites == 0) = nSites;
+    % [allnw, nw1, nw2, nw3] = FindEffSources(Dmax, Rloc, XYZGen, NPI);
     % ----------------------------------------------------- %
 
-    G2d = ReduceToTangentSpace(GLowRes.Gain, 'grad');
-    % -------------- reduce sensor space -------------- %
-    if GainSVDTh
-        [ug, ~, ~] = spm_svd(G2d * G2d', GainSVDTh);
-        UP = ug';
-        G2dU = UP * G2d;
-    else 
-        G2dU = G2d;
-        UP = eye(size(G2d, 1));
-    end
-    % ------------------------------------------------- %
-
-    % ---- produce output for head model ------- %
-    HM.gain = G2dU;
-    HM.path = HM_path;
-    HM.UP = UP;
-    HM.svdThresh = GainSVDTh;
-    HM.GridLoc = GLowRes.GridLoc;
     % ------------------------------------------ %
-    [Ggen, XYZGenAct] = GenForward(XYZGen);
+    [Ggen, XYZGenAct] = GenForward(XYZGen, G_HR, R_HR);
 
     T = 500;
     Fs = 500;
-    ISD = load('InputData4Simulations.mat');
-    G_HR = ReduceToTangentSpace(ISD.G.Gain, 'grad');
+    % ISD = load('InputData4Simulations.mat');
+
+    % G_HR = ReduceToTangentSpace(ISD.G.Gain, 'grad');
+    %
     [BrainNoise, SensorNoise] = GenerateNoise(G_HR, T, 500, 1000, Fs, 100, true);
 
     [Evoked, Induced] =  SimulateDataPhase(nTr, NetworkPairIndex{2}, phi, 1, Ggen, Fs);
@@ -172,6 +152,7 @@ function [HM, CrossSpecTime, Trials, Ctx] = GenerElecta(PhaseLag, nTr, GainSVDTh
     [bf, af] = butter(5, [2, 20] / (0.5 * 500));
     % Filter in the band of interest
     Data = filtfilt(bf, af, Data0')';
+    size(Data)
     clear Data0;
     % Noise = filtfilt(bf, af, BrainNoise')';
     % Data_clear = filtfilt(bf, af, InducedScale * Induced')';
@@ -184,15 +165,13 @@ function [HM, CrossSpecTime, Trials, Ctx] = GenerElecta(PhaseLag, nTr, GainSVDTh
     % N1 = zeros(nCh, T, nTr);
     % N2 = zeros(nCh, T, nTr);
     range = 1:T;
-    for i=1:nTr
+    for i = 1:nTr
         X1(:,:,i) = UP * Data(:,range);
         range = range + T;
     end;
     Trials = X1;
     %% Calculate band cross-spectral matrix 
     CrossSpecTime = CrossSpectralTimeseries(X1);
-
-    Ctx = ISD.Ctx;
 end
 
 
@@ -322,17 +301,17 @@ function [ans_idx, nw1, nw2, nw3] = FindEffSources(Dmax, R, XYZGen, NPI)
 end
 
 
-function [Ggen, XYZGenAct] = GenForward(XYZGen)
-    import ups.PickChannels
-    import ups.ReduceToTangentSpace
+function [Ggen, XYZGenAct] = GenForward(XYZGen, G2d, R)
+    % import ups.PickChannels
+    % import ups.ReduceToTangentSpace
 
-    ISD = load('InputData4Simulations.mat');
-    ChUsed = PickChannels('grad');
+    % ISD = load('InputData4Simulations.mat');
+    % ChUsed = PickChannels('grad');
 
-    [~, G2d] = ReduceToTangentSpace(ISD.G.Gain, 'grad'); 
+    % [~, G2d] = ReduceToTangentSpace(ISD.G.Gain, 'grad'); 
     
     % Assign topographies to generator coordinates(do not recompute, just find the closest one)
-    R = ISD.G.GridLoc;
+    % R = ISD.G.GridLoc;
     for i=1:size(XYZGen, 1)
         d = repmat(XYZGen(i,:), size(R,1), 1) - R;
         d = sum(d .* d, 2);
@@ -361,7 +340,7 @@ function [evo, ind, PhaseShiftsOut] = SimulateDataPhase(nTr, NetworkPairIndex,..
 % Dmitrii Altukhov, dm.altukhov@ya.ru
 
     if(nargin < 4)
-        alpha = 1.;
+        alpha = 0.25;
     else
         alpha = alpha_in;
     end;
