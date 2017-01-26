@@ -32,8 +32,9 @@ function [A, Ps, Cs, IND] = DICS(C, G, lambda, is_imag)
         lambda = 10;
     end
 
+    disp('Yoyoyo');
     Nch = size(C,1);
-    C_reg = (C + lambda * trace(C) / Nch * eye(Nch));
+    C_reg = inv(C + lambda * trace(C) / Nch * eye(Nch));
     Ns = fix(0.5 * size(G, 2)); % assume tangent space dimension of 2
 
     range = 1:2;
@@ -41,7 +42,7 @@ function [A, Ps, Cs, IND] = DICS(C, G, lambda, is_imag)
 
     for i = 1:Ns
         L = G(:,range);
-        A(range,:) = (L' * C_reg * L) \ L' / C_reg;
+        A(range,:) = inv(L' * C_reg * L) * L' * C_reg;
         range = range + 2;
     end
 
@@ -60,5 +61,5 @@ function [A, Ps, Cs, IND] = DICS(C, G, lambda, is_imag)
     % ----------------------------------- %
 
     % Rank connections by their correlation with vec(C)
-    [Cs, IND] = PSIICOS_ScanFast(A', C(:));
+    [Cs, IND] = PSIICOS_ScanFast(A', C(:), is_imag);
 end
