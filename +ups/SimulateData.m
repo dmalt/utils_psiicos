@@ -1,4 +1,4 @@
-function [HM, CrossSpecTime, Trials, Ctx] = SimulateData(PhaseLag, nTr, GainSVDTh, InducedScale, EvokedScale, isUseCache) 
+function [HM, CrossSpecTime, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nTr, GainSVDTh, InducedScale, EvokedScale, isUseCache) 
 % --------------------------------------------------------------------------
 % Generate forward model and cross-spectrum on sensors for simulations
 % --------------------------------------------------------------------------
@@ -142,11 +142,11 @@ function [HM, CrossSpecTime, Trials, Ctx] = SimulateData(PhaseLag, nTr, GainSVDT
             if(it == 1)
                 % we will use the same phase shifts in the second and subsequent
                 % iterations. We will store the random phases in PhaseShifts 
-                [Evoked, Induced, BrainNoise, Ctx] = ...
+                [Evoked, Induced, BrainNoise, Ctx, ~, ~, ~, ~, XYZGenOut] = ...
                 SimulateDataPhase(nTr, NetworkPairIndex{2}, phi, true,  [],          XYZGen);
             else
                 % and use PhaseShits from the first iteration
-                [Evoked, Induced, BrainNoise, Ctx] = ...
+                [Evoked, Induced, BrainNoise, Ctx, ~, ~, ~, ~, XYZGenOut] = ...
                 SimulateDataPhase(nTr, NetworkPairIndex{2}, phi, false, PhaseShifts, XYZGen);
             end;        
             % mix noise and data 
