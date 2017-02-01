@@ -47,7 +47,6 @@ function trials = LoadTrials(subjID, condition, freqBand, timeRange, sFreq, Gain
         throw(ME);
     end
 
-    sFreq = 1000;                                  % can I figure this out from the data?
     [b,a] = fir1(128, freqBand / (sFreq / 2), 'bandpass');    % define filter
 
     fprintf('Loading data from BST database.. \n');
