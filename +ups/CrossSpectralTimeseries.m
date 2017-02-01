@@ -11,6 +11,8 @@ function [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly, progress_bar
 %   isInducedOnly  - boolean flag. If true, substract ERP
 %                    from each trial before going to
 %                    frequency domain; default = false
+%   progress_bar   - boolean; if true display progressbar
+%                    default = true
 % OUTPUTS:
 %   CT             - {nChannels ^ 2 x nTimes} matrix of
 %                    cross-spectrum timeseries on sensors
@@ -19,7 +21,7 @@ function [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly, progress_bar
 % Alex Ossadtchii ossadtchi@gmail.com, Dmitrii Altukhov dm.altukhov@ya.ru
 
   if nargin < 3
-    progress_bar = false;
+    progress_bar = true;
   end
 
   Trials = trials;
@@ -69,15 +71,19 @@ function [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly, progress_bar
       key(k:k + nCh - 1) = KEY(1:nCh, i);
       k = k + nCh;
       % -------- print counter --------- %
-      if i > 1
-        for j=0:log10(i - 1)
-            fprintf('\b');
-        end
-       end
-       fprintf('%d', i);
+      if progress_bar
+          if i > 1
+            for j=0:log10(i - 1)
+                fprintf('\b');
+            end
+           end
+           fprintf('%d', i);
+      end
       % -------------------------------- %
   end;
   CT = data;
-  fprintf('\n');
+  if progress_bar
+      fprintf('\n');
+  end
 end
 
