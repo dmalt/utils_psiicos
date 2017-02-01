@@ -1,15 +1,15 @@
-function trials = LoadTrials(subjID, condition, freqBand, timeRange, sFreq, GainSVDTh, protocolPath)
+function trials = LoadTrials(subjID, condition, freqBand,...
+                             timeRange, GainSVDTh, protocolPath)
 % ---------------------------------------------------------------------------------------
 % Load trials data from brainstorm protocol, reduce dimensions, bandpass filter and crop 
 % ---------------------------------------------------------------------------------------
 % FORMAT:
-%   trials = LoadTrials(subjID, condition, freqBand, timeRange, sFreq, GainSVDTh, protocolPath)
+%   trials = LoadTrials(subjID, condition, freqBand, timeRange, GainSVDTh, protocolPath)
 % INPUTS:
 %   subjID        - string; subject name in BST protocol
 %   condition     - string; condition name in BST protocol
 %   freqBand      - {2 x 1} array; bandpass filtering frequency range
 %   timeRange     - {2 x 1} array; cropping timerange; 
-%   sFreq         - scalar; sampling frequency
 %   protocolPath  - string; absolute path to BST protocol
 %   GainSVDTh     - scalar; parameter for spm_svd for dim reduction. Higher values
 %                   correspond to less channels. If GainSVDTh = 0, no dim. reduction
@@ -31,12 +31,12 @@ function trials = LoadTrials(subjID, condition, freqBand, timeRange, sFreq, Gain
     ChUsed = 1:306; ChUsed(3:3:end) = []; % use only gradiometers
 
     % -------- init defaults ------------ %
-    if nargin < 7
+    if nargin < 6
         protocolPath = '~/PSIICOS_osadtchii';
         fprintf('Setting protocol path to %s \n', protocolPath)
     end
 
-    if nargin < 6
+    if nargin < 5
         GainSVDTh = 0.01;
     end
     % ---------------------------------- %
@@ -47,7 +47,6 @@ function trials = LoadTrials(subjID, condition, freqBand, timeRange, sFreq, Gain
         throw(ME);
     end
 
-    [b,a] = fir1(128, freqBand / (sFreq / 2), 'bandpass');    % define filter
 
     fprintf('Loading data from BST database.. \n');
     G = LoadHeadModel(subjID, condition, protocolPath, true, GainSVDTh);
@@ -68,9 +67,11 @@ function trials = LoadTrials(subjID, condition, freqBand, timeRange, sFreq, Gain
             T = ind1 - ind0 + 1; 
             trials.data = zeros(nCh, T, trials.nTrials);
             trials.sFreq = 1 ./ (aux.Time(2) - aux.Time(1));
+            % ----------- define filter ------------ %
+            [b,a] = fir1(128, freqBand / (trials.sFreq / 2), 'bandpass');
         end;
         tmp = filtfilt(b, a, (UP * aux.F(ChUsed,:))')';     % filter and reduce dim
-        trials.data(:,:, iTrial) = 1e12*tmp(:, ind0:ind1);       % crop
+        trials.data(:,:, iTrial) = 1e12 * tmp(:, ind0:ind1);       % crop
 
         % ----- print counter ----- %
         if iTrial > 1
@@ -86,6 +87,5 @@ function trials = LoadTrials(subjID, condition, freqBand, timeRange, sFreq, Gain
 
     trials.subjID = subjID;
     trials.freqBand = freqBand;
-    trials.timeRange = timeRange;           
-    
-    % ------------------------------------------------------------------------------ %
+    trials.timeRange = timeRange;
+end
