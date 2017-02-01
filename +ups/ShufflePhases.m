@@ -1,27 +1,41 @@
-function [spoilt_trials] = ShufflePhases(trials)
+function [spoilt_trials, solution] = ShufflePhases(trials, k, n_comp, solution)
 % Destroy phases in the original signal
 % --------------------------------------------
 % Compute ICA, destroy phases in ICs and
-% reassemble the signal using the unmixing
+% reassemble the signal using the mixing
 % matrix
-% 
-% ALGORITHM:
-%   merge trials -> compute ica -> compute fft 
-%   on sources -> randomly mix phases -> compute
-%   invfft -> project back to sensor space
-% ____________________________________________
 
 
     [n_ch, n_times, n_trials] = size(trials);
     merged_trials = reshape(trials, n_ch, n_times * n_trials);
 
-    n_components = 63;
+    n_components = n_comp;
 
-    [Zica, W, T, mu] = fastICA(merged_trials, n_components); 
+    % if ~isempty(solution)
+    %     % disp('imhere');
+    %     W = solution.W;
+    %     T = solution.T;
+    %     mu = solution.mu;
+    %     [Zc, mu] = centerRows(merged_trials); 
+    %     [Zcw, T] = whitenRows(Zc);
+    %     Zica = W * Zcw; 
+    % else
+    %     [Zica, W, T, mu] = fastICA(merged_trials, n_components); 
+    %     solution.W = W;
+    %     solution.T = T;
+    %     solution.mu = mu;
+    % end
 
-    T = n_times; 
-    Zica_shifted = ShiftICs(Zica, T);
-    Zr = T \ W' * Zica_shifted + repmat(mu, 1, n_times * n_trials);
+    % T_shift = n_times; 
+    [W, T] = runica(merged_trials);
+    Zica = W * T * merged_trials;
+
+    T_shift = 10; 
+    Zica_shifted = ShiftICs(Zica, T_shift * k);
+    % Zica_shifted = Zica;
+    Zr = T \ W' * Zica_shifted;% + repmat(mu, 1, n_times * n_trials);
+    solution.W = W;
+    solution.T = T;
 
     spoilt_trials = reshape(Zr, n_ch, n_times, n_trials);
 end
