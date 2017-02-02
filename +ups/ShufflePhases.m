@@ -11,29 +11,24 @@ function [spoilt_trials, solution] = ShufflePhases(trials, k, n_comp, solution)
 
     n_components = n_comp;
 
-    % if ~isempty(solution)
-    %     % disp('imhere');
-    %     W = solution.W;
-    %     T = solution.T;
-    %     mu = solution.mu;
-    %     [Zc, mu] = centerRows(merged_trials); 
-    %     [Zcw, T] = whitenRows(Zc);
-    %     Zica = W * Zcw; 
-    % else
-    %     [Zica, W, T, mu] = fastICA(merged_trials, n_components); 
-    %     solution.W = W;
-    %     solution.T = T;
-    %     solution.mu = mu;
-    % end
+    if ~isempty(solution)
+        % disp('imhere');
+        W = solution.W;
+        T = solution.T;
+    else
+        % [Zica, W, T, mu] = fastICA(merged_trials, n_components); 
+        [W, T] = runica(merged_trials, 'maxsteps', 2500);
+        solution.W = W;
+        solution.T = T;
+    end
 
     % T_shift = n_times; 
-    [W, T] = runica(merged_trials);
     Zica = W * T * merged_trials;
 
-    T_shift = 10; 
+    T_shift = n_times; 
     Zica_shifted = ShiftICs(Zica, T_shift * k);
     % Zica_shifted = Zica;
-    Zr = T \ W' * Zica_shifted;% + repmat(mu, 1, n_times * n_trials);
+    Zr = inv(T) * inv(W) * Zica_shifted;% + repmat(mu, 1, n_times * n_trials);
     solution.W = W;
     solution.T = T;
 
