@@ -36,5 +36,5 @@ function [Cs, IND, Upwr] = PSIICOS_DICS(C, G, lambda, rnk, Upwr)
     Cs  = zeros(Ns * (Ns - 1) / 2, 1);
     IND = zeros(Ns * (Ns - 1) / 2, 2);
 
-    [Cs,IND] = PSIICOS_ScanFast(A',C_proj);
+    [Cs,IND] = PSIICOS_ScanFast(A',C_proj, false);
 end
