@@ -143,7 +143,7 @@ function [HM, CrossSpecTime, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nT
                 % we will use the same phase shifts in the second and subsequent
                 % iterations. We will store the random phases in PhaseShifts 
                 [Evoked, Induced, BrainNoise, Ctx, ~, ~, ~, ~, XYZGenOut] = ...
-                SimulateDataPhase(nTr, NetworkPairIndex{2}, phi, true, [], XYZGen);
+                SimulateDataPhase(nTr, NetworkPairIndex{2}, phi, true,  [],          XYZGen);
             else
                 % and use PhaseShits from the first iteration
                 [Evoked, Induced, BrainNoise, Ctx, ~, ~, ~, ~, XYZGenOut] = ...
@@ -315,8 +315,7 @@ function [Evoked, Induced, BrainNoise, Ctx, SensorNoise, G2d, R, Fs, XYZGenOut, 
         d = sum(d .* d, 2);
         [~, ind] = min(d);
         XYZGenAct(i,:) = R(ind,:);
-        Ggen(:,i,1) = G2d(:, ind * 2 - 1); % take the first dipole in the tangent plane
-        Ggen(:,i,2) = G2d(:, ind * 2    ); % take the second dipole in the tangent plane
+        Ggen(:,i) = G2d(:,ind * 2 - 1); % take the first dipole in the tangent plane
         GenInd(i) = ind; 
     end;
 % 3333333333333333333333333333333333333333333333333333333333333333333333333333333 %
@@ -414,36 +413,17 @@ function [Evoked, Induced, BrainNoise, Ctx, SensorNoise, G2d, R, Fs, XYZGenOut, 
         e(2,:) = exp(-15 * (t - 0.2) .^ 2) .* cos(2 * pi * 8 * t + 0.8 * (rand - 0.5) * pi);
         
         % collect activity from the selected networks
-        induced = zeros(nCh, T);
-        Ggen_fixed = zeros(nCh, 2);
+        induced = zeros(nCh,T);
         for n = NetworkPairIndex
-            ini_phase1 = rand * 2 * pi;
-            ini_phase2 = rand * 2 * pi;
-
-            for i_time = 1:T
-                rotation_phase1 = i_time / T * 2 * pi * 39 + ini_phase1;
-                rotation_phase2 = i_time / T * 2 * pi * 39 + ini_phase2;
-                % rotation_phase = i_time; 
-                % rotation_phase =  rand * 2 * pi;
-                % rotation_phase =  tr / 100 * 2 * pi + n;
-                % rotation_phase = i_time / T *  pi + tr;
-                Ggen_fixed(:,1) = Ggen(:,nwp{n}(1),1) * cos(rotation_phase1) + ...
-                                  Ggen(:,nwp{n}(1),2) * sin(rotation_phase1);
-
-                Ggen_fixed(:,2) = Ggen(:,nwp{n}(2),1) * cos(rotation_phase2) + ...
-                                  Ggen(:,nwp{n}(2),2) * sin(rotation_phase2);
-
-                a(:, i_time) = Ggen_fixed * s{n}(:,i_time);
-            end
-
-            a = a / norm(a(:));   
+             a = Ggen(:,nwp{n}) * s{n};
+             a = a / norm(a(:));   
             induced = induced + a;
         end;
         induced = induced/sqrt(sum((induced(:).^2)));
         Induced(:, range) = induced;
         
         evoked = zeros(nCh,T);
-        evoked = Ggen(:,[2,4]) * e;
+        evoked = Ggen(:,[2,4])*e;
         evoked = evoked/sqrt(sum(evoked(:).^2));
         Evoked(:, range) = evoked;
         
