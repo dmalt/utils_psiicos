@@ -1,5 +1,5 @@
 function trials = LoadTrials(subjID, condition, freqBand,...
-                             timeRange, GainSVDTh, protocolPath)
+                             timeRange, HM, protocolPath)
 % ---------------------------------------------------------------------------------------
 % Load trials data from brainstorm protocol, reduce dimensions, bandpass filter and crop 
 % ---------------------------------------------------------------------------------------
@@ -36,9 +36,9 @@ function trials = LoadTrials(subjID, condition, freqBand,...
         fprintf('Setting protocol path to %s \n', protocolPath)
     end
 
-    if nargin < 5
-        GainSVDTh = 0.01;
-    end
+    % if nargin < 5
+    %     GainSVDTh = 0.01;
+    % end
     % ---------------------------------- %
 
     if ~ischar(condition)
@@ -49,7 +49,8 @@ function trials = LoadTrials(subjID, condition, freqBand,...
 
 
     fprintf('Loading data from BST database.. \n');
-    G = LoadHeadModel(subjID, condition, protocolPath, true, GainSVDTh);
+    % G = LoadHeadModel(subjID, condition, protocolPath, true, GainSVDTh);
+    G = HM;
     UP = G.UP; % need it for dimensiion reduction
     nCh = size(UP, 1);
 
