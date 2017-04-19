@@ -1,14 +1,20 @@
 function h_ax = DrawConnectionsOnSensors(conInds, channels_path, isFun)
-% -------------------------------------------------------
-% Draw sensor-level connections.
-% -------------------------------------------------------
+% -----------------------------------------------------------------
+% Draw sensor-level connections in 3D.
+% -----------------------------------------------------------------
 % FORMAT:
-%   [h_ax, h_fig]  = DrawConnectionsOnSensors(conInds, channels_path, isFun) 
+%   h_ax = DrawConnectionsOnSensors(conInds, channels_path, isFun) 
 % INPUTS:
-%   inputs        -
+%   conInds        - {n_connections x 2} array of indices of connected
+%                    sensors
+%   channels_path  - string; path to brainstorm-extracted structure
+%                    with channel locations. Number of channels must
+%                    be superior to the max index in conInds
+%   isFun          - boolean flag; If true, sensors are plotted as
+%                    stars
 % OUTPUTS:
-%   outputs
-% ________________________________________
+%   h_ax           - axis object of generated figure 
+% _________________________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
 
 	import ups.PickChannels
@@ -22,6 +28,7 @@ function h_ax = DrawConnectionsOnSensors(conInds, channels_path, isFun)
 	if nargin < 2
 		channels_path = 'channel_vectorview306.mat';
 	end
+
 	ChUsed = PickChannels('grad');
 	ChLoc = ReadChannelLocations(channels_path, ChUsed);
 	% size(ChLoc)

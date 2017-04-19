@@ -1,13 +1,30 @@
 function [SPC, TPR, PPV] = GenerateROC(Q, Dmax, R, IND, N, XYZGen, NPI)
 % ------------------------------------------------------------------------
-% GenerateROC: 
+% Generate specificity, true positive rate and positive predictive value
+% for connectivity estimation algorithm by gradually lowering threshold.
+% Usually used for calculation of ROC or Precision-Recall curves
 % ------------------------------------------------------------------------
 % FORMAT:
-%   [SPC, TPR] = GenerateROC(Q, Dmax, R, IND, N, XYZGen, NPI) 
+%   [SPC, TPR, PPV] = GenerateScores(Q, Dmax, R, IND, N, XYZGen, NPI) 
 % INPUTS:
-%   inputs        -
+%   Q        - vectorized upper triangle of connectivity matrix on sources
+%   Dmax     - float; max distance in m from true location for connection
+%              to be considered true detection
+%   R        - {n_sources x 3} matrix of source-space coordinates
+%   IND      - {(n_sources ^ 2 - n_sources) / 2 x 2} index mapping array
+%              between vectorized upper triangle of matrix and full matrix 
+%   N        - int; number of steps in scores generation
+%   XYZGen
+%   NPI
 % OUTPUTS:
-%   outputs
+%   SPC       - {1 x N}  vector of specificities;
+%               SPC(i) = tp / (tp + fn)
+%   TPR       - {1 x N}  vector of true positive rates;
+%               TPR(i) = tn / (fp + tn)
+
+%   PPV       - {1 x N}  vector of positive predictive values;
+%               PPV(i) = tp / (tp + fp);
+
 % ________________________________________________________________________
 % Alex Ossadtchii ossadtchi@gmail.com, Dmitrii Altukhov, dm.altukhov@ya.ru
 
@@ -24,10 +41,10 @@ for nw = NPI
     d21 = bsxfun(@minus, R2, XYZGen(i1,:));
     d22 = bsxfun(@minus, R2, XYZGen(i2,:));
 
-    D11 = sqrt(sum(d11 .^2, 2));
-    D12 = sqrt(sum(d12 .^2, 2));
-    D21 = sqrt(sum(d21 .^2, 2));
-    D22 = sqrt(sum(d22 .^2, 2));
+    D11 = sqrt(sum(d11 .^ 2, 2));
+    D12 = sqrt(sum(d12 .^ 2, 2));
+    D21 = sqrt(sum(d21 .^ 2, 2));
+    D22 = sqrt(sum(d22 .^ 2, 2));
 
     Nw(:,k) = ((D11 < Dmax) & (D22 < Dmax)) | ((D12 < Dmax) & (D21 < Dmax));
     k = k + 1;
@@ -62,9 +79,6 @@ for i=1:N
     fprintf('%d', i);
 end;
 fprintf('\nDone\n');
-TP
-FN
-FP
 TPR = TP ./ (TP + FN);
 SPC = TN ./ (FP + TN);
 PPV = TP ./ (TP + FP);

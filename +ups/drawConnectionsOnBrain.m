@@ -11,7 +11,7 @@ function drawConnectionsOnBrain(ConInds, GridXYZ, iCol, Ctx)
 %                    of connected grid nodes
 %   GridXYZ		   - {nSources x 3} matrix of coordinates
 %                    of grid nodes
-%   iCol
+%   iCol           - int; color number
 %   Ctx            - structure; triangular surface of cortex;
 %                    usually generated in brainstorm
 % OUTPUTS:
