@@ -55,7 +55,7 @@ function trials = LoadTrials(subjID, condition, freqBand,...
     nCh = size(UP, 1);
 
     condPath = [protocolPath, '/data/', subjID, '/', condition];
-    trialFiles = dir([condPath, '/*trial*.mat']);
+    trialFiles = dir([condPath, '/data*trial*.mat']);
     trials.nTrials = length(trialFiles);
 
     fprintf('Loading trials (Max %d) : ', trials.nTrials);
