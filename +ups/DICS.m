@@ -41,7 +41,7 @@ function [A, Ps, Cs, IND] = DICS(C, G, lambda)
 
     for i = 1:Ns
         L = G(:,range);
-        A(range,:) = (L' * C_reg * L) \ L' / C_reg;
+        A(range,:) = (L' * inv(C_reg) * L) \ L' / C_reg;
         range = range + 2;
     end
 
