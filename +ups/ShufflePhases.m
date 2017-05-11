@@ -26,7 +26,7 @@ function [spoilt_trials, solution] = ShufflePhases(trials, k, n_comp, solution)
     Zica = W * T * merged_trials;
 
     T_shift = n_times; 
-    Zica_shifted = ShiftICs(Zica, T_shift * k);
+    Zica_shifted = ShiftICs(Zica, fix(T_shift * k));
     % Zica_shifted = Zica;
     Zr = inv(T) * inv(W) * Zica_shifted;% + repmat(mu, 1, n_times * n_trials);
     solution.W = W;
