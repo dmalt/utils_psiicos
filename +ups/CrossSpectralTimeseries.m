@@ -4,7 +4,7 @@ function [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly, progress_bar
 % If isInducedOnly = true, compute induced activity; otherwise - total
 % --------------------------------------------------------------------
 % FORMAT:
-%   [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly)
+%   [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly, progress_bar)
 % INPUTS:
 %   trials         - {nChannels x nTimes x nTrials} matrix
 %                    of trials on sensors
