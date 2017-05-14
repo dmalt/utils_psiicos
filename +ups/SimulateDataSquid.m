@@ -1,4 +1,4 @@
-function [CrossSpecTime, Trials, XYZGenOut] = SimulateDataSquid(PhaseLag, nTr, InducedScale, EvokedScale, isUseCache, G_HR, R_HR, UP) 
+function [CrossSpecTime, Trials, XYZGenOut] = SimulateDataSquid(PhaseLag, nTr, InducedScale, EvokedScale, isUseCache, G_HR, R_HR, UP)
 % --------------------------------------------------------------------------
 % Generate forward model and cross-spectrum on sensors for simulations
 % --------------------------------------------------------------------------
