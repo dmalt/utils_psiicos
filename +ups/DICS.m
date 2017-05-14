@@ -1,4 +1,4 @@
-function [A, Ps, Cs, IND] = DICS(C, G, lambda)
+function [A, Ps, Cs, IND] = DICS(C, G, lambda, is_imag)
 % -------------------------------------------------------
 % DICS beamformer on cross-spectrum. compute beamformer
 % topographies and use them to estimate powers and 
@@ -51,11 +51,14 @@ function [A, Ps, Cs, IND] = DICS(C, G, lambda)
         range_i = i * 2 - 1 : i * 2;
         ai = A(range_i,:);
         cs = ai * C * ai';
+        if is_imag
+            cs = imag(cs);
+        end
         [~, s, ~] = svd(cs);
         Ps(i) = sqrt(s(1,1));
     end;
     % ----------------------------------- %
 
     % Rank connections by their correlation with vec(C)
-    [Cs, IND] = PSIICOS_ScanFast(A', C(:));
+    [Cs, IND] = PSIICOS_ScanFast(A', C(:), is_imag);
 end

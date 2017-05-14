@@ -6,7 +6,7 @@ function [HM, CrossSpecTime, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nT
 %   [HM, CrossSpecTime, Trials, Ctx] = SimulateData(PhaseLag, InducedScale, EvokedScale)
 % INPUTS:
 %   PhaseLag          - phase lag for simulations
-%   nTr
+%   nTr               - scalar; number of trials
 %   GainSVDTh
 %   InducedScale      - coefficient for induced activity (default = 0.35)
 %   EvokedScale       - coefficient for evoked activity (default = 0)
@@ -16,14 +16,14 @@ function [HM, CrossSpecTime, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nT
 %                       for reduced sensor space and additional
 %                       info.
 % -----------
-%   HM_ps.gain        - {nSenReduced x nSrc * 2} matrix of 
+%   HM.gain        - {nSenReduced x nSrc * 2} matrix of 
 %                       topographies for reduced sensor space
-%   HM_ps.UP          - {nSenReduced x nGradiometers} matrix
+%   HM.UP          - {nSenReduced x nGradiometers} matrix
 %                       of transformation between reduced and
 %                       normal sensors
-%   HM_ps.subjID      - string; subject name
-%   HM_ps.path        - string; path to  
-%   HM_ps.svdThresh   - float; PVU threshold for PCA-driven 
+%   HM.subjID      - string; subject name
+%   HM.path        - string; path to  
+%   HM.svdThresh   - float; PVU threshold for PCA-driven 
 %                       sensor space reduction
 % ------------
 %   CrossSpecTime     - {nSensors ^ 2 x nTimes} matrix of cross-spectrum on sensors
@@ -209,22 +209,25 @@ function [BrainNoise] = GenerateBrainNoise(G, T, Tw, N, Fs)
     gamma2_band = [50, 70] / (Fs / 2);
 
 
-    [b_alpha, a_alpha]   = butter(4,alpha_band);
-    [b_beta, a_beta]     = butter(4,beta_band);
-    [b_gamma1, a_gamma1] = butter(4,gamma1_band);
-    [b_gamma2, a_gamma2] = butter(4,gamma2_band);
+    [b_alpha, a_alpha]   = butter(4, alpha_band);
+    [b_beta, a_beta]     = butter(4, beta_band);
+    [b_gamma1, a_gamma1] = butter(4, gamma1_band);
+    [b_gamma2, a_gamma2] = butter(4, gamma2_band);
 
     SourceNoise = 1 / mean(alpha_band)  * filtfilt(b_alpha,  a_alpha,  q')' + ...
                   1 / mean(beta_band)   * filtfilt(b_beta,   a_beta,   q')' + ...
                   1 / mean(gamma1_band) * filtfilt(b_gamma1, a_gamma1, q')' + ...
                   1 / mean(gamma2_band) * filtfilt(b_gamma2, a_gamma2, q')';
 
-    BrainNoise = G(:,SrcIndex) * SourceNoise(:,Tw + 1:Tw + T) / N;
+    BrainNoise = G(:, SrcIndex) * SourceNoise(:, Tw + 1 : Tw + T) / N;
 end
 
 
 function [ans_idx, nw1, nw2, nw3] = FindEffSources(Dmax, R, XYZGen, NPI)
-    %Dmax = 0.015;
+%------------------------------------------------------------------------
+% Find sources in Dmax-ball of XYZGen locations
+% -----------------------------------------------------------------------
+
     % create binary arrays indicators for each network from NPI 
     nSites = size(R, 1);
     IND(nSites * (nSites - 1) / 2, 2) = 0; % Memory allocation; faster then zeroes(...) 
@@ -239,6 +242,7 @@ function [ans_idx, nw1, nw2, nw3] = FindEffSources(Dmax, R, XYZGen, NPI)
     R1 = R(IND(:,1),:);
     R2 = R(IND(:,2),:);
     k = 1;
+
     for nw = NPI
         i1 = nw * 2 - 1;
         i2 = nw * 2;
@@ -255,6 +259,7 @@ function [ans_idx, nw1, nw2, nw3] = FindEffSources(Dmax, R, XYZGen, NPI)
         Nw(:,k) = ( (D11 < Dmax) & (D22 < Dmax) ) | ( (D12 < Dmax) & (D21 < Dmax) );
         k = k + 1;
     end;
+
     AllNw = (sum(Nw, 2) > 0);
     ans_idx_lin = find(AllNw); % We`ve obtained indices that lay near generator coordinates.
     ans_idx = IND(ans_idx_lin,:); 
@@ -266,12 +271,14 @@ end
 
 function [Evoked, Induced, BrainNoise, Ctx, SensorNoise, G2d, R, Fs, XYZGenOut, Ggen, PhaseShiftsOut] = SimulateDataPhase(nTr, NetworkPairIndex, dPhi, bNewBrainNoise, PhaseShiftsIn, XYZGen, alpha_in)
 % -------------------------------------------------------
-% description
+% Generate evoked and induced activity and project it on
+% sensors with forward operator Ggen
 % -------------------------------------------------------
 % FORMAT:
 %   format 
 % INPUTS:
-%   NetworkPairIndex        -
+%   Ggen        - {n_sensors x n_networks * 2} matrix;
+%                 topographies of network nodes
 % OUTPUTS:
 %   outputs
 % ________________________________________
@@ -338,9 +345,9 @@ function [Evoked, Induced, BrainNoise, Ctx, SensorNoise, G2d, R, Fs, XYZGenOut, 
     t = 1:T;
 
     % synchrony profiles of networks, one of each  as specified in lines 34-37
-    sp(1,:) = exp(-1e-8   * (abs(t - 100)) .^ 4) ;
-    sp(2,:) = exp(-1e-8   * (abs(t - 350)) .^ 4) ;
-    sp(3,:) = exp(-0.2e-8 * (abs(t - 225)) .^ 4) ;
+    sp(1,:) = exp(-1e-8   * (abs(t - 100)) .^ 4);
+    sp(2,:) = exp(-1e-8   * (abs(t - 350)) .^ 4);
+    sp(3,:) = exp(-0.2e-8 * (abs(t - 225)) .^ 4);
     sp(4,:) = 0.5 * (sin(10 * t / 500) + 1);
 
     range = 1:T;
@@ -361,13 +368,13 @@ function [Evoked, Induced, BrainNoise, Ctx, SensorNoise, G2d, R, Fs, XYZGenOut, 
     PhaseShiftsOut = zeros(nTr,8);
     for tr = 1:nTr
         if(bUsePhases)
-            phi1 = PhaseShiftsIn(tr,1);
-            phi_alpha = PhaseShiftsIn(tr,2);
+            phi1 = PhaseShiftsIn(tr, 1);
+            phi_alpha = PhaseShiftsIn(tr, 2);
         else
             phi1 = 2 * (rand - 0.5) * pi;
             phi_alpha = alpha * (rand - 0.5) * pi;
         end;
-        PhaseShiftsOut(tr, 1:2) = [phi1 phi_alpha];
+        PhaseShiftsOut(tr, 1:2) = [phi1, phi_alpha];
         rnd_phi12 = phi_alpha + dPhi;
         s{1}(1,:) = sin(2 * pi * F1 * t + phi1) .* sp(1,:);
         s{1}(2,:) = sin(2 * pi * F1 * t + phi1 + rnd_phi12) .* sp(1,:);
@@ -379,31 +386,34 @@ function [Evoked, Induced, BrainNoise, Ctx, SensorNoise, G2d, R, Fs, XYZGenOut, 
             phi2 = 2 * (rand - 0.5) * pi;
             phi_alpha = alpha * (rand - 0.5) * pi;
         end;
-        PhaseShiftsOut(tr, 3:4) = [phi2 phi_alpha];
+
+        PhaseShiftsOut(tr, 3:4) = [phi2, phi_alpha];
         rnd_phi34 = phi_alpha + dPhi;
         s{2}(1,:) =  sin(2 * pi * F1 * t + phi2) .* sp(2,:); 
         s{2}(2,:) =  sin(2 * pi * F1 * t + phi2 + rnd_phi34) .* sp(2,:); 
 
         if(bUsePhases)
-            phi3 = PhaseShiftsIn(tr,5);        
-            phi_alpha = PhaseShiftsIn(tr,6);
+            phi3 = PhaseShiftsIn(tr, 5);        
+            phi_alpha = PhaseShiftsIn(tr, 6);
         else
             phi3 = 2 * (rand - 0.5) * pi;
             phi_alpha = alpha * (rand - 0.5) * pi;
         end;
-        PhaseShiftsOut(tr,5:6) = [phi3 phi_alpha];
+
+        PhaseShiftsOut(tr, 5:6) = [phi3, phi_alpha];
         rnd_phi56 =  phi_alpha + dPhi;
         s{3}(1,:) =  sin(2 * pi * F1 * t + phi3) .* sp(3,:); 
         s{3}(2,:) =  sin(2 * pi * F1 * t + phi3 + rnd_phi56) .* sp(3,:); 
 
         if(bUsePhases)
-            phi4 = PhaseShiftsIn(tr,7);
-            phi_alpha = PhaseShiftsIn(tr,8);
+            phi4 = PhaseShiftsIn(tr, 7);
+            phi_alpha = PhaseShiftsIn(tr, 8);
         else
             phi4 = 2 * (rand - 0.5) * pi;
             phi_alpha = alpha * (rand - 0.5) * pi;
         end;
-        PhaseShiftsOut(tr,7:8) = [phi4, phi_alpha];
+
+        PhaseShiftsOut(tr, 7:8) = [phi4, phi_alpha];
         rnd_phi78 = phi_alpha + dPhi;
         s{4}(1,:) =  sin(2 * pi * F1 * t + phi3) .* sp(4,:); 
         s{4}(2,:) =  sin(2 * pi * F1 * t + phi3 + rnd_phi56) .* sp(4,:); 
@@ -411,11 +421,11 @@ function [Evoked, Induced, BrainNoise, Ctx, SensorNoise, G2d, R, Fs, XYZGenOut, 
         % generate evoked activity
         e(1,:) = exp(-15 * (t - 0.2) .^ 2) .* sin(2 * pi * 8 * t + 0.8 * (rand - 0.5) * pi);
         e(2,:) = exp(-15 * (t - 0.2) .^ 2) .* cos(2 * pi * 8 * t + 0.8 * (rand - 0.5) * pi);
-        
+
         % collect activity from the selected networks
-        induced = zeros(nCh,T);
+        induced = zeros(nCh, T);
         for n = NetworkPairIndex
-             a = Ggen(:,nwp{n}) * s{n};
+             a = Ggen(:, nwp{n}) * s{n};
              a = a / norm(a(:));   
             induced = induced + a;
         end;
@@ -440,18 +450,14 @@ function [Evoked, Induced, BrainNoise, Ctx, SensorNoise, G2d, R, Fs, XYZGenOut, 
         sensornoise = sensornoise/sqrt(sum((sensornoise(:).^2)));
         SensorNoise(:, range) = sensornoise;
         range = range + T;
+
         if tr > 1
-          for j = 0:log10(tr - 1)
+          for j = 0 : log10(tr - 1)
               fprintf('\b'); % delete previous counter display
           end
          end
          fprintf('%d', tr);
     end
-
-    if(bNewBrainNoise)
-        save('BrainNoiseBiomag2014.mat','BrainNoise');
-    end;
-
     fprintf('\nDone.\n');
 
     XYZGenOut = XYZGenAct(nw,:);

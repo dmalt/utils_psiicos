@@ -81,10 +81,11 @@ function [Cs, IND] = GCS_ScanFast(C, G, A)
         range_i = iSrc * 2 - 1 : iSrc * 2;
         ai = A(range_i,:);
         gi = G(:,range_i);
-        P = eye(Nsns) - gi(:,1) * ai(1,:) / (ai(1,:) * gi(:,1)) - gi(:,2) * ai(2,:) / (ai(2,:) * gi(:,2));
+        P = eye(Nsns) - gi(:,1) * ai(1,:) / (ai(1,:) * gi(:,1))...
+                      - gi(:,2) * ai(2,:) / (ai(2,:) * gi(:,2));
 
         tmp = ai * C;
-        cslong =  tmp *P' * A'; % {2 x n_sen} matrix
+        cslong =  tmp * P' * A'; % {2 x n_sen} matrix
 
         cs2long = cslong .* conj(cslong);
         cs2longd = cslong(1,:) .* conj(cslong(2,:));
