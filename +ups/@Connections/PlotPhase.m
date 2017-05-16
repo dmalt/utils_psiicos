@@ -7,10 +7,17 @@ function PlotPhase(obj, src, event)
 %   PlotPhase(obj, src, event)
 % INPUTS:
 %   obj        - Connections instance;
-%   src		   - handle to clicked line
+%   src        - handle to clicked line
 %   event      - 
+% NOTE:
+%   obj.CT must be defined
 % ________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
+    import ups.FindXYZonGrid
+    import ups.FindOr
+
+    assert(isprop(obj, 'CT'),...
+           'Cross-spectrum timeseries is undefined');
 
 	xyz_i = [src.XData(1), src.YData(1), src.ZData(1)];
 	xyz_j = [src.XData(2), src.YData(2), src.ZData(2)];
@@ -45,10 +52,14 @@ function PlotPhase(obj, src, event)
 	figure;
 	subplot(4, 1, 1)
 	plot(1:nTimes, abs(tseries), 'Color', src.Color, 'linewidth', 2);
+    title('Network activation profile');
 	subplot(4, 1, 2)
-	plot(1:nTimes, unwrap(angle(tseries(:,:)), pi/2), 'Color', src.Color, 'linewidth', 2);
+	plot(1:nTimes, unwrap(angle(tseries(:,:)), pi / 2), 'Color', src.Color, 'linewidth', 2);
+    title('Phase shift');
 	subplot(4, 1, 3)
-	plot(1:nTimes, acos(u(1,:)))
+	plot(1:nTimes, acos(u(1,:)), 'Color', src.Color, 'linewidth', 2)
+    title('First dipole orientation');
 	subplot(4, 1, 4)
-	plot(1:nTimes, acos(v(1,:)))
+	plot(1:nTimes, acos(v(1,:)), 'Color', src.Color, 'linewidth', 2)
+    title('Second dipole orientation');
 end

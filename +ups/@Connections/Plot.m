@@ -4,7 +4,7 @@ function light_handle = Plot(obj, opacity, linewidth, m_radius)
 % coordinates and cortex surface, draw connections on brain
 % ---------------------------------------------------------------
 % FORMAT:
-%   Plot(obj, iCol) 
+%   Plot(obj, opacity, linewidth, m_radius) 
 % INPUTS:
 %   obj.conInds{iSet}     - {nConnections x 2} matrix of indices
 %                    	    of connected grid nodes
@@ -13,7 +13,10 @@ function light_handle = Plot(obj, opacity, linewidth, m_radius)
 %   obj.Ctx               - structure; triangular surface of cortex;
 %                           usually generated in brainstorm
 %   opacity               - scalar; opacity of a cortex surface;
-%                           should be between 0 and 1;
+%                           should be between 0 and 1; default=0.6
+%   linewidth             - int scalar; default=2
+%   m_radius              - float scalar; sphere marker radius
+%                           default=0.002
 % __________________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
 
