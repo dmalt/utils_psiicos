@@ -83,7 +83,7 @@ function [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly, progress_bar
   end;
   CT = data;
   if progress_bar
-      fprintf('\n');
+      fprintf(' -> Done\n');
   end
 end
 
