@@ -1,4 +1,4 @@
-function [HM, CrossSpecTime, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nTr, GainSVDTh, InducedScale, EvokedScale, isUseCache) 
+function [HM, CrossSpecTime, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nTr, GainSVDTh, InducedScale, EvokedScale, isUseCache)
 % --------------------------------------------------------------------------
 % Generate forward model and cross-spectrum on sensors for simulations
 % --------------------------------------------------------------------------
@@ -44,11 +44,11 @@ function [HM, CrossSpecTime, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nT
     if nargin < 5
         EvokedScale = 0.;
     end   
-    if nargin < 5 - 1;
+    if nargin < 4;
            InducedScale = 0.35;
            EvokedScale = 0;
     end
-    if nargin < 5 -2
+    if nargin < 3
     % 0.05 results into 47 eigensensors and makes it run faster 
     % but produces less contrasting subcorr scans
     % for a more reliable preformance use 0.01
@@ -56,10 +56,11 @@ function [HM, CrossSpecTime, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nT
         GainSVDTh = 0.001 ;
     end
 
-    if nargin < 5 - 3
+    if nargin < 2
         nTr = 100;
     end
     % ----------------------------------- %
+
     % ---- check if cache folder is there --- %
     % ----------if no - create one ---------- %
     fname = mfilename('fullpath');
@@ -75,8 +76,8 @@ function [HM, CrossSpecTime, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nT
        '_gsvdth_', num2str(GainSVDTh),    ...
        '_is_',     num2str(InducedScale), ...
        '_es_',     num2str(EvokedScale)
-   ];
-   cache_fname = [cache_fold, '/', cache_fname, '.mat'];
+    ];
+    cache_fname = [cache_fold, '/', cache_fname, '.mat'];
 
     % --------------------------------------- %
 
@@ -458,7 +459,7 @@ function [Evoked, Induced, BrainNoise, Ctx, SensorNoise, G2d, R, Fs, XYZGenOut, 
          end
          fprintf('%d', tr);
     end
-    fprintf('\nDone.\n');
+    fprintf(' -> Done.\n');
 
     XYZGenOut = XYZGenAct(nw,:);
 end
