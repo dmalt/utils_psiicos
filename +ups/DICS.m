@@ -28,6 +28,10 @@ function [A, Ps, Cs, IND] = DICS(C, G, lambda, is_imag)
 
     import ps.PSIICOS_ScanFast
 
+    if nargin < 4
+        is_imag = false;
+    end
+
     if nargin < 3
         lambda = 10;
     end
