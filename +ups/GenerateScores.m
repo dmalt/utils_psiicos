@@ -1,37 +1,36 @@
-function [SPC, TPR, PPV] = GenerateROC(Q, Dmax, R, IND, N, XYZGen, NPI)
+function [SPC, TPR, PPV] = GenerateScores(Q, Dmax, GridLoc, IND, n_levels, XYZGen, NPI)
 % ------------------------------------------------------------------------
 % Generate specificity, true positive rate and positive predictive value
 % for connectivity estimation algorithm by gradually lowering threshold.
 % Usually used for calculation of ROC or Precision-Recall curves
 % ------------------------------------------------------------------------
 % FORMAT:
-%   [SPC, TPR, PPV] = GenerateScores(Q, Dmax, R, IND, N, XYZGen, NPI) 
+%   [SPC, TPR, PPV] = GenerateScores(Q, Dmax, GridLoc, IND, n_levels, XYZGen, NPI)
 % INPUTS:
 %   Q        - vectorized upper triangle of connectivity matrix on sources
 %   Dmax     - float; max distance in m from true location for connection
 %              to be considered true detection
-%   R        - {n_sources x 3} matrix of source-space coordinates
+%   GridLoc  - {n_sources x 3} matrix of source-space coordinates
 %   IND      - {(n_sources ^ 2 - n_sources) / 2 x 2} index mapping array
-%              between vectorized upper triangle of matrix and full matrix 
-%   N        - int; number of steps in scores generation
-%   XYZGen
-%   NPI
+%              between vectorized upper triangle of matrix and full matrix
+%   n_levels - int; number of steps in scores generation
+%   XYZGen   - {n_gen x 3} matrix of coordinates of activity generating
+%              nodes
+%   NPI      - {n_networks x 2}
 % OUTPUTS:
-%   SPC       - {1 x N}  vector of specificities;
+%   SPC       - {1 x n_levels}  vector of specificities;
 %               SPC(i) = tp / (tp + fn)
-%   TPR       - {1 x N}  vector of true positive rates;
+%   TPR       - {1 x n_levels}  vector of true positive rates;
 %               TPR(i) = tn / (fp + tn)
-
-%   PPV       - {1 x N}  vector of positive predictive values;
+%   PPV       - {1 x n_levels}  vector of positive predictive values;
 %               PPV(i) = tp / (tp + fp);
-
 % ________________________________________________________________________
 % Alex Ossadtchii ossadtchi@gmail.com, Dmitrii Altukhov, dm.altukhov@ya.ru
 
 %Dmax = 0.015;
-% create binary array indicators for each network from NPI 
-R1 = R(IND(:,1),:);
-R2 = R(IND(:,2),:);
+% create binary array indicators for each network from NPI
+R1 = GridLoc(IND(:,1),:);
+R2 = GridLoc(IND(:,2),:);
 k = 1;
 for nw = NPI
     i1 = nw * 2 - 1;
@@ -50,27 +49,27 @@ for nw = NPI
     k = k + 1;
 end;
 AllNw = (sum(Nw, 2) > 0);
-% size(AllNw)
 
 Qmax = max(Q);
 Qmin = min(Q);
-dQ = (Qmax - Qmin) / N;
-TP = zeros(1, N);
+dQ = (Qmax - Qmin) / n_levels;
+TP = zeros(1, n_levels);
 TN = TP;
 FP = TP;
 FN = TP;
-fprintf('Calculating ROC curve ... \n');
-fprintf('Threshold level index (Max %d) : ', N); 
+fprintf('Calculating scores ... \n');
+fprintf('Threshold level index (Max %d) : ', n_levels);
 
-for i=1:N
+for i=1:n_levels
     q = Qmax - dQ * i;
-    ind = find(Q >= q);
-    ind_c = setdiff(1:length(Q), ind);
+    ind = (Q >= q)';
+    % ind_c = setdiff(1:length(Q), ind);
     % size(ind)
-    TP(i) = sum(AllNw(ind));
-    FP(i) = sum(~AllNw(ind));
-    TN(i) = sum(~AllNw(ind_c));
-    FN(i) = sum(AllNw(ind_c));
+    TP(i) = double(AllNw)' * double(ind);
+    FP(i) = double(~AllNw)' * double(ind);
+    TN(i) = double(~AllNw)' * double(~ind);
+
+    FN(i) = AllNw' * double(~ind);
     if i > 1
        for j=0:log10(i - 1)
            fprintf('\b'); % delete previous counter display
