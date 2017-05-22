@@ -66,7 +66,7 @@ function [CT, key] = CrossSpectralTimeseries(trials, isInducedOnly, progress_bar
   end
 
   for i = 1:nCh
-      mn = (mean( bsxfun(@times, (Xph(1:nCh,:,:)), XphConj(i,:,:)), 3));
+      mn = mean( bsxfun(@times, Xph, XphConj(i,:,:)), 3);
       data(k:k + nCh - 1,:) = mn;
       key(k:k + nCh - 1) = KEY(1:nCh, i);
       k = k + nCh;
