@@ -23,3 +23,4 @@ function ind = TimeAsIndex(TimeArray, Time)
                  Time, TimeArray(1), TimeArray(end));
         ind = 0; 
     end
+end
