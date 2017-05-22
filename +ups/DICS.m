@@ -1,7 +1,7 @@
 function [A, Ps, Cs, IND] = DICS(C, G, lambda, is_imag)
 % -------------------------------------------------------
 % DICS beamformer on cross-spectrum. compute beamformer
-% topographies and use them to estimate powers and 
+% topographies and use them to estimate powers and
 % rank source-level connections by their correlation
 % with sensor-level cross-spectrum
 % -------------------------------------------------------
@@ -48,6 +48,7 @@ function [A, Ps, Cs, IND] = DICS(C, G, lambda, is_imag)
         A(range,:) = (L' * inv(C_reg) * L) \ L' / C_reg;
         range = range + 2;
     end
+
 
     % ---------- Estimate powers -------- %
     Ps = zeros(Ns,1);
