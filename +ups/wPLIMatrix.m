@@ -1,33 +1,38 @@
-function [wPLI] = wPLIMatrix(X,band,Fs, bInducedOnly)
-if(nargin<4)
-    bInducedOnly = false;
-end;
-[Nch, Ns,  Ntr] = size(X);
+function wPLI = wPLIMatrix(X, band, Fs, bInducedOnly)
+% ---------------------------------------------------
+% Compute weighted PLI connectivity matrix
+% ---------------------------------------------------
 
-T = Fs/Ns;
+    if(nargin < 4)
+        bInducedOnly = false;
+    end;
 
-f = [0:1:Ns-1]*T;
+    [Nch, Ns,  Ntr] = size(X);
 
-ind_band = find(f>=band(1) & f<=band(2));
+    T = Fs / Ns;
 
-if(bInducedOnly)
-    X = X-repmat(mean(X,3),[1,1,Ntr]);
-end;
+    f = (0:1:Ns-1) * T;
 
-Xfft = fft(X,[],2);
+    ind_band = (f >= band(1) & f <= band(2));
 
-Xfft_band = Xfft(:,ind_band,:);
+    if(bInducedOnly)
+        X = X - repmat(mean(X, 3), [1, 1, Ntr]);
+    end;
 
-wPLI = zeros(Nch,Nch);
-abswPLI = zeros(Nch,Nch);
+    Xfft = fft(X, [], 2);
 
-for tr=1:Ntr
-    wPLI = wPLI + (imag(Xfft_band(:,:,tr)*(Xfft_band(:,:,tr))'));
-    abswPLI = abswPLI + abs(imag(Xfft_band(:,:,tr)*(Xfft_band(:,:,tr))'));
+    Xfft_band = Xfft(:,ind_band,:);
+
+    wPLI = zeros(Nch,Nch);
+    abswPLI = zeros(Nch,Nch);
+
+    for tr=1:Ntr
+        wPLI = wPLI + (imag(Xfft_band(:,:,tr) * (Xfft_band(:,:,tr))'));
+        abswPLI = abswPLI + abs(imag(Xfft_band(:,:,tr) * (Xfft_band(:,:,tr))'));
+    end
+
+    wPLI = abs(wPLI) ./ abswPLI;
+    for i = 1:size(wPLI, 1)
+        wPLI(i, i) = 0;
+    end;
 end
-
-wPLI = abs(wPLI)./abswPLI;
-for i=1:size(wPLI,1)
-    wPLI(i,i) = 0;
-end;
-    
