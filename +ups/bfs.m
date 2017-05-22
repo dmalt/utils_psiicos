@@ -22,36 +22,35 @@ function [d, dt, pred] = bfs(A,u,target)
 % History
 % 2008-04-13: Initial coding
 
-    if ~exist('target','var') || isempty(full), target=0; end
+    if ~exist('target', 'var') || isempty(full), target = 0; end
 
-    if isstruct(A), rp=A.rp; ci=A.ci; 
-    else [rp ci]=sparse_to_csr(A); 
+    if isstruct(A), rp = A.rp; ci = A.ci; 
+    else [rp, ci] = sparse_to_csr(a); 
     end
 
-    n=length(rp)-1; 
-    d=-1*ones(n,1); dt=-1*ones(n,1); pred=zeros(1,n);
-    sq=zeros(n,1); sqt=0; sqh=0; % search queue and search queue tail/head
+    n = length(rp) - 1; 
+    d = -1 * ones(n, 1); dt = -1 * ones(n, 1); pred = zeros(1, n);
+    sq=zeros(n, 1); sqt = 0; sqh = 0; % search queue and search queue tail/head
 
     % start bfs at u
-    sqt=sqt+1; sq(sqt)=u; 
-    t=0;  
-    d(u)=0; dt(u)=t; t=t+1; pred(u)=u;
-    while sqt-sqh>0
-        sqh=sqh+1; v=sq(sqh); % pop v off the head of the queue
-        for ri=rp(v):rp(v+1)-1
-            w=ci(ri);
-            if d(w)<0
-                sqt=sqt+1; sq(sqt)=w; 
-                d(w)=d(v)+1; dt(w)=t; t=t+1; pred(w)=v; 
-                if w==target, return; end
+    sqt = sqt + 1; sq(sqt) = u; 
+    t = 0;  
+    d(u)=0; dt(u) = t; t = t + 1; pred(u) = u;
+    while sqt - sqh > 0
+        sqh = sqh + 1; v=sq(sqh); % pop v off the head of the queue
+        for ri = rp(v):rp(v + 1) - 1
+            w = ci(ri);
+            if d(w) < 0
+                sqt = sqt + 1; sq(sqt) = w; 
+                d(w) = d(v) + 1; dt(w) = t; t = t + 1; pred(w) = v; 
+                if w == target, return; end
             end
         end
     end
 end
 
 
-
-function [rp ci ai ncol]=sparse_to_csr(A,varargin)
+function [rp, ci, ai, ncol]=sparse_to_csr(A,varargin)
 % SPARSE_TO_CSR Convert a sparse matrix into compressed row storage arrays
 % 
 % [rp ci ai] = sparse_to_csr(A) returns the row pointer (rp), column index
@@ -77,13 +76,13 @@ function [rp ci ai ncol]=sparse_to_csr(A,varargin)
 % 2009-05-15: Fixed triplet input
 
     narginchk(1, 5)
-    retc = nargout>1; reta = nargout>2;
+    retc = nargout > 1; reta = nargout > 2;
 
-    if nargin>1
-        if nargin>4, ncol = varargin{4}; end
+    if nargin > 1
+        if nargin > 4, ncol = varargin{4}; end
         nzi = A; nzj = varargin{1};
         if reta && length(varargin) > 2, nzv = varargin{2}; end    
-        if nargin<4, n=max(nzi); else n=varargin{3}; end
+        if nargin < 4, n = max(nzi); else n = varargin{3}; end
         nz = length(A);
         if length(nzi) ~= length(nzj), error('gaimc:invalidInput',...
                 'length of nzi (%i) not equal to length of nzj (%i)', nz, ...
@@ -102,28 +101,28 @@ function [rp ci ai ncol]=sparse_to_csr(A,varargin)
                  'a scalar']); 
         end
     else
-        n = size(A,1); nz = nnz(A); ncol = size(A,2);
-        retc = nargout>1; reta = nargout>2;
-        if reta,     [nzi nzj nzv] = find(A); 
-        else         [nzi nzj] = find(A);
+        n = size(A, 1); nz = nnz(A); ncol = size(A, 2);
+        retc = nargout > 1; reta = nargout>2;
+        if reta,     [nzi, nzj, nzv] = find(A); 
+        else         [nzi, nzj] = find(A);
         end
     end
-    if retc, ci = zeros(nz,1); end
-    if reta, ai = zeros(nz,1); end
-    rp = zeros(n+1,1);
-    for i=1:nz
-        rp(nzi(i)+1)=rp(nzi(i)+1)+1;
+    if retc, ci = zeros(nz, 1); end
+    if reta, ai = zeros(nz, 1); end
+    rp = zeros(n + 1, 1);
+    for i = 1:nz
+        rp(nzi(i) + 1) = rp(nzi(i) + 1) + 1;
     end
     rp=cumsum(rp);
-    if ~retc && ~reta, rp=rp+1; return; end
-    for i=1:nz
-        if reta, ai(rp(nzi(i))+1)=nzv(i); end
-        ci(rp(nzi(i))+1)=nzj(i);
-        rp(nzi(i))=rp(nzi(i))+1;
+    if ~retc && ~reta, rp = rp + 1; return; end
+    for i = 1:nz
+        if reta, ai(rp(nzi(i)) + 1)=nzv(i); end
+        ci(rp(nzi(i)) + 1) = nzj(i);
+        rp(nzi(i)) = rp(nzi(i)) + 1;
     end
-    for i=n:-1:1
-        rp(i+1)=rp(i);
+    for i = n:-1:1
+        rp(i + 1) = rp(i);
     end
-    rp(1)=0;
-    rp=rp+1;
+    rp(1) = 0;
+    rp = rp + 1;
 end
