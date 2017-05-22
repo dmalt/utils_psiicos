@@ -16,10 +16,10 @@ function ind = TimeAsIndex(TimeArray, Time)
 % __________________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
 
-	if TimeArray(1) <= Time & Time <= TimeArray(end)
-		[dummy, ind] = min(abs(TimeArray - Time));
-	else
-		fprintf('ERROR: TimeAsIndex: time %3.3f is not within [%3.3f, %3.3f] range\n',...
-				 Time, TimeArray(1), TimeArray(end));
-	 	ind = 0; 
-	end
+    if TimeArray(1) <= Time && Time <= TimeArray(end)
+        [~, ind] = min(abs(TimeArray - Time));
+    else
+        fprintf('ERROR: TimeAsIndex: time %3.3f is not within [%3.3f, %3.3f] range\n',...
+                 Time, TimeArray(1), TimeArray(end));
+        ind = 0; 
+    end
