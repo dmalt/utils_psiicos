@@ -16,20 +16,29 @@ function lineHandles = drawset(conInds, Loc, col, linewidth, m_radius)
 %                  to lines representing connections.
 % ___________________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
-	if nargin < 5
-	    m_radius = 0.002;
-	end
+    if nargin < 5
+        m_radius = 0.002;
+    end
 
-	if nargin < 4
-	    linewidth = 2;
-	end
+    if nargin < 4
+        linewidth = 2;
+    end
     linecol = col;
-    lineHandles = {};
+    lineHandles = cell(size(conInds,1),1);
     for i = 1:size(conInds, 1)
-            lineHandles{i} = line( Loc(conInds(i,:), 1), Loc(conInds(i,:),2), Loc(conInds(i,:),3));
+            lineHandles{i} = line( Loc(conInds(i,:), 1),...
+                                   Loc(conInds(i,:),2),...
+                                   Loc(conInds(i,:),3));
 
-            sphere_marker(Loc(conInds(i,1),1), Loc(conInds(i,1),2), Loc(conInds(i,1),3), m_radius, col)
-            sphere_marker(Loc(conInds(i,2),1), Loc(conInds(i,2),2), Loc(conInds(i,2),3), m_radius, col)
+            sphere_marker(Loc(conInds(i,1),1),...
+                          Loc(conInds(i,1),2),...
+                          Loc(conInds(i,1),3),...
+                          m_radius, col)
+
+            sphere_marker(Loc(conInds(i,2),1),...
+                          Loc(conInds(i,2),2),...
+                          Loc(conInds(i,2),3),...
+                          m_radius, col)
 
             set(lineHandles{i}, 'Color', linecol, 'linewidth', linewidth);
     end
