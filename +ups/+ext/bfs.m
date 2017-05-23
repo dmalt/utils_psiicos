@@ -25,7 +25,7 @@ function [d, dt, pred] = bfs(A,u,target)
     if ~exist('target', 'var') || isempty(full), target = 0; end
 
     if isstruct(A), rp = A.rp; ci = A.ci; 
-    else [rp, ci] = sparse_to_csr(a); 
+    else [rp, ci] = sparse_to_csr(A); 
     end
 
     n = length(rp) - 1; 
