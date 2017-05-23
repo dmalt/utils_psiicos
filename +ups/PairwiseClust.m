@@ -25,13 +25,13 @@ function [clusters] = PairwiseClust(DipInd, GridLoc, Dpair, clustSize)
     import ups.bfs
 
     clusters = {};
-    % -------------------------------- create adjacence matrix ---------------------------------- %
+    % -------------- create adjacence matrix ------------------ %
     [Npairs, ~] = size(DipInd);
     adjMat = zeros(Npairs, Npairs);
     for p1 = 1:Npairs
         for p2 = p1:Npairs
-            areCloseCoDir =     norm(GridLoc(DipInd(p1,1),:) - GridLoc(DipInd(p2,1),:))  < Dpair ...
-                             && norm(GridLoc(DipInd(p1,2),:) - GridLoc(DipInd(p2,2),:))  < Dpair;
+            areCloseCoDir = norm(GridLoc(DipInd(p1,1),:) - GridLoc(DipInd(p2,1),:))  < Dpair ...
+                         && norm(GridLoc(DipInd(p1,2),:) - GridLoc(DipInd(p2,2),:))  < Dpair;
             areCloseContraDir = norm(GridLoc(DipInd(p1,1),:) - GridLoc(DipInd(p2,2),:))  < Dpair ...
                              && norm(GridLoc(DipInd(p1,2),:) - GridLoc(DipInd(p2,1),:))  < Dpair;
             if  areCloseCoDir || areCloseContraDir
@@ -40,7 +40,7 @@ function [clusters] = PairwiseClust(DipInd, GridLoc, Dpair, clustSize)
             end
         end
     end
-    % -------------------------------------------------------------------------------------------- %
+    % -------------------------------------------------------- %
 
     % ------------- clusterize using breadth first search ------------- %
     iCol = 1; % Column index in adjacency martrix
