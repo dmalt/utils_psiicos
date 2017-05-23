@@ -1,7 +1,7 @@
 function obj = Clusterize(obj, clustSize, dPair)
-% ----------------------------------------------- 
+% -----------------------------------------------
 % Perform pairwise clustering on connections
-% ----------------------------------------------- 
+% -----------------------------------------------
     import ups.PairwiseClust
     import ups.CoOrientCluster
 
