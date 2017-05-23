@@ -1,6 +1,6 @@
 function conInds_long = DropShortConn(conInds, ChLoc, d_min, n_conn_max)
 % -------------------------------------------------------
-% Exclude connections with length less than d_min 
+% Exclude connections with length less than d_min
 % -------------------------------------------------------
 % FORMAT:
 %  function conInds_long = DropLongConn(conInds, ChLoc, min_length, n_conn_max)
@@ -8,16 +8,16 @@ function conInds_long = DropShortConn(conInds, ChLoc, d_min, n_conn_max)
 %   conInds        -
 %   ChLoc
 %   d_min
-%   n_conn_max 
+%   n_conn_max
 % OUTPUTS:
 %   conInds_long
 % ________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya
 
-
     if nargin < 4
         n_conn_max = [];
     end
+
     conInds_long = conInds;
     for iCon = 1:length(conInds_long)
         xyz1 = ChLoc(:, conInds_long(iCon,1));

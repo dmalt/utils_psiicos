@@ -18,9 +18,10 @@ function ChLoc = ReadChannelLocations(MEG_sensors_file, ChUsed)
 % ________________________________________________________________________
 % Alex Ossadtchii ossadtchi@gmail.com, Dmitrii Altukhov, dm.altukhov@ya.ru
 
-	MEGSensors = load(MEG_sensors_file);
-	nChUsed = length(ChUsed);
-	ChLoc = zeros(3, nChUsed);
-	for i = 1:nChUsed
-	    ChLoc(:,i) = mean(MEGSensors.Channel(ChUsed(i)).Loc(:,:), 2);
-	end
+    MEGSensors = load(MEG_sensors_file);
+    nChUsed = length(ChUsed);
+    ChLoc = zeros(3, nChUsed);
+    for i = 1:nChUsed
+        ChLoc(:,i) = mean(MEGSensors.Channel(ChUsed(i)).Loc(:,:), 2);
+    end
+end

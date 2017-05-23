@@ -22,7 +22,7 @@ function [clusters] = PairwiseClust(DipInd, GridLoc, Dpair, clustSize)
 %    Zalesky et al., Neuroimage, 2012, doi: 10.1016/j.neuroimage.2012.01.068 
 % ________________________________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
-    import ups.bfs
+    import ups.ext.bfs
 
     clusters = {};
     % -------------- create adjacence matrix ------------------ %

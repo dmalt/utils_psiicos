@@ -4,7 +4,7 @@ function CS = ConnectivitySimilarity(Pairs1, Pairs2, ChLoc, NOrder, MaxDist, mea
 % Intuitively - the degree of overlapping between sets.
 % -------------------------------------------------------
 % FORMAT:
-%   CS = ConnectivitySimilarity(Pairs1, Pairs2, ChLoc, NOrder, MaxDist, meas) 
+%   CS = ConnectivitySimilarity(Pairs1, Pairs2, ChLoc, NOrder, MaxDist, meas)
 % INPUTS:
 %   Pairs1        -
 %   Pairs2
@@ -57,7 +57,7 @@ function M = AugmentConnMatr(Pairs, ElNeighbs)
     M = zeros(204, 204);
     for i=1:length(Pairs)
         M(Pairs(i,1),Pairs(i,2)) = 1;
-        M(Pairs(i,2),Pairs(i,1)) = 1;    
+        M(Pairs(i,2),Pairs(i,1)) = 1;
         for n1 = 1:length(ElNeighbs{Pairs(i,1)})
             for n2 = 1:length( ElNeighbs{Pairs(i,2)})
                 M(ElNeighbs{Pairs(i,1)}(n1), ElNeighbs{Pairs(i,2)}(n2)) = 1;

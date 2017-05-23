@@ -1,7 +1,7 @@
 function trials = LoadTrials(subjID, condition, freqBand,...
                              timeRange, HM, protocolPath)
 % ---------------------------------------------------------------------------------------
-% Load trials data from brainstorm protocol, reduce dimensions, bandpass filter and crop 
+% Load trials data from brainstorm protocol, reduce dimensions, bandpass filter and crop
 % ---------------------------------------------------------------------------------------
 % FORMAT:
 %   trials = LoadTrials(subjID, condition, freqBand, timeRange, GainSVDTh, protocolPath)
@@ -9,7 +9,7 @@ function trials = LoadTrials(subjID, condition, freqBand,...
 %   subjID        - string; subject name in BST protocol
 %   condition     - string; condition name in BST protocol
 %   freqBand      - {2 x 1} array; bandpass filtering frequency range
-%   timeRange     - {2 x 1} array; cropping timerange; 
+%   timeRange     - {2 x 1} array; cropping timerange;
 %   protocolPath  - string; absolute path to BST protocol
 %   GainSVDTh     - scalar; parameter for spm_svd for dim reduction. Higher values
 %                   correspond to less channels. If GainSVDTh = 0, no dim. reduction
@@ -26,9 +26,7 @@ function trials = LoadTrials(subjID, condition, freqBand,...
 % ________________________________________________________________________
 % Alex Ossadtchii ossadtchi@gmail.com, Dmitrii Altukhov dm.altukhov@ya.ru
 
-    import ups.LoadHeadModel
-
-    ChUsed = 1:306; ChUsed(3:3:end) = []; % use only gradiometers
+    ChUsed = ups.PickElectaChannels('grad');
 
     % -------- init defaults ------------ %
     if nargin < 6
@@ -49,8 +47,10 @@ function trials = LoadTrials(subjID, condition, freqBand,...
     UP = G.UP; % need it for dimensiion reduction
     nCh = size(UP, 1);
 
+    % ------------------- parse brainstorm folder ------------ %
     condPath = [protocolPath, '/data/', subjID, '/', condition];
     trialFiles = dir([condPath, '/data*trial*.mat']);
+    % -------------------------------------------------------- %
     trials.nTrials = length(trialFiles);
 
     fprintf('Loading trials (Max %d) : ', trials.nTrials);
@@ -60,7 +60,7 @@ function trials = LoadTrials(subjID, condition, freqBand,...
         if(iTrial == 1)
             [~, ind0] = min(abs(aux.Time - timeRange(1)));
             [~, ind1] = min(abs(aux.Time - timeRange(2)));
-            T = ind1 - ind0 + 1; 
+            T = ind1 - ind0 + 1;
             trials.data = zeros(nCh, T, trials.nTrials);
             trials.sFreq = 1 ./ (aux.Time(2) - aux.Time(1));
             % ----------- define filter ------------ %
@@ -72,7 +72,7 @@ function trials = LoadTrials(subjID, condition, freqBand,...
         % ----- print counter ----- %
         if iTrial > 1
             for tt = 0:log10(iTrial - 1)
-                fprintf('\b'); 
+                fprintf('\b');
             end
         end
         fprintf('%d', iTrial);

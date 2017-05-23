@@ -15,7 +15,8 @@ classdef test_SimulateData < matlab.unittest.TestCase
     methods(TestMethodSetup)
         function run_SimulateData(obj)
             [obj.HM, obj.Cp, obj.trials, obj.Ctx] = ...
-             ups.SimulateData(obj.phaseLag, obj.nTr, obj.GainSVDTh, obj.inducedScale, obj.evokedScale, obj.isUseCache);
+             ups.SimulateData(obj.phaseLag, obj.nTr, obj.GainSVDTh,...
+                              obj.inducedScale, obj.evokedScale, obj.isUseCache);
         end
     end
 

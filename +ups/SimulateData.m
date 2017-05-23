@@ -32,10 +32,10 @@ function [HM, CrossSpecTime, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nT
 % ______________________________________________________________________________
 % Alex Ossadtchi, ossadtchi@gmail; Dmitrii Altukhov, dm.altukhov@ya.ru
 
-    import ups.PickChannels
+    import ups.PickElectaChannels
     import ups.ReduceToTangentSpace
-    import ups.CrossSpectralTimeseries
-    import ups.spm_svd
+    import ups.conn.CrossSpectralTimeseries
+    import ups.ext.spm_svd
 
     % --------- set up defaults --------- %
     if nargin < 6    
@@ -96,7 +96,7 @@ function [HM, CrossSpecTime, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nT
         % get grid node locations
         Rloc = GLowRes.GridLoc;
         % set to use gradiometers only
-        ChUsed = PickChannels('grad');
+        ChUsed = PickElectaChannels('grad');
         % calculate tangential plane dipoles
         [~, nSites] = size(GLowRes.Gain(ChUsed, 1:3:end));
 
@@ -285,7 +285,7 @@ function [Evoked, Induced, BrainNoise, Ctx, SensorNoise, G2d, R, Fs, XYZGenOut, 
 % ________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
     
-    import ups.PickChannels
+    import ups.PickElectaChannels
     import ups.ReduceToTangentSpace
 
     bUsePhases = ~isempty(PhaseShiftsIn);
@@ -309,7 +309,7 @@ function [Evoked, Induced, BrainNoise, Ctx, SensorNoise, G2d, R, Fs, XYZGenOut, 
     % specify locations of the generators
 
     % use only gradiometers
-    ChUsed = PickChannels('grad') ;
+    ChUsed = PickElectaChannels('grad') ;
 
     % create normalized forward matrix, leaving only two components in the tangential plane 
     [nCh, ~] = size(ISD.G.Gain(ChUsed, 1:3:end));
