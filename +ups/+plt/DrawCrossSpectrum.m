@@ -28,6 +28,7 @@ function CT_restored = DrawCrossSpectrum(CTimeseries, UP, ChLoc, ifSort)
 %                     matrix on real sensors
 % _____________________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
+    import ups.RestoreCTdim
 
     Nsensors = size(UP, 2);
     Ntimes = size(CTimeseries, 2);
@@ -41,9 +42,9 @@ function CT_restored = DrawCrossSpectrum(CTimeseries, UP, ChLoc, ifSort)
         sort_aux = zeros(Nsensors ^ 2, 1);
         for iPair = 1:length(sort_aux)
             [i,j] = ind2sub(Nsensors, iPair);
-            sort_aux(iPair) = sqrt((ChLoc(1,i) - ChLoc(1,j)) ^ 2 + ...
-                                   (ChLoc(2,i) - ChLoc(2,j)) ^ 2 + ...
-                                   (ChLoc(3,i) - ChLoc(3,j)) ^ 2);
+            sort_aux(iPair) = sqrt((ChLoc(i,1) - ChLoc(j,1)) ^ 2 + ...
+                                   (ChLoc(i,2) - ChLoc(j,2)) ^ 2 + ...
+                                   (ChLoc(i,3) - ChLoc(j,3)) ^ 2);
         end
         [~, key] = sort(sort_aux);
         CTimeseriesRestored = CTimeseriesRestored(key,:);
