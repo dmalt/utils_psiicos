@@ -321,8 +321,11 @@ function [Evoked, Induced, BrainNoise, Ctx, SensorNoise,...
         % Generate sin waves for each network
 
         % generate evoked activity
-        e(1,:) = exp(-15 * (t - 0.2) .^ 2) .* sin(2 * pi * 8 * t + 0.8 * (rand - 0.5) * pi);
-        e(2,:) = exp(-15 * (t - 0.2) .^ 2) .* cos(2 * pi * 8 * t + 0.8 * (rand - 0.5) * pi);
+        e(1,:) = exp(-15 * (t - 0.2) .^ 2)...
+                 .* sin(2 * pi * 8 * t + 0.8 * (rand - 0.5) * pi);
+
+        e(2,:) = exp(-15 * (t - 0.2) .^ 2)...
+                 .* cos(2 * pi * 8 * t + 0.8 * (rand - 0.5) * pi);
 
         % collect activity from the selected networks
         induced = zeros(nCh, T);
@@ -366,14 +369,15 @@ function [Evoked, Induced, BrainNoise, Ctx, SensorNoise,...
 end
 
 
-function activation = GenSourceTrial(sync_profile, d_phi,  sync_freq, trial_length, s_freq)
+function activation = GenSourceTrial(sync_profile, d_phi,  sync_freq,...
+                                     trial_length, s_freq)
 % ---------------------------------------------------------------------- %
 % Generate one trial of source-level network activation
 % ---------------------------------------------------------------------- %
 % FORMAT:
 % activation = GenSourceTrial(sync_profile, d_phi,  sync_freq, trial_length, s_freq)
 
-    t = 1 : trial_length * samp_freq;
+    t = 1:trial_length * samp_freq;
 
     phi = 2 * (rand - 0.5) * pi; % stim-related phase shift
     phi_alpha = alpha * (rand - 0.5) * pi; % relative phase jitter 
