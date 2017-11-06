@@ -41,6 +41,7 @@ function [Gain_reduced_n, Gain_reduced] = ReduceToTangentSpace(Gain, chSelect)
     Gain_reduced_n   = zeros(nSen, nSrc * 2);
     Gain_reduced     = zeros(nSen, nSrc * 2);
     range = 1:2;
+
     for i=1:nSrc
         g = [Gain(chUsed, 1 + 3 * (i - 1)) ...
              Gain(chUsed, 2 + 3 * (i - 1)) ...
@@ -50,3 +51,4 @@ function [Gain_reduced_n, Gain_reduced] = ReduceToTangentSpace(Gain, chSelect)
         Gain_reduced(:,range)     = u(:,1:2) * s(1:2,1:2);
         range = range + 2;
     end;
+end
