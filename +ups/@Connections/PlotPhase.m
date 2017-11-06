@@ -43,8 +43,8 @@ function PlotPhase(obj, src, ~)
     for i = 1:nTimes
         C = reshape(obj.CT(:,i), nSensors, nSensors);
         [u(:,i), v(:,i), ~] = FindOr(C, g_i, g_j);
-        g_i_or = g_i * [1;0];%u(:,i);
-        g_j_or = g_j * [1;0];%v(:,i);
+        g_i_or = g_i * u(:,i);
+        g_j_or = g_j * v(:,i);
         g = kron(g_i_or, g_j_or);
         tseries(i) = g' * obj.CT(:,i);
     end
@@ -52,14 +52,18 @@ function PlotPhase(obj, src, ~)
     figure;
     subplot(4, 1, 1)
     plot(1:nTimes, abs(tseries), 'Color', src.Color, 'linewidth', 2);
+    grid on;
     title('Network activation profile');
     subplot(4, 1, 2)
     plot(1:nTimes, unwrap(angle(tseries(:,:)), pi / 2), 'Color', src.Color, 'linewidth', 2);
+    grid on;
     title('Phase shift');
     subplot(4, 1, 3)
     plot(1:nTimes, acos(u(1,:)), 'Color', src.Color, 'linewidth', 2)
+    grid on;
     title('First dipole orientation');
     subplot(4, 1, 4)
     plot(1:nTimes, acos(v(1,:)), 'Color', src.Color, 'linewidth', 2)
+    grid on;
     title('Second dipole orientation');
 end
