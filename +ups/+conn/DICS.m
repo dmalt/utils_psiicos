@@ -17,7 +17,7 @@ function [A, Ps, Cs, IND] = DICS(C, G, lambda, is_imag)
 %              inverse operator
 %   Ps       - {n_sensors x 1} vector;
 %              source-level power estimates
-%   Cs       - {n_sources * (n_sources - 1) / 2 x 1} vector
+%   Cs       - {n_sources * (n_sources - 1) / 2 x 1} vector;
 %              vectorized upper diagonal of matrix of
 %              source-level connection correlations with
 %              sensor-level cross-spectrum
@@ -45,7 +45,7 @@ function [A, Ps, Cs, IND] = DICS(C, G, lambda, is_imag)
 
     for i = 1:Ns
         L = G(:,range);
-        A(range,:) = (L' * inv(C_reg) * L) \ L' / C_reg;
+        A(range,:) = (L' * inv(real(C_reg)) * L) \ L' / real(C_reg);
         range = range + 2;
     end
 
