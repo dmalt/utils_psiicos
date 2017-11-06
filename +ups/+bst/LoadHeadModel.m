@@ -1,4 +1,4 @@
-function HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh)
+function HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh, ch_type)
 % -------------------------------------------------------
 % Load brainstorm and get grid locations matrix for
 % subject subjID
@@ -13,6 +13,9 @@ function HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh)
 %                   cortex (default = true)
 %   GainSVDTh     - float; PVU threshold for PCA-driven
 %                   sensor space reduction (default = 0.01)
+%   ch_type       - string; channel from brainstorm channels structure
+%                   for which the head model should be returned
+%                   default = 'MEG'
 % OUTPUTS:
 %   HM_ps             - structure; PSIICOS head model;
 %                       forward model operator for reduced
@@ -32,13 +35,18 @@ function HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh)
 %                       coordinates
 %   HM_ps.condName    - string; name of condtion in BST
 %                       protocol
+%   HM_ps.ch_type     - string; channel type
 % ________________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
 
     import ups.ReduceToTangentSpace
     import ups.ReduceSensorSpace
+    import ups.bst.PickChannels
 
     % ------------- set up defaults ----------- %
+    if nargin < 6
+        ch_type = 'MEG GRAD';
+    end
     if nargin < 5
         GainSVDTh = 0.01;
     end
@@ -63,6 +71,7 @@ function HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh)
         hm_path = [hm_path , '/', condName, '/'];
     end
     hmFiles = dir([hm_path, '/headmodel*.mat']); % available HM_ps files
+    ch_file = dir([hm_path, '/channel*.mat']);
     if isempty(hmFiles)
         error('LoadError:noFile', 'No head model files');
     end
@@ -71,11 +80,17 @@ function HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh)
     else
         [~, key] = max([hmFiles.bytes]); % find HM_ps with biggest size to get HR
     end
-    hm_path = [hm_path, '/', hmFiles(key).name]; % final path to HM_ps
-    HM_bst = load(hm_path);
-    % ------------------------------------------- %    
+    hm_abs_path = [hm_path, '/', hmFiles(key).name]; % final path to HM_ps
+    ch_path = [hm_path, '/', ch_file.name]; % final path to HM_ps
 
-    G2dLR = ReduceToTangentSpace(HM_bst.Gain, 'grad');
+    HM_bst = load(hm_abs_path);
+    % -- read channels file from brainstorm protocol -- % 
+    channels = load(ch_path);
+    channels = channels.Channel;
+    ch_used = PickChannels(channels, ch_type);
+    % ------------------------------------------------- %
+
+    G2dLR = ReduceToTangentSpace(HM_bst.Gain(ch_used,:), 'all');
 
     % --------------- reduce sensor space ---------------- %
     if GainSVDTh
@@ -94,5 +109,6 @@ function HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh)
     HM_ps.UP = UP;
     HM_ps.GridLoc = HM_bst.GridLoc;
     HM_ps.condName = condName;
+    HM_ps.ch_type = ch_type;
     % ------------------------------------ %
 end
