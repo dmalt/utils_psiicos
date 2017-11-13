@@ -1,30 +1,31 @@
 function [CT, resamples] = bootstrap_CT(trials, n_resamp, is_induced_only, n_trials_used)
-% -----------------------------------------------------------
-% Make bootstrapped cross-spectra with fixed number of trials 
-% -----------------------------------------------------------
+% -----------------------------------------------------------------------
+% Make bootstrapped cross-spectrum timeseries with fixed number of trials 
+% -----------------------------------------------------------------------
 % FORMAT:
-%   [BootsIND, maxes, resamples] = bootstrap(trials, n_resamp,
-%                            is_induced_only) 
+%   [CT, resamples] = bootstrap(trials, n_resamp, is_induced_only,...
+%                               n_trials_used) 
 % INPUTS:
 %   trials        - {nSensors x nTimes x nTrials} matrix of trials
 %                   on sensors 
-%   n_resamp       - scalar; number of bootstrap iterations
+%   n_resamp      - scalar; number of bootstrap iterations
 %   is_induced_only  - boolean;
-%   n_trials_used  - int scalar; 
+%   n_trials_used  - int scalar; number of trials to use for
+%                    each bootstrap iteration
 % OUTPUTS:
 %   CT            - {n_resamp x 1} cell array; each cell is 
-%                   {n_sensors x n_sensors} cross-spectral 
-%                   density matrix
+%                   {n_sensors ^ 2 x n_time} cross-spectral 
+%                   timeseries matrix
 %   resamples     - {n_resamp x 1} cell array; each cell is
 %                   {n_trials_used x 1} int vector with resampling
 %                   indices
-% ________________________________________
+% _______________________________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
 
-    import ups.CrossSpectralTimeseries
+    import ups.conn.CrossSpectralTimeseries
 
     if nargin < 4 
-        ntrials_used = size(trials, 3);
+        n_trials_used = size(trials, 3);
     end
 
     BootsIND = cell(n_resamp, 1);
