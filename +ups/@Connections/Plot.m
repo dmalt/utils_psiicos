@@ -4,7 +4,7 @@ function light_handle = Plot(obj, opacity, linewidth, m_radius)
 % coordinates and cortex surface, draw connections on brain
 % ---------------------------------------------------------------
 % FORMAT:
-%   Plot(obj, opacity, linewidth, m_radius) 
+%   Plot(obj, opacity, linewidth, m_radius)
 % INPUTS:
 %   obj.conInds{iSet}     - {nConnections x 2} matrix of indices
 %                           of connected grid nodes
@@ -31,34 +31,34 @@ function light_handle = Plot(obj, opacity, linewidth, m_radius)
         linewidth = 2;
     end
 
-    if nargin < 4 
+    if nargin < 4
         m_radius = 0.002;
     end
-    
+
     colorScheme = GetColors(3);
     bg_color = colorScheme(1).RGB;
     colors = {colorScheme(2:end).RGB};
     % ------------ Draw brain ------------------- %
     % figure;
-    h_br = trisurf(obj.CtxHR.Faces, ...
-                   obj.CtxHR.Vertices(:,1), ...
-                   obj.CtxHR.Vertices(:,2), ...
-                   obj.CtxHR.Vertices(:,3), ...
+    h_br = trisurf(obj.Ctx.Faces, ...
+                   obj.Ctx.Vertices(:,1), ...
+                   obj.Ctx.Vertices(:,2), ...
+                   obj.Ctx.Vertices(:,3), ...
                    'FaceColor', bg_color, ...
                    'EdgeColor','none', ...
-                   'FaceAlpha', opacity); 
+                   'FaceAlpha', opacity);
 
     % whitebg;
     % - make brain unclicable; without it - %
     % - clicks on connections won't work  - %
-    set(h_br, 'PickableParts', 'none') 
+    set(h_br, 'PickableParts', 'none')
 
     lighting phong;
     axis equal;
     view(-90,90);
     axis off;
     grid off
-    light_handle = camlight('right'); 
+    light_handle = camlight('right');
     hold on;
     % ------------------------------------------- %
 
@@ -69,7 +69,7 @@ function light_handle = Plot(obj, opacity, linewidth, m_radius)
             iCol = length(colors);
         end
         lineHandles = drawset(obj.conInds{iSet}, obj.headModel.GridLoc, colors{iCol}, linewidth, m_radius);
-        
+
         for i = 1:length(lineHandles)
             set(lineHandles{i},  'ButtonDownFcn', @obj.PlotPhase); % make connections clickable
         end

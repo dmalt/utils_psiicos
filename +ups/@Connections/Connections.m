@@ -3,21 +3,14 @@ classdef Connections
 % Class to store and visualize source-level connections
 % -------------------------------------------------------
 % FORMAT:
-% function obj = Connections(subjId, conInds, freqBand,...
-%                       timeRange, CT, condName, HM, CtxHR)
+% function obj = Connections(conInds, HM, Ctx)
 %
 % INPUTS:
 %   subjId        - string; subject name
 %   conInds       - {n_connections x 2} array of indices
 %                   of connected sources
-%   freqBand      - {2 x 1} array of bandpass filter
-%                   frequencies
-%   timeRange     - {2 x 1} array of time
-%   CT            - {n_sensors ^ 2 x n_times} matrix of
-%                   cross-spectrum timeseries
-%   condName      - string; name of condition
 %   HM            - structure; contains forward operator
-%   CtxHR         - structure; triangulated brain surface
+%   Ctx         - structure; triangulated brain surface
 %
 % OUTPUTS:
 %   obj           - Connections instance
@@ -28,7 +21,7 @@ classdef Connections
 
     properties (Access = private)
         protocolPath     % path to brainstorm protocol
-        CtxHR            % high res. cortex surface
+        Ctx            % high res. cortex surface
         Ctx              % low res. cortex surface
         headModel        % low res. head model struct from BST
     end
@@ -50,14 +43,14 @@ classdef Connections
         obj = Merge(obj)                         % merge connection indeces
 
         % ----------------------- constructor ---------------------- %
-        function obj = Connections(conInds, HM, CtxHR)
+        function obj = Connections(conInds, HM, Ctx)
             if iscell(conInds)
                 obj.conInds = conInds;
             else
                 obj.conInds{1} = conInds;
             end
             obj.headModel = HM;
-            obj.CtxHR     = CtxHR;
+            obj.Ctx       = Ctx;
         end
         % ---------------------------------------------------------- %
     end
