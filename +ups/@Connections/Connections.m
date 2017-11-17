@@ -20,8 +20,7 @@ classdef Connections
 % Dmitrii Altukhov, dm.altukhov@ya.ru
 
     properties (Access = private)
-        protocolPath     % path to brainstorm protocol
-        Ctx            % high res. cortex surface
+        Ctx              % high res. cortex surface
         headModel        % low res. head model struct from BST
     end
     properties
@@ -36,10 +35,10 @@ classdef Connections
     methods
         light_handle = Plot(obj, opacity, linewidth, m_radius, icol, alpha)  % plot connections on HR brain
         PlotViews(obj, opacity, linewidth, m_radius, icol, alpha)
-        PlotPhase(obj, src, event)               % plot amplitude and phase for connecion
-        obj = Clusterize(obj, clustSize, dPair)  % clusterize connections
-        obj = Average(obj)                       % average connections.
-        obj = Merge(obj)                         % merge connection indeces
+        PlotPhase(obj, src, event)                 % plot amplitude and phase for connection
+        obj = Clusterize(obj, d_pair, clust_size)  % clusterize connections
+        obj = Average(obj)                         % average connections.
+        obj = Merge(obj)                           % merge connection indices
 
         % ----------------------- constructor ---------------------- %
         function obj = Connections(conInds, HM, Ctx)
