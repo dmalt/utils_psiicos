@@ -47,6 +47,8 @@ classdef Connections
         obj = Average(obj)                         % average connections.
         obj = Merge(obj)                           % merge connection indices
         obj = Get(obj, ind)                        % slice clusters
+        obj = subsref(obj, S);
+        n = numArgumentsFromSubscript(obj, s, indexingContext);
 
         % ----------------------- constructor ---------------------- %
         function obj = Connections(conInds, HM, Ctx)

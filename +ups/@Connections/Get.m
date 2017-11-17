@@ -9,5 +9,5 @@ function obj = Get(obj, ind)
 % ________________________________
 % AUTHOR: dmalt, dm.altukhov@ya.ru
 
-    obj.conInds = obj.conInds{ind};
+    obj.conInds = obj.conInds(ind);
 end
