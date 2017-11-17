@@ -10,11 +10,18 @@ classdef Connections
 %   conInds       - {n_connections x 2} array of indices
 %                   of connected sources
 %   HM            - structure; contains forward operator
-%   Ctx         - structure; triangulated brain surface
+%   Ctx           - structure; triangulated brain surface
 %
 % OUTPUTS:
 %   obj           - Connections instance
 %
+% METHODS:
+%   Clusterize    - clusterize sticks;
+%   Average       - average sticks within each cluster
+%   Merge         - merge all sticks into one cluster
+%   Plot          - plot stick on a single brain
+%   PlotViews     - plot sticks on a brain in 3 different
+%                   views
 % USAGE:
 % ________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
