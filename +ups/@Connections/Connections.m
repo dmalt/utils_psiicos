@@ -46,6 +46,7 @@ classdef Connections
         obj = Clusterize(obj, d_pair, clust_size)  % clusterize connections
         obj = Average(obj)                         % average connections.
         obj = Merge(obj)                           % merge connection indices
+        obj = Get(obj, ind)                        % slice clusters
 
         % ----------------------- constructor ---------------------- %
         function obj = Connections(conInds, HM, Ctx)
