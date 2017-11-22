@@ -1,9 +1,9 @@
-classdef Connections
+classdef Bundles
 % -------------------------------------------------------
 % Class to store and visualize source-level connections
 % -------------------------------------------------------
 % FORMAT:
-% function obj = Connections(conInds, HM, Ctx)
+% function obj = Bundles(conInds, HM, Ctx)
 %
 % INPUTS:
 %   subjId        - string; subject name
@@ -13,7 +13,7 @@ classdef Connections
 %   Ctx           - structure; triangulated brain surface
 %
 % OUTPUTS:
-%   obj           - Connections instance
+%   obj           - Bundles instance
 %
 % METHODS:
 %   Clusterize    - clusterize sticks;
@@ -36,7 +36,7 @@ classdef Connections
         % condName         % BST condition name
         % freqBand         % {1 x 2} array; frequency band
         % timeRange        % {1 x 2} array;
-        conInds          % {nConnections x 2} cell array;
+        conInds          % {nBundles x 2} cell array;
         lwidth
         m_rad
         icol
@@ -58,7 +58,7 @@ classdef Connections
         n = numArgumentsFromSubscript(obj, s, indexingContext);
 
         % ----------------------- constructor ---------------------- %
-        function obj = Connections(conInds, HM, Ctx)
+        function obj = Bundles(conInds, HM, Ctx)
             if iscell(conInds)
                 obj.conInds = conInds;
             else

@@ -7,14 +7,14 @@ function [clusters] = PairwiseClust(DipInd, GridLoc, Dpair, clustSize)
 %   [clusters] = PairwiseClust(BootsIND, GridLoc, Dpair, clustSize) 
 % INPUTS:
 %   BootsIND        - {nBootsrapIterations x 1} cell array; each cell is 
-%                     {nConnections x 2} matrix with indices of connected
+%                     {nBundles x 2} matrix with indices of connected
 %                     pairs
 %   GridLoc         - {nSites x 3} matrix of grid locations
 %   Dpair           - float; pairwise clustering distance threshold
 %   clustSize       - int; clulstersize threshold
 % OUTPUTS:
 %   clusters        - {nClusters x 1} cell array; each cell is
-%                     {nClustConnections x 2} matrix containing indices of
+%                     {nSticks x 2} matrix containing indices of
 %                     connected pairs for this cluster
 %  NOTES:
 %    Pairwise clustering algorithm is described at

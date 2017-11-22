@@ -5,7 +5,7 @@ function obj = Average(obj, is_adjust_size)
 % INPUTS:
 %   NONE
 % OUTPUTS:
-%   C     - Connections instance
+%   C     - Bundles instance
 % __________________________________________
 % AUTHOR: dmalt, dm.altukhov@ya.ru
 

@@ -10,7 +10,7 @@ function obj = Clusterize(obj, d_pair, clust_size)
 %                cluster; smaller clusters are not
 %                saved; default = 1
 % OUTPUT:
-%   C          - Connections instancsss
+%   C          - Bundles instancsss
 % ________________________________________________
 % AUTHOR: dmalt (dm.altukhov@ya)
 

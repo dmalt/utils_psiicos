@@ -5,7 +5,7 @@ function obj = Merge(obj)
 % INPUT:
 %   NONE
 % OUTPUT:
-%   C    - Connections instance
+%   C    - Bundles instance
 % _________________________________
 % AUTHOR: dmalt, dm.altukhov@ya.ru
 

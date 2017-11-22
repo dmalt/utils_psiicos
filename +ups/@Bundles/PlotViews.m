@@ -7,7 +7,7 @@ function lh =  PlotViews(obj, opacity, linewidth, m_radius, icol, alpha)
 % FORMAT:
 %   PlotViews(obj, opacity, linewidth, m_radius, icol, alpha)
 % INPUTS:
-%   obj.conInds{iSet}     - {nConnections x 2} matrix of indices
+%   obj.conInds{iSet}     - {nBundles x 2} matrix of indices
 %                           of connected grid nodes
 %   obj.headModel.GridLoc - {nSources x 3} matrix of coordinates
 %                           of grid nodes

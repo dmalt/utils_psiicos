@@ -1,4 +1,4 @@
-classdef test_Connections < matlab.unittest.TestCase
+classdef test_Bundles < matlab.unittest.TestCase
     properties
         ConnInst
         subjID = '0019_shev';
@@ -28,7 +28,7 @@ classdef test_Connections < matlab.unittest.TestCase
         % of connection indices. 
             IND{1} = [1,2];
             IND{2}  = [3, 4; 5, 6];
-            obj.ConnInst = ups.Connections(IND, obj.HM, obj.CtxHR);
+            obj.ConnInst = ups.Bundles(IND, obj.HM, obj.CtxHR);
             % obj.ConnInst.Plot()
         end
 
@@ -36,7 +36,7 @@ classdef test_Connections < matlab.unittest.TestCase
         % Test initialization with cell array 
         % of connection indices. 
             IND = [1,2; 3, 4; 5, 6];
-            obj.ConnInst = ups.Connections(IND, obj.HM, obj.CtxHR);
+            obj.ConnInst = ups.Bundles(IND, obj.HM, obj.CtxHR);
             % obj.ConnInst.Plot()
         end
 
@@ -48,7 +48,7 @@ classdef test_Connections < matlab.unittest.TestCase
                 IND{i} = randi(nSrc, 3, 2);
             end
 
-            obj.ConnInst = ups.Connections(IND, obj.HM, obj.CtxHR);
+            obj.ConnInst = ups.Bundles(IND, obj.HM, obj.CtxHR);
             % obj.ConnInst.Plot()
         end
 
@@ -58,7 +58,7 @@ classdef test_Connections < matlab.unittest.TestCase
             IND = randi(nSrc, ncon, 2);
             dPair = 0.02;
             clustSize = 10;         
-            obj.ConnInst = ups.Connections(IND, obj.HM, obj.CtxHR);
+            obj.ConnInst = ups.Bundles(IND, obj.HM, obj.CtxHR);
             obj.ConnInst = obj.ConnInst.Clusterize(clustSize, dPair);
             % obj.ConnInst.Plot()
             obj.assertGreaterThan(length(obj.ConnInst.conInds), 1) 
@@ -77,7 +77,7 @@ classdef test_Connections < matlab.unittest.TestCase
             for i = 1:20;
                 IND{i} = randi(nSrc, 3, 2);
             end
-            obj.ConnInst = ups.Connections(IND, obj.HM, obj.CtxHR);
+            obj.ConnInst = ups.Bundles(IND, obj.HM, obj.CtxHR);
             obj.ConnInst = obj.ConnInst.Merge();
             obj.assertEqual(length(obj.ConnInst.conInds), 1) 
         end

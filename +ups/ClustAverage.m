@@ -7,7 +7,7 @@ function  [ClustCenters, means, vars] = ClustAverage(clusters, GridLoc)
 %   ClustCenters = ClustAverage(SetInd, GridLoc, clustRadius, clustSize) 
 % INPUTS:
 %   clusters     - {nClusters x 1} cell array; each cell is 
-%                  {nConnections x 2} matrix of inds if con. sites
+%                  {nBundles x 2} matrix of inds if con. sites
 %   GridLoc      - {nSources x 3} matrix of grid nodes 
 %                  coordinates
 % OUTPUTS:

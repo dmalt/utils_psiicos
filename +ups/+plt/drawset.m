@@ -6,13 +6,13 @@ function lineHandles = drawset(conInds, Loc, col, alpha, linewidth, m_radius)
 % FORMAT:
 %   drawset(conInds, Loc, col) 
 % INPUTS:
-%   conInds  - {nConnections x 2} matrix of connection 
+%   conInds  - {nBundles x 2} matrix of connection 
 %              indices
 %   Loc      - {nLocations x 3} matrix of xyz coordinates
 %              of sensors or source grid locations
 %   col      - char or {1 x 3} array; color for connections
 % OUTPUTS:
-%   lineHandles  - {nConnections x 1} cell array of handles 
+%   lineHandles  - {nBundles x 1} cell array of handles 
 %                  to lines representing connections.
 % ___________________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru

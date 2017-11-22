@@ -6,7 +6,7 @@ function PlotPhase(obj, src, ~)
 % FORMAT:
 %   PlotPhase(obj, src, event)
 % INPUTS:
-%   obj        - Connections instance;
+%   obj        - Bundles instance;
 %   src        - handle to clicked line
 %   ~          - click event; requied by matlab 
 %                during function call

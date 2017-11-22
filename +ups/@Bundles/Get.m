@@ -5,7 +5,7 @@ function obj = Get(obj, ind)
 % INPUT:
 %   ind    - vector of indices
 % OUTPUT:
-%   C      - Connections instance
+%   C      - Bundles instance
 % ________________________________
 % AUTHOR: dmalt, dm.altukhov@ya.ru
 % TODO:
