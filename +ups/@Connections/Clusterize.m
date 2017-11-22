@@ -29,9 +29,9 @@ function obj = Clusterize(obj, d_pair, clust_size)
     obj.conInds = PairwiseClust(obj.conInds{1}, obj.headModel.GridLoc, d_pair, clust_size);
     for i_clust = 1:length(obj.conInds)
         obj.conInds{i_clust} = CoOrientCluster(obj.conInds{i_clust}, obj.headModel.GridLoc);
-        obj.clust_lwidth(i_clust) = 1;
-        obj.clust_m_rad(i_clust) = 0.002;
-        obj.clust_icol(i_clust) = i_clust;
-        obj.clust_alpha(i_clust) = 1;
+        obj.lwidth(i_clust) = 1;
+        obj.m_rad(i_clust) = 0.002;
+        obj.icol(i_clust) = i_clust;
+        obj.alpha(i_clust) = 1;
     end
 end

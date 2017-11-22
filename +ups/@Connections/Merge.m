@@ -14,8 +14,8 @@ function obj = Merge(obj)
         DipInd = [DipInd; obj.conInds{i}];
     end
     obj.conInds = {DipInd};
-    obj.clust_lwidth = 1;
-    obj.clust_m_rad = 0.002;
-    obj.clust_icol =  1;
-    obj.clust_alpha = 1;
+    obj.lwidth = 1;
+    obj.m_rad = 0.002;
+    obj.icol =  1;
+    obj.alpha = 1;
 end

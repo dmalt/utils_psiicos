@@ -12,24 +12,24 @@ function obj = Get(obj, ind)
 %   handle case where ind is empty
 
     obj.conInds = obj.conInds(ind);
-    if ~isscalar(obj.clust_lwidth)
-        obj.clust_lwidth = obj.clust_lwidth(ind);
+    if ~isscalar(obj.lwidth)
+        obj.lwidth = obj.lwidth(ind);
     else
-        obj.clust_lwidth = obj.clust_lwidth;
+        obj.lwidth = obj.lwidth;
     end
-    if ~isscalar(obj.clust_m_rad)
-        obj.clust_m_rad = obj.clust_m_rad(ind);
+    if ~isscalar(obj.m_rad)
+        obj.m_rad = obj.m_rad(ind);
     else
-        obj.clust_m_rad = obj.clust_m_rad;
+        obj.m_rad = obj.m_rad;
     end
-    if ~isscalar(obj.clust_icol)
-        obj.clust_icol = obj.clust_icol(ind);
+    if ~isscalar(obj.icol)
+        obj.icol = obj.icol(ind);
     else
-        obj.clust_icol = obj.clust_icol;
+        obj.icol = obj.icol;
     end
-    if ~isscalar(obj.clust_alpha)
-        obj.clust_alpha = obj.clust_alpha(ind);
+    if ~isscalar(obj.alpha)
+        obj.alpha = obj.alpha(ind);
     else
-        obj.clust_alpha = obj.clust_alpha;
+        obj.alpha = obj.alpha;
     end
 end
