@@ -32,10 +32,10 @@ classdef Connections
     end
     properties
         CT               % cross-spectrum timeseries
-        subjId           % BST subj name
-        condName         % BST condition name
-        freqBand         % {1 x 2} array; frequency band
-        timeRange        % {1 x 2} array;
+        % subjId           % BST subj name
+        % condName         % BST condition name
+        % freqBand         % {1 x 2} array; frequency band
+        % timeRange        % {1 x 2} array;
         conInds          % {nConnections x 2} cell array;
         lwidth
         m_rad
