@@ -39,19 +39,19 @@ function lh =  PlotViews(obj, opacity, linewidth, m_radius, icol, alpha)
     end
 
     if nargin < 3
-        linewidth = obj.clust_lwidth;
+        linewidth = obj.lwidth;
     end
 
     if nargin < 4
-        m_radius = obj.clust_m_rad;
+        m_radius = obj.m_rad;
     end
 
     if nargin < 5
-        icol = obj.clust_icol;
+        icol = obj.icol;
     end
 
     if nargin < 6
-        alpha = obj.clust_alpha;
+        alpha = obj.alpha;
     end
 
     subplot(1,3,1)
