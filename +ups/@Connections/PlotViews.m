@@ -55,16 +55,16 @@ function lh =  PlotViews(obj, opacity, linewidth, m_radius, icol, alpha)
     end
 
     lh = figure;
-    subplot(1,3,1)
+    subplot_tight(1,3,1, [0.02])
     light_handle = obj.Plot(opacity, linewidth, m_radius, icol, alpha);
     view(0,0);
     camlight(light_handle, 'left');
 
 
-    subplot(1,3,2)
+    subplot_tight(1,3,2, [0.04])
     obj.Plot(opacity, linewidth, m_radius, icol, alpha);
 
-    subplot(1,3,3)
+    subplot_tight(1,3,3, [0.05])
     light_handle = obj.Plot(opacity, linewidth, m_radius, icol, alpha);
     view(-90,0)
     camlight(light_handle, 'right');
