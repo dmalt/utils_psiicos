@@ -4,7 +4,7 @@ function obj = Clusterize(obj, d_pair, clust_size)
 % perform pairwise clustering.
 % ------------------------------------------------
 % INPUT:
-%   d_pair      - float; thresholc distance between stick
+%   d_pair     - float; threshold distance between stick
 %                ends in meters; default = 0.01 (1cm)
 %   clust_size - int; minimal number of sticks in 
 %                cluster; smaller clusters are not
@@ -27,7 +27,11 @@ function obj = Clusterize(obj, d_pair, clust_size)
 
     obj = obj.Merge();
     obj.conInds = PairwiseClust(obj.conInds{1}, obj.headModel.GridLoc, d_pair, clust_size);
-    for iClust = 1:length(obj.conInds)
-        obj.conInds{iClust} = CoOrientCluster(obj.conInds{iClust}, obj.headModel.GridLoc);
+    for i_clust = 1:length(obj.conInds)
+        obj.conInds{i_clust} = CoOrientCluster(obj.conInds{i_clust}, obj.headModel.GridLoc);
+        obj.clust_lwidth(i_clust) = 1;
+        obj.clust_m_rad(i_clust) = 0.002;
+        obj.clust_icol(i_clust) = i_clust;
+        obj.clust_alpha(i_clust) = 1;
     end
 end

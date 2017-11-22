@@ -37,11 +37,15 @@ classdef Connections
         freqBand         % {1 x 2} array; frequency band
         timeRange        % {1 x 2} array;
         conInds          % {nConnections x 2} cell array;
+        clust_lwidth
+        clust_m_rad
+        clust_icol
+        clust_alpha
     end
 
     methods
         light_handle = Plot(obj, opacity, linewidth, m_radius, icol, alpha)  % plot connections on HR brain
-        PlotViews(obj, opacity, linewidth, m_radius, icol, alpha)
+        fig_handle =      PlotViews(obj, opacity, linewidth, m_radius, icol, alpha)
         PlotPhase(obj, src, event)                 % plot amplitude and phase for connection
         obj = Clusterize(obj, d_pair, clust_size)  % clusterize connections
         obj = Average(obj)                         % average connections.
@@ -56,6 +60,12 @@ classdef Connections
                 obj.conInds = conInds;
             else
                 obj.conInds{1} = conInds;
+            end
+            for i_clust = 1:length(obj.conInds)
+                obj.clust_lwidth(i_clust) = 1;
+                obj.clust_m_rad(i_clust) = 0.002;
+                obj.clust_icol(i_clust) = i_clust;
+                obj.clust_alpha(i_clust) = 1;
             end
             obj.headModel = HM;
             obj.Ctx       = Ctx;

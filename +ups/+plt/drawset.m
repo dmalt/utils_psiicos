@@ -28,31 +28,34 @@ function lineHandles = drawset(conInds, Loc, col, alpha, linewidth, m_radius)
     for i = 1:size(conInds, 1)
             lineHandles{i} = patchline( Loc(conInds(i,:), 1),...
                                    Loc(conInds(i,:),2),...
-                                   Loc(conInds(i,:),3));
+                                   Loc(conInds(i,:),3));%, 'LineStyle', '-.');
 
             sphere_marker(Loc(conInds(i,1),1),...
                           Loc(conInds(i,1),2),...
                           Loc(conInds(i,1),3),...
-                          m_radius, col)
+                          m_radius, col, alpha)
 
             sphere_marker(Loc(conInds(i,2),1),...
                           Loc(conInds(i,2),2),...
                           Loc(conInds(i,2),3),...
-                          m_radius, col)
+                          m_radius, col, alpha)
 
             set(lineHandles{i}, 'EdgeAlpha', alpha, 'EdgeColor', linecol, 'linewidth', linewidth);
     end
 end
 
 
-function sphere_marker(x0, y0, z0, r, col) 
+function sphere_marker(x0, y0, z0, r, col, alpha) 
+    % if nargin < 6
+        alpha = 1;
+    % end
 
     [x, y, z] = sphere;
     % r = 0.002;
     x = r * x; y = r * y; z = r * z;
     x = x + x0; y = y + y0; z = z + z0;
     h = surf(x,y,z);
-    set(h,'Facecolor', col, 'EdgeColor', 'none');
+    set(h,'Facecolor', col, 'EdgeColor', 'none', 'FaceAlpha', alpha);
 end
 
 
