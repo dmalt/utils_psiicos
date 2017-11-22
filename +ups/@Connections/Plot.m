@@ -38,26 +38,26 @@ function light_handle = Plot(obj, opacity, linewidth, m_radius, icol, alpha)
     import ups.plt.drawset
 
     if nargin < 2
-        opacity = 0.6;
+        opacity = 0.2;
     end
 
     if nargin < 3
-        linewidth = 2;
+        linewidth = obj.lwidth;
     end
 
     if nargin < 4
-        m_radius = 0.002;
+        m_radius = obj.m_rad;
     end
 
     if nargin < 5
-        icol = [];
+        icol = obj.icol;
     end
 
     if nargin < 6
-        alpha = 1;
+        alpha = obj.alpha;
     end
 
-% ------------------ check input ------------------------ %
+    % ------------------ check input ------------------------ %
     if ~isscalar(linewidth)
         assert(length(linewidth) == length(obj.conInds),...
                ['Connections.Plot: If non scalar, the length of linewidths should ',...
@@ -89,7 +89,7 @@ function light_handle = Plot(obj, opacity, linewidth, m_radius, icol, alpha)
                 'in conInds.' ]);
     end
 
-% ------------------------------------------------------- %
+    % ------------------------------------------------------- %
 
     colorScheme = GetColors(3);
     bg_color = colorScheme(1).RGB;
@@ -113,6 +113,7 @@ function light_handle = Plot(obj, opacity, linewidth, m_radius, icol, alpha)
     axis equal;
     view(-90,90);
     axis off;
+    axis tight;
     grid off
     light_handle = camlight('right');
     hold on;
@@ -121,7 +122,7 @@ function light_handle = Plot(obj, opacity, linewidth, m_radius, icol, alpha)
     % ------------------ Draw connections ---------------------- %
     for iSet = 1:length(obj.conInds)
         if isempty(icol)
-            iCol = mod(iSet, length(colors));
+            iCol = mod(obj.icol(iSet), length(colors));
         else
             if isscalar(icol)
                 iCol = mod(icol, length(colors));
