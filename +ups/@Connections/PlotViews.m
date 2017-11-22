@@ -35,7 +35,7 @@ function lh =  PlotViews(obj, opacity, linewidth, m_radius, icol, alpha)
 % __________________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
     if nargin < 2
-        opacity = 0.6;
+        opacity = 0.2;
     end
 
     if nargin < 3
@@ -54,6 +54,7 @@ function lh =  PlotViews(obj, opacity, linewidth, m_radius, icol, alpha)
         alpha = obj.alpha;
     end
 
+    lh = figure;
     subplot(1,3,1)
     light_handle = obj.Plot(opacity, linewidth, m_radius, icol, alpha);
     view(0,0);
