@@ -51,6 +51,9 @@ classdef Connections
         obj = Average(obj, is_adjust_size)         % average connections.
         obj = Merge(obj)                           % merge connection indices
         obj = Get(obj, ind)                        % slice clusters
+        obj = plus(obj1, obj2)                     % merge two connection instances with the same HM and Ctx
+        obj = Threshold(obj, n)                    % remove clusters with small amount of sticks
+
         obj = subsref(obj, S);
         n = numArgumentsFromSubscript(obj, s, indexingContext);
 
