@@ -48,7 +48,7 @@ classdef Connections
         fig_handle =      PlotViews(obj, opacity, linewidth, m_radius, icol, alpha)
         PlotPhase(obj, src, event)                 % plot amplitude and phase for connection
         obj = Clusterize(obj, d_pair, clust_size)  % clusterize connections
-        obj = Average(obj)                         % average connections.
+        obj = Average(obj, is_adjust_size)         % average connections.
         obj = Merge(obj)                           % merge connection indices
         obj = Get(obj, ind)                        % slice clusters
         obj = subsref(obj, S);
