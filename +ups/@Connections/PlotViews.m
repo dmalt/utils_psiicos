@@ -1,4 +1,4 @@
-function PlotViews(obj, opacity, linewidth, m_radius, icol, alpha)
+function lh =  PlotViews(obj, opacity, linewidth, m_radius, icol, alpha)
 % -------------------------------------------------------
 % Given indices of connected grid locations, grid nodes
 % coordinates and cortex surface, draw connections on brain
