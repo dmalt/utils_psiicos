@@ -94,6 +94,7 @@ function light_handle = Plot(obj, opacity, linewidth, m_radius, icol, alpha)
     colorScheme = GetColors(3);
     bg_color = colorScheme(1).RGB;
     colors = {colorScheme(2:end).RGB};
+
     % ------------ Draw brain ------------------- %
     % figure;
     h_br = trisurf(obj.Ctx.Faces, ...
@@ -147,13 +148,7 @@ function light_handle = Plot(obj, opacity, linewidth, m_radius, icol, alpha)
         else
             mr = m_radius;
         end
-        % if iSet == 1
-        %     c = colors{2};
-        %     alpha = 1;
-        % else 
-        %     c = colors{1};
-        %     alpha = 0.3;
-        % end
+
         if isscalar(alpha)
             alpha_ = alpha;
         else
@@ -166,5 +161,6 @@ function light_handle = Plot(obj, opacity, linewidth, m_radius, icol, alpha)
             set(lineHandles{i},  'ButtonDownFcn', @obj.PlotPhase); % make connections clickable
         end
     end
+    set(gcf, 'color', 'k');
     % ----------------------------------------------------------- %
 end
