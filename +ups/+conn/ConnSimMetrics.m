@@ -4,9 +4,11 @@ function [sim_mean, sim_std, CS] = ConnSimMetrics(conInds, ChLoc, NOrder)
 % a group of subjects
 % -------------------------------------------------------
 % FORMAT:
-%   format 
+%   [sim_mean, sim_std, CS] = ConnSimMetrics(conInds, ChLoc, NOrder)
 % INPUTS:
-%   inputs        -
+%   conInds        -
+%   ChLoc
+%   NOrder
 % OUTPUTS:
 %   outputs
 % ________________________________________
@@ -26,8 +28,8 @@ function [sim_mean, sim_std, CS] = ConnSimMetrics(conInds, ChLoc, NOrder)
                                                   ChLoc, NOrder, 0.05, 'O');
                count = count + 1;
            end
-       end;
-    end;
+       end
+    end
 
     sim_mean = mean(CS);
     sim_std = std(CS) / sqrt(length(CS));

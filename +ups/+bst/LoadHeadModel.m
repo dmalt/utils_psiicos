@@ -45,16 +45,13 @@ function HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh, 
 
     % ------------- set up defaults ----------- %
     if nargin < 6
-        ch_type = 'MEG GRAD';
+        ch_type = 'MEG';
     end
     if nargin < 5
         GainSVDTh = 0.01;
     end
     if nargin < 4
         isLR = true;
-    end
-    if nargin < 3
-        protocolPath = '~/PSIICOS_osadtchii';
     end
     % ------------------------------------------- %
 
@@ -84,13 +81,13 @@ function HM_ps = LoadHeadModel(subjID, condName, protocolPath, isLR, GainSVDTh, 
     ch_path = [hm_path, '/', ch_file.name]; % final path to HM_ps
 
     HM_bst = load(hm_abs_path);
-    % -- read channels file from brainstorm protocol -- % 
+    % -- read channels file from brainstorm protocol -- %
     channels = load(ch_path);
     channels = channels.Channel;
     ch_used = PickChannels(channels, ch_type);
     % ------------------------------------------------- %
 
-    G2dLR = ReduceToTangentSpace(HM_bst.Gain(ch_used,:), 'all');
+    G2dLR = ReduceToTangentSpace(HM_bst.Gain(ch_used,:));
 
     % --------------- reduce sensor space ---------------- %
     if GainSVDTh

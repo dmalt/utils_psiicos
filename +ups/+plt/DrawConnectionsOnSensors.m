@@ -17,7 +17,8 @@ function h_ax = DrawConnectionsOnSensors(conInds, channels_path, isFun)
 % _________________________________________________________________
 % Dmitrii Altukhov, dm.altukhov@ya.ru
 
-    import ups.PickElectaChannels
+    % import ups.PickElectaChannels
+    import ups.bst.PickChannels
     import ups.ReadChannelLocations
     import ups.plt.GetColors
     import ups.plt.drawset
@@ -29,7 +30,10 @@ function h_ax = DrawConnectionsOnSensors(conInds, channels_path, isFun)
         channels_path = 'channel_vectorview306.mat';
     end
 
-    ChUsed = PickElectaChannels('grad');
+    % ChUsed = PickElectaChannels('grad');
+    ch = load(channels_path);
+    % ChUsed = PickElectaChannels('grad');
+    ChUsed = PickChannels(ch.Channel,'MEG');
     ChLoc = ReadChannelLocations(channels_path, ChUsed);
     % size(ChLoc)
     x = ChLoc(1,:)';
@@ -50,5 +54,5 @@ function h_ax = DrawConnectionsOnSensors(conInds, channels_path, isFun)
     hold on;
     h_ax = gca;
     % channels = []
-    drawset(conInds, ChLoc', fg_color, 1, 0.002);
+    drawset(conInds, ChLoc', fg_color, 1, 1, 0.002);
 end

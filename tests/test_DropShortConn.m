@@ -3,18 +3,21 @@ classdef test_DropShortConn < matlab.unittest.TestCase
         ChLoc
         min_length = 0.05;
         n_conn = 200
+        ChUsed
         conInds
     end
 
     methods(TestMethodSetup)
         function setup_ChLoc(obj)
-            sensors_file = 'channel_vectorview306.mat';
-            ChUsed = ups.PickElectaChannels('grad');
-            obj.ChLoc = ups.ReadChannelLocations(sensors_file, ChUsed);
+            sensors_file = '../test_data/channel_ctf_acc1.mat';
+            % ChUsed = ups.PickElectaChannels('grad');
+            ch = load(sensors_file);
+            obj.ChUsed = ups.bst.PickChannels(ch.Channel, 'MEG');
+            obj.ChLoc = ups.ReadChannelLocations(sensors_file, obj.ChUsed);
         end
 
         function setup_conInds(obj)
-            obj.conInds = randi(204, obj.n_conn, 2);
+            obj.conInds = randi(length(obj.ChUsed), obj.n_conn, 2);
         end
     end
 

@@ -1,22 +1,22 @@
 classdef test_LoadHeadModel < matlab.unittest.TestCase
     properties
         % subjID = '0019_shev'
-        subjID = '0003_pran'
-        condName = '2'
+        subjID = 'test_subj'
+        condName = 'raw'
+        protocol_path = '../test_data';
         HM
     end
 
     methods(TestMethodSetup)
         function run_LoadHeadModel(obj)
-            obj.HM = ups.bst.LoadHeadModel(obj.subjID, 'raw');
+            obj.HM = ups.bst.LoadHeadModel(obj.subjID, obj.condName, obj.protocol_path);
         end
     end
 
     methods(Test)
 
         function test_loads_from_cond_folder(obj)
-            cond_name = '2';
-            HM = ups.bst.LoadHeadModel(obj.subjID, cond_name);
+            HM = ups.bst.LoadHeadModel(obj.subjID, obj.condName, obj.protocol_path);
         end
 
         function test_returns_GridLoc(obj)
@@ -34,13 +34,14 @@ classdef test_LoadHeadModel < matlab.unittest.TestCase
         end
 
         function test_errors_when_subj_doesnt_exist(obj)
-            obj.assertError(@()ups.bst.LoadHeadModel('nonexistentSubj', 'someCond'), 'LoadError:noSubj')
+            obj.assertError(@()ups.bst.LoadHeadModel('nonexistentSubj', 'someCond', 'fakePath'),...
+                            'LoadError:noSubj')
         end
 
         function test_errors_when_no_head_models(obj)
-            subjID = '0019_shev';
-            condName = 'raw'
-            obj.assertError(@()ups.bst.LoadHeadModel(subjID, condName), 'LoadError:noFile')
+            empty_cond = 'test_empty';
+            obj.assertError(@()ups.bst.LoadHeadModel(obj.subjID, empty_cond, obj.protocol_path),...
+                            'LoadError:noFile')
         end
     end
 end

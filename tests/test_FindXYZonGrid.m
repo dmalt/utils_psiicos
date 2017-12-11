@@ -7,8 +7,9 @@ classdef test_FindXYZonGrid < matlab.unittest.TestCase
 
     methods(Test)
         function test_errors_when_bad_GridLoc_size(obj) 
-            sensors_file = 'channel_vectorview306.mat';
-            ChUsed = ups.PickElectaChannels('grad');
+            sensors_file = '../test_data/channel_ctf_acc1.mat';
+            ch = load(sensors_file);
+            ChUsed = ups.bst.PickChannels(ch.Channel, 'MEG');
             ChLoc = ups.ReadChannelLocations(sensors_file, ChUsed);
 
             left_motor_xyz = [0.02, 0.12, 0.1];

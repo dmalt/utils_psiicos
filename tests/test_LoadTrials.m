@@ -20,15 +20,15 @@ classdef test_LoadTrials < matlab.unittest.TestCase
         % end
 
         function test_it_runs(testCase)
-            protocolName = 'PSIICOS';
-            condition = '2';
-            subjID = '0003_pran';
+            protocolName = 'test';
+            condition = 'raw';
+            subjID = 'test_subj';
             freqBand = [19,23];
             timeRange = [0.4, 0.7];
-            protocolPath = '~/PSIICOS_osadtchii';
-            protocolName = 'PSIICOS';
+            protocolPath = '../test_data';
+            protocolName = 'test';
             GainSVDTh = 0.01;
-            HM = ups.bst.LoadHeadModel(subjID, 'raw');
+            HM = ups.bst.LoadHeadModel(subjID, condition, protocolPath);
             ups.bst.LoadTrials(subjID, condition, freqBand,...
                                timeRange, HM, protocolPath);
         end

@@ -1,16 +1,17 @@
 classdef test_Bundles < matlab.unittest.TestCase
     properties
         ConnInst
-        subjID = '0019_shev';
+        subjID = 'test_subj';
+        protocol_path = '../test_data';
         CT = rand(43 ^ 2, 151) + 1i * rand(43 ^ 2, 151);
-        condName = '2';
+        condName = 'raw';
         CtxHR;
         HM;
     end
     methods(TestMethodSetup)
         function create_connections_inst(obj)
-            [~, obj.CtxHR] = ups.bst.GetCtx(obj.subjID);
-            obj.HM = ups.bst.LoadHeadModel(obj.subjID, '2');
+            [~, obj.CtxHR] = ups.bst.GetCtx(obj.subjID, obj.protocol_path);
+            obj.HM = ups.bst.LoadHeadModel(obj.subjID, obj.condName, obj.protocol_path, true);
         end
     end
 
@@ -59,7 +60,7 @@ classdef test_Bundles < matlab.unittest.TestCase
             dPair = 0.02;
             clustSize = 10;         
             obj.ConnInst = ups.Bundles(IND, obj.HM, obj.CtxHR);
-            obj.ConnInst = obj.ConnInst.Clusterize(clustSize, dPair);
+            obj.ConnInst = obj.ConnInst.Clusterize(dPair, clustSize);
             % obj.ConnInst.Plot()
             obj.assertGreaterThan(length(obj.ConnInst.conInds), 1) 
 

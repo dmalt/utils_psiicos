@@ -5,8 +5,9 @@ classdef test_GetCtx < matlab.unittest.TestCase
     end
     methods(TestMethodSetup)
         function run_GetCtx(obj)
-            subjID = '0019_shev';
-            [obj.Ctx, obj.CtxHR] = ups.bst.GetCtx(subjID);
+            subjID = 'test_subj';
+            protocol_path = '../test_data';
+            [obj.Ctx, obj.CtxHR] = ups.bst.GetCtx(subjID, protocol_path);
         end
     end
     methods(Test)
