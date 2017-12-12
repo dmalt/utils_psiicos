@@ -22,9 +22,7 @@ No other packages are required
 In LINUX run in terminal:
 
 ```bash
-git clone https://github.com/dmalt/utils_psiicos.git && cd utils_psiicos
-./install.sh
-cd ..
+git clone https://github.com/dmalt/utils_psiicos.git && cd utils_psiicos && ./install.sh && cd ..
 ```
 
 In WINDOWS get the package by downloading .zip archive from github,
