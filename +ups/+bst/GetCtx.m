@@ -20,18 +20,18 @@ function [Ctx, CtxHR, CtxHHR] = GetCtx(subjID, protocol_path)
     %     protocol_path = '/home/dmalt/Documents/MATLAB/bst/brainstorm_db/mentrot';
     % end
     [pathCtx, pathCtxHR, pathCtxHHR] = GetCtxPaths(subjID, protocol_path);
-    if ~(pathCtx == "")
+    if ~isempty(pathCtx)
         Ctx   = load(pathCtx);
     else
         Ctx = [];
     end
 
-    if ~(pathCtxHR == "")
+    if ~isempty(pathCtxHR)
         CtxHR = load(pathCtxHR);
     else
         CtxHR = [];
     end
-    if ~(pathCtxHHR == "")
+    if ~isempty(pathCtxHHR)
         CtxHHR = load(pathCtxHHR);
     else
         CtxHHR = [];
