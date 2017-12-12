@@ -1,6 +1,6 @@
 function ChLoc = ReadChannelLocations(MEG_sensors_file, ChUsed)
 % -------------------------------------------------------------------
-% ReadChannelLocations: read locations of MEG channels from .mat file,
+% Read locations of MEG channels from .mat file,
 % pick channels with indices from ChUsed and store the result in ChLoc
 % -------------------------------------------------------------------
 % FORMAT:
