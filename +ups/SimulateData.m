@@ -3,14 +3,16 @@ function [HM, CrossSpecTime, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nT
 % Generate forward model and cross-spectrum on sensors for simulations
 % --------------------------------------------------------------------------
 % FORMAT:
-%   [HM, CrossSpecTime, Trials, Ctx] = SimulateData(PhaseLag, InducedScale, EvokedScale)
+% [HM, CrossSpecTime, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nTr, GainSVDTh, InducedScale, EvokedScale, isUseCache)
 % INPUTS:
 %   PhaseLag          - phase lag for simulations
 %   nTr               - scalar; number of trials
-%   GainSVDTh
+%   GainSVDTh         - scalar; PVU threshold for sensors dimensionality reduction
+%                       default = 0.001
 %   InducedScale      - coefficient for induced activity (default = 0.35)
 %   EvokedScale       - coefficient for evoked activity (default = 0)
-%   isUseCache
+%   isUseCache        - boolean; if true use cached data
+%                       default = true
 % OUTPUTS:
 %   HM_ps             - structure; forward model operator
 %                       for reduced sensor space and additional
@@ -29,6 +31,8 @@ function [HM, CrossSpecTime, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nT
 %   CrossSpecTime     - {nSensors ^ 2 x nTimes} matrix of cross-spectrum on sensors
 %   Trials            - {nSensors_reduced x nTimes x nTrials} matrix of trials
 %                       timeseries
+%   Ctx               - structure; cortex surface for plotting
+%   XYZGenOut         - matrix of coordinates of generated sources
 % ______________________________________________________________________________
 % Alex Ossadtchi, ossadtchi@gmail; Dmitrii Altukhov, dm.altukhov@ya.ru
 
