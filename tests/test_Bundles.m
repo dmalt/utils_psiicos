@@ -57,8 +57,8 @@ classdef test_Bundles < matlab.unittest.TestCase
             nSrc = size(obj.HM.GridLoc, 1);
             ncon = 1100;
             IND = randi(nSrc, ncon, 2);
-            dPair = 0.02;
-            clustSize = 10;         
+            dPair = 0.015;
+            clustSize = 1;         
             obj.ConnInst = ups.Bundles(IND, obj.HM, obj.CtxHR);
             obj.ConnInst = obj.ConnInst.Clusterize(dPair, clustSize);
             % obj.ConnInst.Plot()
