@@ -19,11 +19,19 @@ No other packages are required
 
 ### Installing
 
-In LINUX run in terminal:
+In LINUX for the full installation run in terminal
+(will also download ~170M of data for testing and simulations):
+
+```bash
+git clone https://github.com/dmalt/utils_psiicos.git && cd utils_psiicos && ./install.sh --sim-data --test-data && cd ..
+```
+
+If you don't want to download data now, just run
 
 ```bash
 git clone https://github.com/dmalt/utils_psiicos.git && cd utils_psiicos && ./install.sh && cd ..
 ```
+
 
 In WINDOWS get the package by downloading .zip archive from github,
 extract the files and add path to package folder from inside MATLAB.
