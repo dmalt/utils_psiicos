@@ -24,12 +24,12 @@ Installation effectively takes 2 steps:
 1. add utils_psiicos to MATLAB path
 2. download testing and simulations data
 
-Make sure you have cURL and run
-(it will download ~170M of data for testing and simulations):
+Make sure you have cURL and run the following
 
 ```bash
 git clone https://github.com/dmalt/utils_psiicos.git && cd utils_psiicos && ./install.sh --sim-data --test-data && cd ..
 ```
+Note that together with adding the package to MATLAB path it will download ~170M of data for testing and simulations.
 
 If you don't have cURL or don't want to download the data right now, run
 
