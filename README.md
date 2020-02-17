@@ -24,7 +24,7 @@ Installation effectively takes 2 steps:
 1. add utils_psiicos to MATLAB path
 2. download testing and simulations data
 
-On LINUX make sure you have cURL and run
+Make sure you have cURL and run
 (it will download ~170M of data for testing and simulations):
 
 ```bash
@@ -48,8 +48,10 @@ and unpack it into utils_psiicos
 
 
 #### Windows
-On WINDOWS get the package by downloading .zip archive from github,
+Get the package by downloading .zip archive from github,
 extract the files and add path to package folder from inside MATLAB.
+
+Testing and simulations data can be downloaded manually by the links above.
 
 #### Testing the installation
 To test the installation open matlab and run
