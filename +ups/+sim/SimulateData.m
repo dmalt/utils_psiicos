@@ -1,9 +1,9 @@
-function [HM, CrossSpecTime, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nTr, GainSVDTh, InducedScale, EvokedScale, jitter)
+function [HM, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nTr, GainSVDTh, InducedScale, EvokedScale, jitter)
 % --------------------------------------------------------------------------
 % Generate forward model and cross-spectrum on sensors for simulations
 % --------------------------------------------------------------------------
 % FORMAT:
-% [HM, CrossSpecTime, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nTr, GainSVDTh, InducedScale, EvokedScale, jitter)
+% [HM, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nTr, GainSVDTh, InducedScale, EvokedScale, jitter)
 % INPUTS:
 %   PhaseLag          - phase lag for simulations
 %   nTr               - scalar; number of trials;
@@ -30,7 +30,6 @@ function [HM, CrossSpecTime, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nT
 %   HM.svdThresh   - float; PVU threshold for PCA-driven
 %                       sensor space reduction
 % ------------
-%   CrossSpecTime     - {nSensors ^ 2 x nTimes} matrix of cross-spectrum on sensors
 %   Trials            - {nSensors_reduced x nTimes x nTrials} matrix of trials
 %                       timeseries
 %   Ctx               - structure; cortex surface for plotting
@@ -107,8 +106,6 @@ function [HM, CrossSpecTime, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nT
         range = range + T;
     end
     %% Calculate band cross-spectral matrix
-    CrossSpecTime = CrossSpectralTimeseries(Trials);
-
 end
 
 
