@@ -1,18 +1,20 @@
-function [HM, CrossSpecTime, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nTr, GainSVDTh, InducedScale, EvokedScale, isUseCache)
+function [HM, CrossSpecTime, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nTr, GainSVDTh, InducedScale, EvokedScale, jitter)
 % --------------------------------------------------------------------------
 % Generate forward model and cross-spectrum on sensors for simulations
 % --------------------------------------------------------------------------
 % FORMAT:
-% [HM, CrossSpecTime, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nTr, GainSVDTh, InducedScale, EvokedScale, isUseCache)
+% [HM, CrossSpecTime, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nTr, GainSVDTh, InducedScale, EvokedScale, jitter)
 % INPUTS:
 %   PhaseLag          - phase lag for simulations
-%   nTr               - scalar; number of trials
+%   nTr               - scalar; number of trials;
+%                       default=100
 %   GainSVDTh         - scalar; PVU threshold for sensors dimensionality reduction
 %                       default = 0.001
 %   InducedScale      - coefficient for induced activity (default = 0.35)
 %   EvokedScale       - coefficient for evoked activity (default = 0)
-%   isUseCache        - boolean; if true use cached data
-%                       default = true
+%   jitter            - float in range [0, 2]; default = 0.2
+%                       jitter to add to PhaseLag; actual phase lag for
+%                       each epoch equals PhaseLag + jitter * (rand - 0.5) * pi
 % OUTPUTS:
 %   HM_ps             - structure; forward model operator
 %                       for reduced sensor space and additional
@@ -43,7 +45,7 @@ function [HM, CrossSpecTime, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nT
 
     % --------- set up defaults --------- %
     if nargin < 6
-        isUseCache = true;
+        jitter = 0.2;
     end
     if nargin < 5
         EvokedScale = 0.;
@@ -57,7 +59,7 @@ function [HM, CrossSpecTime, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nT
     % but produces less contrasting subcorr scans
     % for a more reliable preformance use 0.01
     % to get all the sensor on board but be ready to wait;
-        GainSVDTh = 0.001 ;
+        GainSVDTh = 0.001;
     end
 
     if nargin < 2
@@ -65,138 +67,47 @@ function [HM, CrossSpecTime, Trials, Ctx, XYZGenOut] = SimulateData(PhaseLag, nT
     end
     % ----------------------------------- %
 
-    % ---- check if cache folder is there --- %
-    % ----------if no - create one ---------- %
-    fname = mfilename('fullpath');
-    mpath = fileparts(fname);
-    cache_fold =  [mpath, '/../Simulations_cache'];
-    if ~exist(cache_fold, 'dir')
-        mkdir(cache_fold);
+    phi = PhaseLag;
+    NetworkPairIndex{1} = [1, 2];
+    NetworkPairIndex{2} = [1, 2, 3];
+    %% Load forward model and reduce it
+
+    % ---------------------------------------------------- %
+    XYZGen = 1.3 * [ 0.05,  0.04, 0.05;
+                     0.05, -0.04, 0.05;
+                    -0.05,  0.04, 0.05;
+                    -0.05, -0.04, 0.05;
+                     0.00,  0.05, 0.06;
+                     0.00, -0.05, 0.06];
+    % ----------------------------------------------------- %
+    HM = ups.sim.PrepareTestForward(GainSVDTh);
+
+    %% Data simulation
+    [Evoked, Induced, BrainNoise, Ctx, ~, ~, ~, ~, XYZGenOut] = ...
+    SimulateDataPhase(nTr, NetworkPairIndex{2}, phi, true, [], XYZGen, jitter);
+    % mix noise and data
+    % in order to control SNR we first normalize norm(BrainNoise(:)) = 1 and
+    % norm(Induced(:)) = 1 and then mix the two with the coefficient
+    Data0 = InducedScale * Induced + EvokedScale * Evoked + BrainNoise;
+    clear Induced;
+    clear Evoked;
+    [bf, af] = butter(5, [2, 20] / (0.5 * 500)); % TODO
+    % Filter in the band of interest
+    Data = filtfilt(bf, af, Data0')';
+    clear Data0;
+    %% Reshape the data in a 3D structure(Space x Time x Epochs)
+    [~, Tcnt] = size(Data);
+    T = fix(Tcnt / nTr);
+    nCh = size(HM.UP, 1);
+    %reshape Data and store in a 3D array X
+    Trials = zeros(nCh, T, nTr);
+    range = 1:T;
+    for i=1:nTr
+        Trials(:,:,i) = HM.UP * Data(:,range);
+        range = range + T;
     end
-    cache_fname = ...
-    [
-       'pl_',      num2str(PhaseLag),     ...
-       '_ntr_',    num2str(nTr),          ...
-       '_gsvdth_', num2str(GainSVDTh),    ...
-       '_is_',     num2str(InducedScale), ...
-       '_es_',     num2str(EvokedScale)
-    ];
-    cache_fname = [cache_fold, '/', cache_fname, '.mat'];
-
-    % --------------------------------------- %
-
-
-    if exist(cache_fname, 'file') && isUseCache
-        load(cache_fname);
-    else
-        phi = PhaseLag;
-        % GainSVDTh = 0.001; /
-        NetworkPairIndex{1} = [1,2];
-        NetworkPairIndex{2} = [1,2,3];
-        %% Load forward model and reduce it
-        % load reduced forward model (GLowRes)
-        HM_path = which('GLowRes.mat');
-        load(HM_path);
-        % get grid node locations
-        Rloc = GLowRes.GridLoc;
-        % set to use gradiometers only
-        ChUsed = PickElectaChannels('grad');
-        % calculate tangential plane dipoles
-        [~, nSites] = size(GLowRes.Gain(ChUsed, 1:3:end));
-
-        % ---------------------------------------------------- %
-        Dmax = 0.02;
-        NPI = NetworkPairIndex{2};
-        XYZGen = 1.3 * [ 0.05,  0.04, 0.05;
-                         0.05, -0.04, 0.05;
-                        -0.05,  0.04, 0.05;
-                        -0.05, -0.04, 0.05;
-                         0.00,  0.05, 0.06;
-                         0.00, -0.05, 0.06];
-        [allnw, nw1, nw2, nw3] = FindEffSources(Dmax, Rloc, XYZGen, NPI);
-        effSites = unique([allnw(:,1); allnw(:,2)]);
-        effSites(effSites == 0) = nSites;
-        % ----------------------------------------------------- %
-
-        G2d = ReduceToTangentSpace(GLowRes.Gain(ChUsed,:));
-        % -------------- reduce sensor space -------------- %
-        if GainSVDTh
-            [ug, ~, ~] = spm_svd(G2d * G2d', GainSVDTh);
-            UP = ug';
-            G2dU = UP * G2d;
-        else
-            G2dU = G2d;
-            UP = eye(size(G2d,1));
-        end
-        % ------------------------------------------------- %
-
-        % ---- produce output for head model ------- %
-        HM.gain = G2dU;
-        HM.path = HM_path;
-        HM.UP = UP;
-        HM.svdThresh = GainSVDTh;
-        HM.GridLoc = GLowRes.GridLoc;
-        % ------------------------------------------ %
-
-        % G2dU = G2dU_full([100000 : 250000, 680000:1130000]);
-        % PHI = [pi / 20 pi / 2];
-        it = 1;
-        % for phi = PHI
-        % phi = PHI(1);
-            %% Data simulation
-            if(it == 1)
-                % we will use the same phase shifts in the second and subsequent
-                % iterations. We will store the random phases in PhaseShifts
-                [Evoked, Induced, BrainNoise, Ctx, ~, ~, ~, ~, XYZGenOut] = ...
-                SimulateDataPhase(nTr, NetworkPairIndex{2}, phi, true,  [],          XYZGen);
-            else
-                % and use PhaseShits from the first iteration
-                [Evoked, Induced, BrainNoise, Ctx, ~, ~, ~, ~, XYZGenOut] = ...
-                SimulateDataPhase(nTr, NetworkPairIndex{2}, phi, false, PhaseShifts, XYZGen);
-            end
-            % mix noise and data
-            % in order to control SNR we first normalize norm(BrainNoise(:)) = 1 and
-            % norm(Induced(:)) = 1 and then mix the two with the coefficient
-            Data0 = InducedScale * Induced + EvokedScale * Evoked + BrainNoise ;
-            clear Induced;
-            clear Evoked;
-            [bf, af] = butter(5, [2, 20] / (0.5 * 500));
-            % Filter in the band of interest
-            Data = filtfilt(bf,af,Data0')';
-            clear Data0;
-            % Noise = filtfilt(bf, af, BrainNoise')';
-            % Data_clear = filtfilt(bf, af, InducedScale * Induced')';
-            %% Reshape the data in a 3D structure(Space x Time x Epochs)
-            [~, Tcnt] = size(Data);
-            T = fix(Tcnt / nTr);
-            nCh = size(UP, 1);
-            %reshape Data and store in a 3D array X
-            X1 = zeros(nCh, T, nTr);
-            % N1 = zeros(nCh, T, nTr);
-            % N2 = zeros(nCh, T, nTr);
-            range = 1:T;
-            for i=1:nTr
-                X1(:,:,i) = UP * Data(:,range);
-        %         N1(:,:,i) = UP * Noise(:,range);
-        %         N2(:,:,i) = UP * Data_clear(:,range);
-                range = range + T;
-            end
-            Trials = X1;
-            %% Calculate band cross-spectral matrix
-            CrossSpecTime = CrossSpectralTimeseries(X1);
-            % CrossSpecNoise = CrossSpectralTimeseries(N1);
-            % CrossSpecClData = CrossSpectralTimeseries(N2);
-            % C = reshape(mean(CrossSpecTime{it},2),nCh,nCh);
-
-            % %% Experiment with different methods
-            % [~, T] = size(CrossSpecTime);
-            % M  = ProjOut(CrossSpecTime, G2dU) ;
-            % M_noiseonly = ProjOut(CrossSpecNoise, G2dU);
-            % Data_clear_p = ProjOut(CrossSpecClData, G2dU);
-            % it = it + 1;
-        % end
-        save(cache_fname, 'HM', 'CrossSpecTime', 'Trials', 'Ctx', '-v7.3');
-    end
+    %% Calculate band cross-spectral matrix
+    CrossSpecTime = CrossSpectralTimeseries(Trials);
 
 end
 
@@ -274,7 +185,7 @@ function [ans_idx, nw1, nw2, nw3] = FindEffSources(Dmax, R, XYZGen, NPI)
 end
 
 
-function [Evoked, Induced, BrainNoise, Ctx, SensorNoise, G2d, R, Fs, XYZGenOut, Ggen, PhaseShiftsOut] = SimulateDataPhase(nTr, NetworkPairIndex, dPhi, bNewBrainNoise, PhaseShiftsIn, XYZGen, alpha_in)
+function [Evoked, Induced, BrainNoise, Ctx, SensorNoise, G2d, R, Fs, XYZGenOut, Ggen, PhaseShiftsOut] = SimulateDataPhase(nTr, NetworkPairIndex, dPhi, bNewBrainNoise, PhaseShiftsIn, XYZGen, jitter)
 % -------------------------------------------------------
 % Generate evoked and induced activity and project it on
 % sensors with forward operator Ggen
@@ -295,15 +206,14 @@ function [Evoked, Induced, BrainNoise, Ctx, SensorNoise, G2d, R, Fs, XYZGenOut, 
     bUsePhases = ~isempty(PhaseShiftsIn);
 
     if(nargin < 7)
-        alpha = 1.;
+        alpha = 0.2;
     else
-        alpha = alpha_in;
+        alpha = jitter;
     end
 
     ISD = load('InputData4Simulations.mat');
     ISD.Channels = load('channel_vectorview306.mat');
     Ctx = ISD.Ctx;
-
 
     if(nargin == 0)
         bNewBrainNoise = true; % whether or not to generate new brain noise
@@ -325,7 +235,7 @@ function [Evoked, Induced, BrainNoise, Ctx, SensorNoise, G2d, R, Fs, XYZGenOut, 
         d = sum(d .* d, 2);
         [~, ind] = min(d);
         XYZGenAct(i,:) = R(ind,:);
-        Ggen(:,i) = G2d(:,ind * 2 - 1); % take the first dipole in the tangent plane
+        Ggen(:, i) = G2d(:, ind * 2 - 1); % take the first dipole in the tangent plane
         GenInd(i) = ind;
     end
 % 3333333333333333333333333333333333333333333333333333333333333333333333333333333 %
@@ -432,11 +342,11 @@ function [Evoked, Induced, BrainNoise, Ctx, SensorNoise, G2d, R, Fs, XYZGenOut, 
              a = a / norm(a(:));
             induced = induced + a;
         end
-        induced = induced/sqrt(sum((induced(:).^2)));
+        induced = induced / sqrt(sum((induced(:) .^ 2)));
         Induced(:, range) = induced;
 
-        evoked = Ggen(:,[2,4]) * e;
-        evoked = evoked/sqrt(sum(evoked(:).^2));
+        evoked = Ggen(:, [2,4]) * e;
+        evoked = evoked / sqrt(sum(evoked(:).^2));
         Evoked(:, range) = evoked;
 
         if(bNewBrainNoise)
@@ -445,11 +355,11 @@ function [Evoked, Induced, BrainNoise, Ctx, SensorNoise, G2d, R, Fs, XYZGenOut, 
             brainnoise = BN.BrainNoise(:, range);
         end
 
-        brainnoise = brainnoise/sqrt(sum((brainnoise(:).^2)));
+        brainnoise = brainnoise / sqrt(sum((brainnoise(:) .^ 2)));
         BrainNoise(:, range) = brainnoise;
 
         sensornoise = randn(size(brainnoise));
-        sensornoise = sensornoise/sqrt(sum((sensornoise(:).^2)));
+        sensornoise = sensornoise/sqrt(sum((sensornoise(:) .^ 2)));
         SensorNoise(:, range) = sensornoise;
         range = range + T;
 
